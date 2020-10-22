@@ -1,23 +1,33 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <router-view/>
+<!--        <Win />-->
+    <router-view />
   </div>
 </template>
 
 <script>
-export default {
-  name: 'App'
-}
+
+  import '@/assets/font.css'
+  // import Win from './layout/index.vue'
+
+  export default {
+    name: 'App',
+    components: {
+      // Win
+    }
+  }
 </script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+  @import './assets/common.less';
+
+  * {
+    margin: 0px;
+    padding: 0px;
+  }
+
+  #app {
+    min-height: 810px;
+    min-width: 900px;
+  }
 </style>

@@ -1,25 +1,32 @@
 <template>
   <div class="loginWin">
-    <login-action/>
-    <register-action/>
-    <findPS-action/>
+    <login-action @changeShowModule="changeShowModule" v-show="showModule == 'login'"/>
+    <register-action @changeShowModule="changeShowModule" v-show="showModule == 'register'"/>
+    <findps-action @changeShowModule="changeShowModule" v-show="showModule == 'findPS'"/>
   </div>
 </template>
 
 <script>
   import loginAction from './components/login-action.vue'
   import registerAction from './components/register-action.vue'
-  import findPSAction from './components/findPS-action.vue'
+  import findpsAction from './components/findPS-action.vue'
 
   export default {
     name: 'loginWin',
     data() {
-      return {}
+      return {
+        showModule: 'login'
+      }
+    },
+    methods: {
+      changeShowModule(module) {
+        this.showModule = module
+      }
     },
     components: {
       loginAction,
       registerAction,
-      findPSAction
+      findpsAction
     }
   }
 </script>
@@ -145,6 +152,16 @@
           color: rgba(255, 62, 77, 0.79);
           line-height: 16px;
           width: 300px;
+        }
+
+        .swicthPWI {
+          position: absolute;
+          top: 0px;
+          right: 10px;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          cursor: pointer;
         }
 
         .i {

@@ -36,7 +36,7 @@ export default new Vuex.Store({
       pwFormat: /^(?![\d]+$)(?![a-z]+$)(?![A-Z]+$)(?!^.*[\u4E00-\u9FA5].*$)/,
       code: /^\d{6}$/,
       accountLength: /^[\w\W]{8,14}$/,
-      accountFormat: /^(?![\d]+$)(?![a-z]+$)(?![A-Z]+$)(?![_]+$)(?![\u4E00-\u9FA5\w]+$)/,
+      accountFormat: /^(?![\d]+$)(?![a-z]+$)(?![A-Z]+$)(?![_]+$)(?![\u4E00-\u9FA5]+$)/,
       identificationNumber: /^[\w]{15,20}$/,          // 纳税人识别号
       header: /^[\u4e00-\u9fa5_a-zA-Z0-9]+$/          // 发票抬头
     },

@@ -10,10 +10,27 @@ export function getUserInfo() {
   })
 }
 
-// 获取手机验证码
+// 获取短信验证码
 export function getPhoneCode({phone, position}) {
   return http({
     url: `/auth/sendPhoneCode4Login/${phone}/${position}`,
     method: 'GET'
+  })
+}
+
+// 验证短信验证码
+export function verifPhoneCode(data) {
+  return http({
+    url: `/auth/checkPhoneCode4ChangePassword?${data}`,
+    method: 'GET'
+  })
+}
+
+// 修改密码
+export function editPS(data) {
+  return http({
+    url: `/auth/changePasswordByPhone`,
+    method: 'PUT',
+    data
   })
 }

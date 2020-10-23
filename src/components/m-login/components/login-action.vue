@@ -58,10 +58,75 @@
                  active-color="RGBA(27, 83, 244, 1)"
                  inactive-color="rgba(230, 230, 230, 1)"/>
       <span class="switchLabel">{{ $t('login_page.SMS_verif.auto_login') }}</span>
-      <span class="toRegister"><span @click="navActive = 2">{{ $t('login_page.account_verif.register') }}</span></span>
+      <span class="toRegister">
+        <span @click="$emit('changeShowModule', 'register')">{{ $t('login_page.account_verif.register') }}</span>
+      </span>
       <!--登录按钮-->
       <div :class="[{'canBeClick': phoneVerif.phone && phoneVerif.code}, 'bigBtn']"
            @click="phoneLoginFun">
+        <span>{{ $t('login_page.loginText') }}</span>
+      </div>
+    </div>
+    <!--帐号密码登录模板-->
+    <div class="form" v-show="navIndex == 2">
+      <input type="password" style="display: none"/>
+      <!--帐号-->
+      <div class="item">
+        <input v-model="accountFrom.account"
+               :placeholder="$t('login_page.account_verif.ac_placeholder')"
+               ref="accountFrom_account"
+               @blur="accounVerif(false)"
+               @input="accounVerif(true)"
+               @focus="accountVerif.account === false ? accountVerif.account = null : null"
+               class="farm-input"
+               :class="[{'inputError': accountVerif.account === false}]"/>
+        <span class="warnInfo" v-show="accountVerif.account === false">{{ warnInfo.account }}</span>
+        <img src="@/icons/login-success.png" class="i"
+             v-show="accountVerif.account === true">
+        <img src="@/icons/login-error .png" class="i canClick"
+             v-show="accountVerif.account === false"
+             @click="DeleteInputFun('accountFrom','account', 'accountVerif')">
+      </div>
+      <!--密码-->
+      <div class="item">
+        <input v-model="accountFrom.password"
+               ref="accountFrom_password"
+               :placeholder="$t('login_page.account_verif.ps_placeholder')"
+               @keyup.enter="accountLoginFun"
+               @focus="accountVerif.password === false ? accountVerif.password = null : null"
+               @blur="passwVerif(false)"
+               @input="passwVerif(true)"
+               autocomplete="new-password"
+               type="password"
+               class="farm-input"/>
+        <div class="swicthPWI">
+          <img src="@/icons/openPW.png" v-show="accountFrom.passwordEye"
+               @click="accountFrom.passwordEye = false">
+          <img src="@/icons/shuPW.png" v-show="!accountFrom.passwordEye"
+               @click="accountFrom.passwordEye = true">
+        </div>
+        <span class="warnInfo" v-show="accountVerif.password === false">{{ warnInfo.password }}</span>
+        <img src="@/icons/login-error .png" class="i canClick"
+             v-show="accountVerif.password === false"
+             @click="DeleteInputFun('accountFrom','password', 'accountVerif')">
+      </div>
+      <!--5天内自动登录-->
+      <el-switch
+        active-color="RGBA(27, 83, 244, 1)"
+        inactive-color="rgba(230, 230, 230, 1)"
+        v-model="accountFrom.isAutoLogin">
+      </el-switch>
+      <span class="switchLabel">{{ $t('login_page.account_verif.auto_login') }}</span>
+      <!--忘记密码-->
+      <span class="toRegister">
+                <span @click="$emit('changeShowModule', 'findPS')">{{ $t('login_page.account_verif.forgetPw') }}</span>
+                |
+                <span
+                  @click="$emit('changeShowModule', 'register')">{{ $t('login_page.account_verif.register') }}</span>
+              </span>
+      <!--登录按钮-->
+      <div :class="[{'canBeClick': accountVerif.account && accountVerif.password}, 'bigBtn']"
+           @click="accountLoginFun">
         <span>{{ $t('login_page.loginText') }}</span>
       </div>
     </div>
@@ -71,10 +136,12 @@
 <script>
   import {
     verifPhoneIsRegister,       // 验证手机号是否已被注册
-    phoneLogin                 // 短信登录
+    verifAccountIsRegister,     // 验证账号是否已被注册
+    phoneLogin,                 // 短信登录
+    accountLogin                // 账号登录
   } from '@/api/login-api'
   import {
-    getPhoneCode
+    getPhoneCode                // 获取短信验证码
   } from '@/api/info-api'
   import {
     mapState
@@ -100,20 +167,44 @@
           showGetCode: true, // 显示获取验证码 按钮
           gotten: false      // 已获取验证码
         },
+        accountFrom: {
+          account: null,
+          password: null,
+          passwordEye: false,
+          isAutoLogin: false
+        },
         phoneVerif: {
           phone: null,
           code: null
         },
+        accountVerif: {
+          account: null,
+          password: null
+        },
         warnInfo: {
           phone: '',
-          code: ''
+          code: '',
+          account: '',
+          password: null
         }
+      }
+    },
+    watch: {
+      'accountFrom.passwordEye': function (val) {
+        if (val) this.$refs.accountFrom_password.type = 'text'
+        else this.$refs.accountFrom_password.type = 'password'
       }
     },
     computed: {
       ...mapState(['regExp'])
     },
     methods: {
+      // 删除错误输入
+      DeleteInputFun(from, input, verif) {
+        this[from][input] = ''
+        this.$refs[from + '_' + input].focus()
+        this[verif][input] = null
+      },
       // 验证手机号是否已被注册
       async verifInputPhone(ing) {
         let f = this.phoneForm,
@@ -135,11 +226,7 @@
           v.phone = false
         }
       },
-      DeleteInputFun(from, input, verif) {
-        this[from][input] = ''
-        this.$refs[from + '_' + input].focus()
-        this[verif][input] = null
-      },
+      // 验证短信验证码格式
       phoneCodeVerif(ing) {
         let f = this.phoneForm,
           v = this.phoneVerif
@@ -149,11 +236,55 @@
         else if (/^\d{6}$/.test(f.code)) v.code = true
         else ing ? v.code = null : v.code = false      // '请正确输入验证码'
       },
+      // 验证账号格式
+      async accounVerif(ing) {
+        let rfa = this['accountFrom']['account'],
+          rs = this['accountVerif'],
+          w = this.warnInfo
+        // 为空
+        if (!rfa) rs.account = null
+        // 验证帐号长度
+        else if (!/^[\w\W]{8,14}$/.test(rfa)) {
+          w.account = this.$t('login_page.message.ac_verif_one')
+          ing ? rs.account = null : rs.account = false
+        } else if ((!/^[\u4E00-\u9FA5\w]+$/.test(rfa) || !this.regExp.accountFormat.test(rfa)) && !this.regExp.phone.test(rfa)) {
+          // 验证帐号格式
+          w.account = '请输入正确账号/手机号'
+          ing ? rs.account = null : rs.account = false
+        } else {
+          // 验证帐号是否可用
+          let data = await verifAccountIsRegister(rfa)
+          if (data.data.code == 4031) {
+            // 账号未被注册
+            if (ing) rs.account = null
+            else {
+              rs.account = false
+              w.account = this.$t('login_page.message.ac_verif_four')
+            }
+          } else rs.account = true    // 账号已被注册
+        }
+      },
+      // 验证密码格式
+      passwVerif(ing) {
+        let t = this['accountFrom']['password'],
+          s = this.accountVerif,
+          i = this.warnInfo
+        if (!t) s.password = null
+        else if (!this.regExp.pwLength.test(t)) {
+          // 验证密码长度
+          i.password = this.$t('login_page.message.ps_verif_two')
+          ing ? s.password = null : s.password = false
+        } else if (!this.regExp.pwFormat.test(t)) {
+          // 验证密码复杂度
+          i.password = this.$t('login_page.message.ps_verif_one')
+          ing ? s.password = null : s.password = false
+        } else s.password = true    // 密码正确
+      },
       // 获取验证码
       async getPhoneCode() {
         let {phone} = this.phoneForm
         if (!this.phoneVerif.phone) return false
-        this.delayFun('login')
+        this.delayFun()
         let data = await getPhoneCode({
           phone,
           position: 'login'
@@ -168,18 +299,15 @@
       },
       // 手机号验证事件60秒延迟
       delayFun(obj) {
-        let showDom
-        if (obj === 'login') showDom = this.phoneForm
-        // else if (obj === 'registered') showDom = this.registered
-        else if (obj === 'findBack') showDom = this.login.forgetMode
-        showDom.showGetCode = false
-        showDom.intervalFun = window.setInterval(() => {
-          showDom.countdown = parseInt(showDom.countdown) - 1 + 's'
-          if (showDom.countdown === '0s') {
-            window.clearInterval(showDom.intervalFun)
-            showDom.showGetCode = true
-            showDom.countdown = '60s'
-            showDom.btnText = this.$t('login_page.getCodeAgain')
+        let s = this.phoneForm
+        s.showGetCode = false
+        s.intervalFun = window.setInterval(() => {
+          s.countdown = parseInt(s.countdown) - 1 + 's'
+          if (s.countdown === '0s') {
+            window.clearInterval(s.intervalFun)
+            s.showGetCode = true
+            s.countdown = '60s'
+            s.btnText = this.$t('login_page.getCodeAgain')
           }
         }, 1000)
       },
@@ -197,6 +325,20 @@
           let data = await phoneLogin({phone, code, autoLogin})
           if (data.data.code == 4032) messageFun('error', this.$t('login_page.message.code_err'))
           else if (data.data.code == 200) this.loginSuc(autoLogin, phone, data.data.data.account, data.data.data.token)
+        } catch (err) {
+          console.log('登录连接失败, ' + err)
+        }
+      },
+      // 账号登录
+      async accountLoginFun() {
+        let {account, password, isAutoLogin} = this.accountFrom
+        if (this.accountVerif.password === false || !account || !password) return false
+        try {
+          let data = await accountLogin({account, password, isAutoLogin})
+          if (data.data.code == '4032') {
+            this.accountVerif.password = false
+            this.warnInfo.password = '密码错误'
+          } else if (data.data.code == 200) this.loginSuc(isAutoLogin, '', account, data.data.data.token)
         } catch (err) {
           console.log('登录连接失败, ' + err)
         }

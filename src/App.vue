@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-<!--        <Win />-->
     <router-view />
   </div>
 </template>
@@ -8,7 +7,6 @@
 <script>
 
   import '@/assets/font.css'
-  // import Win from './layout/index.vue'
 
   export default {
     name: 'App',
@@ -18,7 +16,7 @@
   }
 </script>
 
-<style>
+<style lang="less">
   @import './assets/common.less';
 
   * {

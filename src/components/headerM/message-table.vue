@@ -111,15 +111,15 @@
   import {
     getMessageList,
     readMessages,
-    getTaskPosition,
-  } from "../../api/header-api"
+    getTaskPosition
+  } from '../../api/header-api'
   import {
     mapState
   } from 'vuex'
   import {
     createDateFun,
     messageFun
-  } from "../../assets/common"
+  } from '../../assets/common'
   // import task from "../task"
 
   export default {
@@ -144,11 +144,11 @@
           pageIndex: 1        // pageIndex 索引
         },
         systemSelectionList: [],    // 系统多选结果
-        activitySelectionList: [],  // 活动多选结果
+        activitySelectionList: []   // 活动多选结果
       }
     },
     computed: {
-      ...mapState['zoneId', 'user']
+      ...mapState(['zoneId', 'user'])
     },
     methods: {
       // 打开消息详情
@@ -199,7 +199,7 @@
         let systemTotal = await getMessageList(`isRead=&noticeType=1&keyword=&pageIndex=1&pageSize=10`),
           activityTotal = await getMessageList(`isRead=&noticeType=2&keyword=&pageIndex=1&pageSize=10`)
 
-        if(systemTotal.data.total == 0 && activityTotal.data.total == 0) this.$emit('noMessage')
+        if (systemTotal.data.total == 0 && activityTotal.data.total == 0) this.$emit('noMessage')
       },
       // 标记为已读
       async readedAll(type) {
@@ -218,7 +218,7 @@
       systemSelectionChange(val) {
         this.systemSelectionList = val
       },
-      //活动多选
+      // 活动多选
       activitySelectionChange(val) {
         this.activitySelectionList = val
       },

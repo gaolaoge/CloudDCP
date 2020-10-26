@@ -9,6 +9,7 @@
 
 <script>
   import {mapState} from 'vuex'
+  import '@/assets/fonticon/iconfont.css'
 
   export default {
     name: 'appMain',
@@ -34,6 +35,8 @@
   .appMain-wrapper {
     width: 100%;
     height: calc(100vh - 120px);
+    padding: 0px 20px 0px 50px;
+    box-sizing: border-box;
     /*padding-bottom: 20px;*/
     /*box-sizing: border-box;*/
     overflow: hidden;

@@ -125,7 +125,7 @@
                   @click="$emit('changeShowModule', 'register')">{{ $t('login_page.account_verif.register') }}</span>
               </span>
       <!--登录按钮-->
-      <div :class="[{'canBeClick': accountVerif.account && accountVerif.password}, 'bigBtn']"
+      <div :class="[{'canClick': accountVerif.account && accountVerif.password}, 'bigBtn']"
            @click="accountLoginFun">
         <span>{{ $t('login_page.loginText') }}</span>
       </div>
@@ -183,7 +183,7 @@
         },
         warnInfo: {
           phone: '',
-          code: '',
+          code: this.$t('login_page.register.warnInfo.code'),
           account: '',
           password: null
         }
@@ -298,7 +298,7 @@
         }
       },
       // 手机号验证事件60秒延迟
-      delayFun(obj) {
+      delayFun() {
         let s = this.phoneForm
         s.showGetCode = false
         s.intervalFun = window.setInterval(() => {
@@ -350,7 +350,7 @@
         sessionStorage.setItem('token', token)
         localStorage.setItem('loginPageIndex', this.activeIndex)
         getUserInfoF()
-        this.$router.push('/')
+        this.$router.push({name: 'platform'})
       },
       // 5天自动登录 保留账号登录记录
       autoLogin(boolean, phone, account, token) {

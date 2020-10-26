@@ -35,3 +35,21 @@ export function accountLogin(data) {
     data
   })
 }
+
+// 用户服务协议
+export function getProtocal() {
+  return http({
+    url: '/file/getProtocol',
+    method: 'GET',
+    responseType: 'blob'
+  })
+}
+
+// 用户服务协议
+export function registerAccount(data) {
+  return http({
+    url: '/auth/signUp',
+    method: 'POST',
+    data
+  })
+}

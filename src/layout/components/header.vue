@@ -36,10 +36,10 @@
                  @click.self="showMessageList = false">
             <!--下拉框-->
             <div class="messageBase" :class="[{'inHome': !inHome}]">
-              <!--              <message-table v-show="showMessageList"-->
-              <!--                             ref="messageTable"-->
-              <!--                             @noMessage="haveNewMS = false"-->
-              <!--                             @shutMe="showMessageList = !showMessageList" />-->
+              <message-table v-show="showMessageList"
+                             ref="messageTable"
+                             @noMessage="haveNewMS = false"
+                             @shutMe="showMessageList = !showMessageList"/>
             </div>
           </div>
           <!--问号-->
@@ -251,7 +251,7 @@
   import {
     mapState
   } from 'vuex'
-  // import messageTable from '@/components/headerM/message-table'
+  import messageTable from '@/components/headerM/message-table'
 
   export default {
     name: 'headerM',
@@ -347,7 +347,7 @@
           sessionStorage.setItem('zoneUuid', val)
           this.$store.commit('changeZone', this.workBenchList.find(item => item.val === val).zone)
         },
-        immediate: true,
+        // immediate: true,
         deep: true
       },
       '$route': {
@@ -370,8 +370,7 @@
           // if (!val || this.socket_backS) return false
           if (!val) return false
           this.getBulletinF()   // 获取公告
-          // this.$store.commit('WEBSOCKET_BACKS_INIT', val)
-          this.$refs.messageTable.getMessageListF()
+          // this.$refs.messageTable.getMessageListF()
           this.$store.commit('WEBSOCKET_BACKS_INIT', val)
         },
         immediate: true
@@ -548,7 +547,7 @@
       }
     },
     components: {
-      // messageTable
+      messageTable
     }
   }
 </script>

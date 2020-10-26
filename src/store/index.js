@@ -57,7 +57,10 @@ export default new Vuex.Store({
     },
     pluginDialog: false,    // 打开插件窗口
     remoteLoginDate: null,  // 异地登录事件触发时间
-    taskState: null         // 站内信选中项目
+    taskState: null,        // 站内信选中项目
+    setting: {
+      pageSize: 10
+    }
   },
   getter: {},
   mutations: {

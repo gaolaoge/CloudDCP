@@ -266,7 +266,7 @@
       },
       // 找回密码
       async changePSNow() {
-        let {forgetMode,forgetVerif } = this
+        let { forgetMode,forgetVerif } = this
         if (!forgetVerif.newPassWord || !forgetVerif.newPassWordAgain) return false
         let data = await editPS({
           phone: forgetMode.phone,
@@ -308,7 +308,7 @@
             this.acquired = false
           }, 1000)
         }
-      },
+      }
     },
     computed: {
       ...mapState(['regExp'])

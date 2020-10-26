@@ -8,7 +8,7 @@ import {
 
 // 获取个人信息
 const getUserInfoF = function () {
-  getUserInfo().then(data => this.setInfo(data.data.data))
+  getUserInfo().then(data => setInfo(data.data.data))
 }
 
 // 读取时间戳
@@ -104,57 +104,55 @@ const sortF = function (a, b) {
 
 // table 筛选icon样式
 const createTableIconList = function () {
-  setTimeout(() => {
-    // 筛选图标
-    // if (!document.getElementsByClassName('iconshaixuan2').length) {
-    let t = [...document.getElementsByClassName('el-icon-arrow-down')]
-    t.forEach(curr => {
+  // 筛选图标
+  // if (!document.getElementsByClassName('iconshaixuan2').length) {
+  let t = [...document.getElementsByClassName('el-icon-arrow-down')]
+  t.forEach(curr => {
+    if (curr.querySelector('.farmIconFont')) return false
+    let i = document.createElement('I'),
+      ii = document.createElement('I')
+    i.classList.add('farmIconFont')
+    i.classList.add('iconshaixuan2')
+    ii.classList.add('farmIconFont')
+    ii.classList.add('iconshaixuan1')
+    curr.appendChild(i)
+    curr.appendChild(ii)
+  })
+  // }
+  // 排序图标
+  // if (!document.getElementsByClassName('kkkk').length) {
+  let q = [...document.getElementsByClassName('ascending')]
+  q.forEach(curr => {
+    if (curr.querySelector('.kkkk')) return false
+    let i = document.createElement('I')
+    i.classList.add('el-icons-arrow-up')
+    i.classList.add('kkkk')
+    curr.appendChild(i)
+  })
+  let w = [...document.getElementsByClassName('descending')]
+  w.forEach(curr => {
+    if (curr.querySelector('.kkkk')) return false
+    let i = document.createElement('I')
+    i.classList.add('el-icons-arrow-down')
+    i.classList.add('kkkk')
+    curr.appendChild(i)
+  })
+  // }
+  // 展开图标
+  if (document.querySelector('.download-table')) {
+    let table = document.querySelector('.download-table'),
+      elTable = table.querySelector('.el-table__body-wrapper'),
+      list = elTable.querySelectorAll('table tbody .el-table__row .el-table__expand-icons')
+    list.forEach(curr => {
       if (curr.querySelector('.farmIconFont')) return false
-      let i = document.createElement('I'),
-        ii = document.createElement('I')
+      let original = curr.querySelector('i'),
+        i = document.createElement('I')
       i.classList.add('farmIconFont')
-      i.classList.add('iconshaixuan2')
-      ii.classList.add('farmIconFont')
-      ii.classList.add('iconshaixuan1')
-      curr.appendChild(i)
-      curr.appendChild(ii)
-    })
-    // }
-    // 排序图标
-    // if (!document.getElementsByClassName('kkkk').length) {
-    let q = [...document.getElementsByClassName('ascending')]
-    q.forEach(curr => {
-      if (curr.querySelector('.kkkk')) return false
-      let i = document.createElement('I')
-      i.classList.add('el-icons-arrow-up')
-      i.classList.add('kkkk')
+      i.classList.add('iconsanjiaoright')
+      curr.removeChild(original)
       curr.appendChild(i)
     })
-    let w = [...document.getElementsByClassName('descending')]
-    w.forEach(curr => {
-      if (curr.querySelector('.kkkk')) return false
-      let i = document.createElement('I')
-      i.classList.add('el-icons-arrow-up')
-      i.classList.add('kkkk')
-      curr.appendChild(i)
-    })
-    // }
-    // 展开图标
-    if (document.querySelector('.download-table')) {
-      let table = document.querySelector('.download-table'),
-        elTable = table.querySelector('.el-table__body-wrapper'),
-        list = elTable.querySelectorAll('table tbody .el-table__row .el-table__expand-icons')
-      list.forEach(curr => {
-        if (curr.querySelector('.farmIconFont')) return false
-        let original = curr.querySelector('i'),
-          i = document.createElement('I')
-        i.classList.add('farmIconFont')
-        i.classList.add('iconsanjiaoright')
-        curr.removeChild(original)
-        curr.appendChild(i)
-      })
-    }
-  }, 1000)
+  }
 }
 
 // message 信息

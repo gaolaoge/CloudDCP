@@ -1,6 +1,12 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
+// router同地址跳转取消报错
+const originalPush = Router.prototype.push
+Router.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch(err => err)
+}
+
 Vue.use(Router)
 
 export default new Router({
@@ -13,6 +19,7 @@ export default new Router({
     {
       path: '/',
       name: 'platform',
+      alias: '/dcp',
       component: () => import('@/layout/index.vue'),
       children: [
         {

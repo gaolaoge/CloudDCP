@@ -57,7 +57,7 @@ export default {
       rl1: '已有账号，',
       rl2: '马上登录',
       warnInfo: {
-        code: '验证码未填写或填写格式错误'
+        code: '验证码格式错误'
       },
       prompt: {
         account: '8-14个字符，至少输入包含大小写字母、汉字、数字、下划线中任意2种',
@@ -92,6 +92,7 @@ export default {
       ph_err: '未输入手机号或输入格式有误',
       code_is_coming: '验证信息已发送',
       need_to_register: '当前手机号未注册，请先注册',
+      phoneRegistered: '手机号已注册，请重新输入',
       no_sms: '还未做短信验证',
       login_suc: '登录成功',
       edit_suc: '修改成功'
@@ -193,5 +194,8 @@ export default {
     cancel: '取消',
     editSuc: '修改成功',
     noTimes: '本月更新次数已用完'
+  },
+  public: {
+    refresh: '刷新'
   }
 }

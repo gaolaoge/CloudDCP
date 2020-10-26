@@ -14,7 +14,7 @@
       </defs>
       <path :d="d" stroke="url(#gg)" stroke-width="5" fill="rgba(255,255,255,1)"/>
     </svg>
-    <img src="@/icons/logo2.png" alt="" class="mainLogo" @click="$router.push('/')">
+    <img src="@/icons/logo2.png" class="mainLogo" @click="$router.push('/dcp')">
     <div class="navList">
       <ul>
         <li v-for="(item,index) in navList"

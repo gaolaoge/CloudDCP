@@ -1,5 +1,5 @@
 module.exports = [
-  {
+  {  // 验证手机号是否已被注册
     url: /\/auth\/checkPhone\//,
     type: 'get',
     response: config => {
@@ -11,9 +11,9 @@ module.exports = [
       else return {code: 4031}
     }
   },
-  {
-    url: /\/auth\/checkAccount/,
-    type: 'post',
+  {  // 验证帐号是否已被注册
+    url: /\/auth\/checkAccount\//,
+    type: 'GET',
     response: config => {
       let {url} = config,
         l = url.split('/'),
@@ -23,7 +23,7 @@ module.exports = [
       else return {code: 4031}
     }
   },
-  {
+  {  // 短信登录
     url: /\/auth\/codeLogin/,
     type: 'post',
     response: config => {
@@ -39,7 +39,7 @@ module.exports = [
       else return {code: 4032}
     }
   },
-  {
+  {  // 账号登录
     url: /\/auth\/accountLogin/,
     type: 'post',
     response: config => {
@@ -53,6 +53,13 @@ module.exports = [
         }
       }
       else return {code: 4032}
+    }
+  },
+  {  // 注册
+    url: /\/auth\/signUp/,
+    type: 'post',
+    response: () => {
+      return {code: 200}
     }
   }
 ]

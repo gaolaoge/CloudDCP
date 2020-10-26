@@ -47,6 +47,8 @@
 </style>
 
 <style lang="less">
+  @import '../../assets/common.less';
+
   .base {
     width: 100%;
     padding: 105px 80px 60px;
@@ -188,7 +190,7 @@
           color: rgba(22, 29, 37, 0.39);
         }
 
-        &.canBeClick {
+        &.canClick {
           cursor: pointer;
           background-color: rgba(22, 113, 255, 0.8);
 

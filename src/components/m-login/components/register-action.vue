@@ -5,97 +5,98 @@
       <span>{{ $t('login_page.register.rl1') }}</span>
       <span @click="$emit('changeShowModule', 'login')">{{ $t('login_page.register.rl2') }}</span>
     </div>
-    <!--帐号-->
-    <div class="u">
-      <input v-model="form.account"
-             @blur="accouVerif(false)"
-             @input="accouVerif(true)"
-             @focus="verif.account = null"
-             ref="form_account"
-             :placeholder="$t('login_page.register.ac_placeholder')"
-             :class="[{'inputError': verif.account === false}, 'farm-input']"/>
-      <span class="warnInfo" v-show="verif.account === false">{{ warnInfo.account }}</span>
-      <img src="@/icons/login-success.png" class="i" v-show="verif.account === true">
-      <img src="@/icons/login-error .png" class="i canClick" v-show="verif.account === false"
-           @click="DeleteInputFun('account')">
-    </div>
-    <!--密码-->
-    <div class="u">
-      <input v-model="form.password"
-             type="password"
-             ref="form_password"
-             @blur="passwVerif(false)"
-             @input="passwVerif(true)"
-             @focus="verif.password = null"
-             :placeholder="$t('login_page.register.ps_placeholder')"
-             :class="[{'inputError': verif.password === false}, 'farm-input']"/>
-      <div class="swicthPWI">
-        <img src="@/icons/openPW.png" v-show="passwordEye" @click="changePSType(false)">
-        <img src="@/icons/shuPW.png" v-show="!passwordEye" @click="changePSType(true)">
+    <div class="form">
+      <!--帐号-->
+      <div class="item">
+        <input v-model="form.account"
+               @blur="accouVerif(false)"
+               @input="accouVerif(true)"
+               @focus="verif.account = null"
+               ref="form_account"
+               :placeholder="$t('login_page.register.ac_placeholder')"
+               :class="[{'inputError': verif.account === false}, 'farm-input']"/>
+        <span class="warnInfo" v-show="verif.account === false">{{ warnInfo.account }}</span>
+        <img src="@/icons/login-success.png" class="i" v-show="verif.account === true">
+        <img src="@/icons/login-error .png" class="i canClick" v-show="verif.account === false"
+             @click="DeleteInputFun('account')">
       </div>
-      <span class="warnInfo" v-show="verif.password === false">{{ warnInfo.password }}</span>
-      <img src="@/icons/login-success.png" class="i" v-show="verif.password === true">
-      <img src="@/icons/login-error .png" class="i canClick" v-show="verif.password === false"
-           @click="DeleteInputFun('password')">
-    </div>
-    <!--手机号-->
-    <div class="u">
-      <input v-model="form.phone"
-             @blur="phoneVerif(false)"
-             @input="phoneVerif(true)"
-             @focus="verif.phone = null"
-             ref="form_phone"
-             :placeholder="$t('login_page.register.ph_placeholder')"
-             :class="[{'inputError': verif.phone === false}, 'farm-input']"/>
-      <span class="warnInfo" v-show="verif.phone === false">{{ warnInfo.phone }}</span>
-      <img src="@/icons/login-success.png" class="i" v-show="verif.phone === true">
-      <img src="@/icons/login-error .png" class="i canClick" v-show="verif.phone === false"
-           @click="DeleteInputFun('phone')">
-    </div>
-    <!--验证码-->
-    <div class="v">
-      <input v-model="form.code"
-             @blur="codeVerif(false)"
-             @input="codeVerif(true)"
-             @focus="verif.code = null"
-             ref="form_code"
-             :placeholder="$t('login_page.register.code_placeholder')"
-             :class="[{'inputError': verif.code === false}, 'farm-input', 'farm-cord-input']"/>
-      <span class="warnInfo" v-show="verif.code === false">{{ warnInfo.code }}</span>
-      <img src="@/icons/login-success.png" class="i" v-show="verif.code === true">
-      <img src="@/icons/login-error .png" class="i canClick" v-show="verif.code === false"
-           @click="DeleteInputFun('code')">
-      <div class="verif register">
-        <div :class="[{'canClick': verif.phone}, 'btn']"
-             @click="den"
-             v-show="verifShow">{{ btnText }}
+      <!--密码-->
+      <div class="item">
+        <input v-model="form.password"
+               type="password"
+               ref="form_password"
+               @blur="passwVerif(false)"
+               @input="passwVerif(true)"
+               @focus="verif.password = null"
+               :placeholder="$t('login_page.register.ps_placeholder')"
+               :class="[{'inputError': verif.password === false}, 'farm-input']"/>
+        <div class="swicthPWI">
+          <img src="@/icons/openPW.png" v-show="passwordEye" @click="passwordEye = false">
+          <img src="@/icons/shuPW.png" v-show="!passwordEye" @click="passwordEye = true">
         </div>
-        <span class="delayDate" v-show="!verifShow">{{ countdown }}</span>
+        <span class="warnInfo" v-show="verif.password === false">{{ warnInfo.password }}</span>
+        <img src="@/icons/login-success.png" class="i" v-show="verif.password === true">
+        <img src="@/icons/login-error .png" class="i canClick" v-show="verif.password === false"
+             @click="DeleteInputFun('password')">
       </div>
-    </div>
-
-    <div class="c">
-      <label>{{ $t('login_page.register.type') }}：</label>
-      <el-radio-group v-model="form.zone" class="radio">
-        <el-radio :label=1>{{ $t('login_page.register.typeRadio')[0] }}</el-radio>
-        <el-radio :label=2>{{ $t('login_page.register.typeRadio')[1] }}</el-radio>
-      </el-radio-group>
-
-    </div>
-    <!--协议-->
-    <div class="v">
-      <div class="protocol">
-        <img src="@/icons/df.png" class="protocolIcon" v-show="!tick" @click="tick = true">
-        <img src="@/icons/dfg.png" class="protocolIcon" v-show="tick" @click="tick = false">
-        <span class="r">{{ $t('login_page.register.text1') }}</span>
-        <span class="protocolLetter" @click="showPDF">{{ $t('login_page.register.text2') }}</span>
+      <!--手机号-->
+      <div class="item">
+        <input v-model="form.phone"
+               @blur="phoneVerif(false)"
+               @input="phoneVerif(true)"
+               @focus="verif.phone = null"
+               ref="form_phone"
+               :placeholder="$t('login_page.register.ph_placeholder')"
+               :class="[{'inputError': verif.phone === false}, 'farm-input']"/>
+        <span class="warnInfo" v-show="verif.phone === false">{{ warnInfo.phone }}</span>
+        <img src="@/icons/login-success.png" class="i" v-show="verif.phone === true">
+        <img src="@/icons/login-error .png" class="i canClick" v-show="verif.phone === false"
+             @click="DeleteInputFun('phone')">
       </div>
-      <span class="warnInfo" v-show="verif.tick === false && tick === false">{{ warnInfo.tick }}</span>
-    </div>
-    <!--注册btn-->
-    <div :class="[{'canClick': verif.account && verif.password && verif.phone && verif.code }, 'bigBtn']"
-         @click="registerFun">
-      <span>{{ $t('login_page.register.label') }}</span>
+      <!--验证码-->
+      <div class="item">
+        <input v-model="form.code"
+               @blur="codeVerif(false)"
+               @input="codeVerif(true)"
+               @focus="verif.code = null"
+               ref="form_code"
+               :placeholder="$t('login_page.register.code_placeholder')"
+               :class="[{'inputError': verif.code === false}, 'farm-input', 'farm-cord-input']"/>
+        <span class="warnInfo" v-show="verif.code === false">{{ warnInfo.code }}</span>
+        <img src="@/icons/login-success.png" class="i" v-show="verif.code === true">
+        <img src="@/icons/login-error .png" class="i canClick" v-show="verif.code === false"
+             @click="DeleteInputFun('code')">
+        <div class="verif register">
+          <div :class="[{'canClick': verif.phone}, 'btn']"
+               @click="getCode"
+               v-show="verifShow">{{ btnText }}
+          </div>
+          <span class="delayDate" v-show="!verifShow">{{ countdown }}</span>
+        </div>
+      </div>
+      <!--区-->
+      <div class="item zone">
+        <label>{{ $t('login_page.register.type') }}：</label>
+        <el-radio-group v-model="form.zone" class="radio">
+          <el-radio :label=1>{{ $t('login_page.register.typeRadio')[0] }}</el-radio>
+          <el-radio :label=2>{{ $t('login_page.register.typeRadio')[1] }}</el-radio>
+        </el-radio-group>
+      </div>
+      <!--协议-->
+      <div class="item">
+        <div class="protocol">
+          <img src="@/icons/df.png" class="protocolIcon" v-show="!tick" @click="tick = true">
+          <img src="@/icons/dfg.png" class="protocolIcon" v-show="tick" @click="tick = false">
+          <span class="r">{{ $t('login_page.register.text1') }}</span>
+          <span class="protocolLetter" @click="showPDF">{{ $t('login_page.register.text2') }}</span>
+        </div>
+        <span class="warnInfo" v-show="verif.tick === false && tick === false">{{ warnInfo.tick }}</span>
+      </div>
+      <!--注册btn-->
+      <div :class="[{'canClick': verif.account && verif.password && verif.phone && verif.code }, 'bigBtn']"
+           @click="registerFun">
+        <span>{{ $t('login_page.register.label') }}</span>
+      </div>
     </div>
   </div>
 </template>
@@ -105,8 +106,18 @@
     mapState
   } from 'vuex'
   import {
-    verifAccountIsRegister
+    verifAccountIsRegister,
+    verifPhoneIsRegister,
+    getProtocal,
+    registerAccount
   } from '@/api/login-api'
+  import {
+    getPhoneCode
+  } from '@/api/info-api'
+  import {
+    messageFun,
+    exportDownloadFun
+  } from '../../../assets/common'
 
   export default {
     name: 'register',
@@ -124,7 +135,6 @@
           tick: '',
           code: this.$t('login_page.register.warnInfo.code')
         },
-        clickEye: false,                   // 刚刚点击了密码展示状态切换
         form: {
           account: '',
           password: '',
@@ -132,16 +142,16 @@
           code: '',
           zone: 1
         },
-        verif: {                 // 输入文本是否通过正则 && 是否获得焦点
+        verif: {
           account: null,
           password: null,
           phone: null,
           code: null,
-          tick: null,
+          tick: null
         },
         codeObtained: false,               // 已获取验证码
         btnText: this.$t('login_page.getCode'),
-        pdf: null,
+        pdf: null
       }
     },
     methods: {
@@ -153,7 +163,7 @@
       },
       // 验证账号格式
       async accouVerif(ing) {
-        let rfa = this['from']['account'],
+        let rfa = this['form']['account'],
           {verif, warnInfo} = this
         // 为空
         if (!rfa) verif.account = null
@@ -168,47 +178,153 @@
         } else {
           // 验证帐号是否可用
           let data = await verifAccountIsRegister(rfa)
-          if (data.data.code == 200) {
-            // 账号未被注册
+          if (data.data.code == 4031) verif.account = true
+          else {
             if (ing) verif.account = null
             else {
               verif.account = false
-              warnInfo.account = this.$t('login_page.message.ac_verif_four')
+              warnInfo.account = this.$t('login_page.message.ac_verif_three')
             }
-          } else verif.account = true    // 账号未被占用
+          }
         }
       },
-      //
-      passwVerif() {
+      // 验证密码格式
+      passwVerif(ing) {
+        let {password} = this['form'],
+          {verif, warnInfo} = this
 
+        if (!password.trim()) verif.password = null
+        else if (!this.regExp.pwLength.test(password)) {
+          // 验证密码长度
+          warnInfo.password = this.$t('login_page.message.ps_verif_two')
+          ing ? verif.password = null : verif.password = false
+        } else if (!this.regExp.pwFormat.test(password)) {
+          // 验证密码复杂度
+          warnInfo.password = this.$t('login_page.message.ps_verif_one')
+          ing ? verif.password = null : verif.password = false
+        } else verif.password = true    // 密码正确
       },
-      //
-      phoneVerif() {
+      // 验证手机号格式
+      async phoneVerif(ing) {
+        let {phone} = this['form'],
+          {verif, warnInfo} = this
 
+        if (!phone.trim()) verif.phone = null
+        else if (!this.regExp.phone.test(phone)) {
+          // 验证密码长度
+          warnInfo.phone = this.$t('login_page.SMS_verif.phone_warnInfo')
+          ing ? verif.phone = null : verif.phone = false
+        } else {
+          let data = await verifPhoneIsRegister(phone),
+            response = data.data
+          // code:200   手机号已存在
+          // code:4031  手机号未注册
+          if (response.code === 4031) verif.phone = true
+          else if (response.code === 200) {
+            this.warnInfo.phone = this.$t('login_page.message.phoneRegistered')
+            verif.phone = false
+          }
+        }
       },
-      //
+      // 验证验证码格式
       codeVerif(ing) {
+        let {code} = this['form'],
+          {verif} = this
 
+        if (!code.trim()) verif.code = null
+        else if (!this.regExp.code.test(code)) {
+          ing ? verif.code = null : verif.code = false
+        } else verif.code = true    // 密码正确
       },
-      //
-      changePSType(boolean) {
-
+      // 获取验证码
+      getCode() {
+        if (!this.verif.phone) return false
+        getPhoneCode({
+          phone: this.form.phone,
+          position: 'register'
+        })
+        this.delayFun()
+        this.codeObtained = true
       },
-      //
-      den() {
-
+      // 用户服务协议
+      async showPDF() {
+        let data = await getProtocal()
+        exportDownloadFun(data, '《用户服务协议》', 'pdf', true)
       },
-      //
-      showPDF() {
-
+      // 注册
+      async registerFun() {
+        let {account, password, phone, code} = this.verif
+        if (!account || !password || !phone || !code) return false
+        else if (!this.codeObtained) {
+          this.verif.code = false
+          this.warnInfo.code = this.$t('login_page.message.no_sms')
+        } else if (!this.tick) messageFun('info', '未勾选并同意《用户服务歇息》')
+        else {
+          let data = await registerAccount(this.form)
+          // code:101 帐号或手机号重复
+          if (data.data.code == '200') {
+            // 注册成功
+            localStorage.setItem(this.form.account, false)
+            messageFun('success', this.$t('login_page.message.registerSuc'))
+            setTimeout(() => {
+              // 返回登录窗口
+              this.$emit('changeShowModule', 'login')    // 切换回登录窗口
+              this.reset()
+            }, 800)
+          } else if (data.data.code == '4032') messageFun('error', this.$t('login_page.message.registerCodeErr'))
+          else messageFun('error', this.$t('login_page.message.registerErr'))
+        }
       },
-      //
-      registerFun() {
-
+      // 60s 倒计时
+      delayFun() {
+        this.verifShow = false
+        this.intervalFun = window.setInterval(() => {
+          this.countdown = parseInt(this.countdown) - 1 + 's'
+          if (this.countdown == '0s') {
+            window.clearInterval(this.intervalFun)
+            this.verifShow = true
+            this.countdown = '60s'
+            this.btnText = this.$t('login_page.getCodeAgain')
+          }
+        }, 1000)
+      },
+      // 复位
+      reset() {
+        this.tick = true
+        this.verifShow = true
+        this.intervalFun = null
+        this.passwordEye = false
+        Object.assign(this.warnInfo, {
+          account: '',
+          password: '',
+          phone: '',
+          tick: ''
+        })
+        Object.assign(this.form, {
+          account: '',
+          password: '',
+          phone: '',
+          code: '',
+          zone: 1
+        })
+        Object.assign(this.verif, {
+          account: null,
+          password: null,
+          phone: null,
+          code: null,
+          tick: null
+        })
+        this.codeObtained = false
       }
     },
     computed: {
       ...mapState(['regExp'])
+    },
+    watch: {
+      'passwordEye': function (val) {
+        if (val) this.$refs.form_password.type = 'text'
+        else this.$refs.form_password.type = 'password'
+      }
     }
   }
 </script>
@@ -218,7 +334,7 @@
     .rl {
       position: relative;
       text-align: right;
-      margin-bottom: 10px;
+      margin: -30px 0px 10px;
       z-index: 1;
 
       span {
@@ -233,6 +349,52 @@
           cursor: pointer;
         }
       }
+    }
+
+    .zone {
+      margin: -4px 0px 10px;
+
+      label {
+        font-size: 14px;
+        color: rgba(22, 29, 37, 0.4);
+      }
+
+      .radio {
+        vertical-align: super;
+        margin-left: 30px;
+
+        /deep/ .el-radio .el-radio__label {
+          font-size: 14px;
+        }
+      }
+    }
+
+    .protocol {
+      position: relative;
+      padding-bottom: 28px;
+      font-size: 12px;
+
+      .protocolIcon {
+        vertical-align: sub;
+        cursor: pointer;
+      }
+
+      .r {
+        color: rgba(22, 29, 37, 1);
+      }
+
+      .protocolLetter {
+        color: rgba(22, 113, 255, 0.8);
+        cursor: pointer;
+
+        &:hover {
+          color: rgba(22, 113, 255, 1)
+        }
+      }
+    }
+
+    .bigBtn {
+      margin-top: 0px;
     }
   }
 </style>

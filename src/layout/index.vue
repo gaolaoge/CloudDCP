@@ -114,25 +114,10 @@
       ...mapState(['login', 'user', 'thumb', 'socket_plugin', 'pluginDialog', 'remoteLoginDate', 'socket_backS_msg'])
     },
     watch: {
-      '$route': {
-        handler: function (val) {
-          if (val.name === 'home') this.inHome = true
-          else this.inHome = false
-          if (val.name === 'assets' || val.name === 'task') this.showGZ = true
-          else this.showGZ = false
-        },
-        immediate: true
-      },
       'remoteLoginDate': function (date) {
         if (!date) return false
         this.remoteLoginDialog.date = createDateFun(new Date(date), null, true)
         this.remoteLoginDialog.show = true
-      },
-      'socket_backS_msg': {
-        handler: function (e) {
-          let data = JSON.parse(e.data)
-          if (data.code === 858) setTimeout(() => getUserInfoF(), 1000)
-        }
       }
     },
     methods: {
@@ -159,6 +144,9 @@
         if (this.socket_plugin) this.$store.commit('WEBSOCKET_PLUGIN_SEND', 'open')
         else this.$store.dispatch('WEBSOCKET_PLUGIN_INIT', true).then(() => this.$store.commit('WEBSOCKET_PLUGIN_SEND', 'open'))
       }
+    },
+    mounted() {
+      getUserInfoF()
     }
   }
 </script>

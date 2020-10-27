@@ -2,12 +2,14 @@ const Mock = require('mockjs')
 
 let login = require('./router/login'),
   info = require('./router/info'),
-  dcp = require('./router/dcp')
+  dcp = require('./router/dcp'),
+  kdm = require('./router/kdm')
 
 let mocks = [
   ...login,
   ...info,
-  ...dcp
+  ...dcp,
+  ...kdm
 ]
 
 function mockXHR() {

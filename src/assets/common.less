@@ -100,7 +100,6 @@ div {
 .panel {
   position: relative;
   background-color: rgba(255, 255, 255, 1);
-  height: calc(100vh - 80px - 52px - 20px - 20px);
   border-radius: 8px;
 }
 
@@ -318,12 +317,14 @@ div {
 
       td:nth-of-type(1) {
         position: relative;
+
         & .cell {
           position: absolute;
           left: 90px;
           top: 13px;
         }
       }
+
       td:nth-of-type(2) .cell {
         padding-left: 48px;
       }
@@ -356,6 +357,7 @@ div {
 
     .el-table__body-wrapper {
       max-height: 152px;
+
       &::-webkit-scrollbar {
         /*滚动条整体样式*/
         width: 8px; /*高宽分别对应横竖滚动条的尺寸*/
@@ -396,6 +398,7 @@ div {
   overflow-x: initial;
   height: calc(100vh - 80px - 52px - 20px - 47px - 20px - 40px - 20px);
   overflow-y: auto;
+
   &::-webkit-scrollbar {
     /*滚动条整体样式*/
     width: 8px; /*高宽分别对应横竖滚动条的尺寸*/
@@ -720,6 +723,7 @@ td {
   margin-left: 22px;
   margin-top: 14px;
 }
+
 .el-pagination.is-background {
   color: rgba(0, 97, 255, 1);
 
@@ -762,6 +766,24 @@ td {
       border: 0px;
       box-shadow: 0px 0px 1px 1px rgba(0, 97, 255, 0.6);
       color: rgba(0, 97, 255, 0.9);
+    }
+  }
+}
+
+// 标签
+.el-tabs {
+  .el-tabs__header {
+    .el-tabs__item {
+      color: rgba(22, 29, 37, 0.59);
+      font-weight: 400;
+
+      &.is-active {
+        color: rgba(22, 29, 37, 1);
+        font-weight: 500;
+      }
+    }
+    .el-tabs__active-bar {
+      height: 3px;
     }
   }
 }

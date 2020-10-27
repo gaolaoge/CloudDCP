@@ -235,17 +235,12 @@
 
 <script>
   import {
-    identify
-  } from '@/api/addOne-api'
-  import {
     getMessageList,
     getBulletin,
-    homeSelect,
-    getInfo,
-    putNewZoneID
+    homeSelect
+    // putNewZoneID
   } from '@/api/header-api'
   import {
-    setInfo,
     messageFun
   } from '@/assets/common'
   import {
@@ -320,7 +315,6 @@
     mounted() {
       // this.getList()
       // this.getUserInfo()
-      // this.getIdentify()
       // this.haveUnread()
     },
     watch: {
@@ -331,12 +325,12 @@
           this.userOperateList[0]['text'] = JSON.parse(sessionStorage.getItem('info'))['account']
           this.userOperateList[1]['balance'] = JSON.parse(sessionStorage.getItem('info'))['balance']
           // 新手教程
-          setTimeout(() => {
+          this.$nextTick(() => {
             if (localStorage.getItem(this.user.name) === 'false') {
               this.guide()
               localStorage.setItem(this.user.name, true)
             }
-          }, 100)
+          })
         }
         // immediate: true
       },
@@ -360,9 +354,8 @@
       zoneId: {
         handler: function (val) {
           this.getBulletinF()   // 获取公告
-          putNewZoneID({'zoneUuid': val})   // 传达切换分区事件
+          // putNewZoneID({'zoneUuid': val})   // 传达切换分区事件
           this.workBenchVal = val
-          this.changeIsGpu()
         }
       },
       'user.account': {
@@ -451,9 +444,7 @@
             this.workBenchList = d.data.map(curr => {
               return {
                 name: curr.zoneName,
-                val: curr.zoneUuid,
-                isGpu: curr.isGpu,
-                zone: curr.zone
+                val: curr.zoneUuid
               }
             })
           })
@@ -462,23 +453,9 @@
       changeIsGpu() {
         this.$store.commit('changeIsGpu', this.workBenchList.find(curr => curr.val === this.workBenchVal)['isGpu'])
       },
-      async getUserInfo() {
-        let data = await getInfo(),
-          d = data.data.data
-        if (data.data.code !== 200) return false
-        setInfo(data.data.data)
-        this.userOperateList[0]['text'] = d.account
-        this.userOperateList[1]['balance'] = d.goldBalance
-      },
       // 渲染指引
       guide() {
         this.guideShow = true
-      },
-      // 0.获取文件渲染模式
-      async getIdentify() {
-        let data = await identify()
-        if (data.data.data === 1) this.$store.commit('changeTaskType', 'profession')   // 专业版
-        else if (data.data.data === 0) this.$store.commit('changeTaskType', 'easy')    // 一键版
       }
     },
     directives: {

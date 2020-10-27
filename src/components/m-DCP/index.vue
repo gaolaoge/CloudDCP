@@ -4,13 +4,12 @@
       <div class="btnGroup"
            :class="[
             {'cannotStart': !startBtn},
-            // {'cannotPause': !btnGroup.downloadTableBtnPause},
-            // {'cannotDelete': !btnGroup.downloadTableBtnDelete},
-            // {'cannotDownload': !btnGroup.downloadTableBtnDownload},
-            // {'cannotRenderAll': !btnGroup.downloadTableBtnRenderAll},
-            // {'cannotRenderAgain': !btnGroup.downloadTableBtnRenderAgain},
-            // {'cannotArchive': !btnGroup.downloadTableBtnArchive},
-            // {'cannotCopy': !btnGroup.downloadTableBtnCopy}
+            {'cannotPause': !pauseBtn},
+            {'cannotDelete': !deleteBtn},
+            {'cannotDownload': !downloadBtn},
+            {'cannotAgain': !againBtn},
+            {'cannotCopy': !copyBtn},
+            {'cannotCreate': !createBtn}
            ]">
         <div :class="[item.class, 'btn']"
              @click="operating(item['action'])"
@@ -27,16 +26,16 @@
         <input type="text"
                class="input"
                v-model="searchInput"
-               @keyup.enter="searchRenderInput"
+               @keyup.enter="$refs.dcptable.getList()"
                placeholder="输入场景名、任务ID">
         <!--搜索按钮-->
         <img src="@/icons/global-search-icon.png"
              class="searchIcon"
-             @click="searchRenderInput">
+             @click="$refs.dcptable.getList()">
       </div>
     </div>
     <div class="dcp-table panel">
-      <Table ref="table"
+      <Table ref="dcptable"
              :keyword="searchInput"
              @tableSelectionF="result => selectionList = result"/>
     </div>
@@ -113,34 +112,38 @@
       operating(action) {
         switch (action) {
           case '开始':
-            if (this.startBtn) this.$refs.table.startFun()
+            // 所选记录都为"暂停"“暂停（欠费）且"未过期"才可以点击
+            if (this.startBtn) this.$refs.dcptable.startFun()
             break
           case '暂停':
-            this.$refs.table.pauseFun()
+            // 所选记录都为"进行中"且"未过期"才可以点击
+            if (this.pauseBtn) this.$refs.dcptable.pauseFun()
             break
           case '删除':
-            this.$refs.table.deleteFun()
+            // 当选中项中存在「进行中」状态时不可使用
+            if (this.deleteBtn) this.$refs.dcptable.deleteFun()
             break
           case '拷贝':
-            this.$refs.table.copyFun()
+            // 单选，需在有效期内，状态在「进行中、暂停、暂停（欠费）、失败、已完成」内
+            if (this.copyBtn) this.$refs.dcptable.copyFun()
             break
           case '重新打包':
-            this.$refs.table.againFun()
+            // 状态为「失败」且未过期
+            if (this.againBtn) this.$refs.dcptable.againFun()
             break
           case '下载DCP':
-            this.$refs.table.downloadFun()
+            // 状态为「已完成」且未过期
+            if (this.downloadBtn) this.$refs.dcptable.downloadFun()
             break
           case '创建KDM':
-            this.$refs.table.createKDMFun()
+            // 单选，状态为「已完成」且未过期
+            if (this.createBtn) this.$refs.dcptable.createKDMFun()
             break
         }
-      },
-      searchRenderInput() {
-
       }
     },
     mounted() {
-      this.$refs.table.getList()
+      this.$refs.dcptable.getList()
     },
     computed: {
       ...mapState(['user', 'zone']),
@@ -148,6 +151,41 @@
         if (!this.selectionList.length) return false
         else if (this.selectionList.some(item => item.validPeriod == 0)) return false
         else if (this.selectionList.every(item => String('56').includes(item.taskStatus))) return true
+        else return false
+      },
+      pauseBtn() {
+        if (!this.selectionList.length) return false
+        else if (this.selectionList.some(item => item.validPeriod == 0)) return false
+        else if (this.selectionList.every(item => item.taskStatus == 4)) return true
+        else return false
+      },
+      deleteBtn() {
+        if (!this.selectionList.length) return false
+        else if (this.selectionList.some(item => item.validPeriod == 4)) return false
+        else return true
+      },
+      downloadBtn() {
+        if (!this.selectionList.length) return false
+        else if (this.selectionList.some(item => item.validPeriod == 0)) return false
+        else if (this.selectionList.every(item => item.taskStatus == 8)) return true
+        else return false
+      },
+      copyBtn() {
+        if (this.selectionList.length != 1) return false
+        else if (this.selectionList[0]['validPeriod'] == 0) return false
+        else if (String('45678').includes(this.selectionList[0]['taskStatus'])) return true
+        else return false
+      },
+      againBtn() {
+        if (!this.selectionList.length) return false
+        else if (this.selectionList.some(item => item.validPeriod == 0)) return false
+        else if (this.selectionList.every(item => item.taskStatus == 7)) return true
+        else return false
+      },
+      createBtn() {
+        if (this.selectionList.length != 1) return false
+        else if (this.selectionList[0]['validPeriod'] == 0) return false
+        else if (this.selectionList[0]['taskStatus'] == 8) return true
         else return false
       }
     },
@@ -166,10 +204,9 @@
       &.cannotPause .btn.pause,
       &.cannotDelete .btn.delete,
       &.cannotDownload .btn.download,
-      &.cannotRenderAll .btn.renderAll,
-      &.cannotRenderAgain .btn.renderAgain,
-      &.cannotArchive .btn.archive,
-      &.cannotCopy .btn.copy {
+      &.cannotAgain .btn.zipAgain,
+      &.cannotCopy .btn.copy,
+      &.cannotCreate .btn.createKDM {
         cursor: no-drop;
         color: rgba(22, 29, 37, 0.29);
         background-color: rgba(255, 255, 255, 1);
@@ -183,6 +220,10 @@
           display: none;
         }
       }
+    }
+
+    .panel {
+      height: calc(100vh - 80px - 52px - 20px - 20px);
     }
   }
 </style>

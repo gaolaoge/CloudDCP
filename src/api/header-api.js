@@ -10,7 +10,7 @@ export function getMessageList(data) {
   })
 }
 
-// 站内信 - 获取列表
+// 站内信 - 获取站内信列表中选中项目所在位置
 export function getTaskPosition(data) {
   return http({
     url: `/professional/notice/message/getCustomerNoticeMessage?${data}`,
@@ -18,15 +18,7 @@ export function getTaskPosition(data) {
   })
 }
 
-// 站内信 - 获取列表
-export function getMessageList2(data) {
-  return http({
-    url: `/professional/notice/message/getCustomerNoticeMessage?${data}`,
-    method: 'GET'
-  })
-}
-
-// 站内信 - 获取列表
+// 站内信 - 设为已读
 export function readMessages(data) {
   return http({
     url: `/professional/notice/message/getCustomerNoticeMessage?${data}`,
@@ -34,23 +26,15 @@ export function readMessages(data) {
   })
 }
 
-// 站内信 - 获取列表
-export function homeSelect(data) {
+// 获取分区列表
+export function homeSelect() {
   return http({
-    url: `/professional/notice/message/getCustomerNoticeMessage?${data}`,
+    url: `/professional/dcp/getZoneList`,
     method: 'GET'
   })
 }
 
-// 站内信 - 获取列表
-export function getInfo(data) {
-  return http({
-    url: `/professional/notice/message/getCustomerNoticeMessage?${data}`,
-    method: 'GET'
-  })
-}
-
-// 站内信 - 获取列表
+// 切换分区
 export function putNewZoneID(data) {
   return http({
     url: `/professional/notice/message/getCustomerNoticeMessage?${data}`,
@@ -58,10 +42,10 @@ export function putNewZoneID(data) {
   })
 }
 
-// 站内信 - 获取列表
-export function getBulletin(data) {
+// 获取公告
+export function getBulletin() {
   return http({
-    url: `/professional/notice/message/getCustomerNoticeMessage?${data}`,
+    url: `/professional/news/getAllNewsList`,
     method: 'GET'
   })
 }

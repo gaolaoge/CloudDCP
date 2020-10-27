@@ -7,7 +7,7 @@
       @filter-change="filterChangeF"
       @row-click="showDetails"
       :row-class-name="tableRowStyle"
-      ref="dcp-table-real"
+      ref="kdm-table-real"
       style="width: 100%">
 
       <el-table-column
@@ -19,20 +19,20 @@
 
       <!--任务ID-->
       <el-table-column
-        prop="taskId"
+        prop="kdmTaskId"
         label="任务ID"
         sortable
         show-overflow-tooltip
         width="100"/>
 
-      <!--场景名-->
+      <!--任务名称-->
       <el-table-column
-        label="场景名"
+        label="任务名称"
         show-overflow-tooltip
         min-width="180">
         <template slot-scope="scope">
           <span v-show="scope.row.validPeriod == 0">(过期)</span>
-          <span>{{ scope.row.taskName }}</span>
+          <span>{{ scope.row.kdmTaskName }}</span>
         </template>
       </el-table-column>
 
@@ -48,7 +48,7 @@
                 style="color: rgba(255, 62, 77, 1)">
             {{ scope.row.taskStatusText }}
           </span>
-          <span v-if="String('8').includes(scope.row.taskStatus)" style="color: rgba(70, 203, 93, 1)">
+          <span v-if="String('89').includes(scope.row.taskStatus)" style="color: rgba(70, 203, 93, 1)">
             {{ scope.row.taskStatusText }}
           </span>
           <span v-if="String('256').includes(scope.row.taskStatus)"
@@ -85,74 +85,29 @@
         show-overflow-tooltip
         width="120"/>
 
-      <!--打包时长-->
+      <!--KDM个数-->
       <el-table-column
-        prop="useTime"
-        label="打包时长"
+        prop="kdmCount"
+        label="KDM个数"
         sortable
         show-overflow-tooltip
         width="120"/>
 
-      <!--内容类型-->
+      <!--播放起始时间-->
       <el-table-column
-        prop="film_category"
-        label="内容类型"
+        prop="movieStartTime"
+        label="播放起始时间"
         show-overflow-tooltip
-        column-key="type"
-        :filters="typeList"
-        width="140"/>
-
-      <!--宽高比-->
-      <el-table-column
-        prop="aspect_ratio"
-        label="宽高比"
-        show-overflow-tooltip
-        column-key="ratio"
-        :filters="ratioList"
-        width="100"/>
-
-      <!--2D/3D-->
-      <el-table-column
-        prop="film_type"
-        label="2D/3D"
-        show-overflow-tooltip
-        column-key="technology"
-        :filters="technologyList"
-        width="100"/>
-
-      <!--分辨率-->
-      <el-table-column
-        prop="resolution"
-        label="分辨率"
-        show-overflow-tooltip
-        column-key="resolution"
-        :filters="resolutionList"
-        width="100"/>
-
-      <!--是否加密-->
-      <el-table-column
-        prop="is_encrypt"
-        label="是否加密"
-        show-overflow-tooltip
-        column-key="encrypt"
-        :filters="encryptList"
-        width="100"/>
-
-      <!--创建人-->
-      <el-table-column
-        prop="createName"
-        label="创建人"
         sortable
-        show-overflow-tooltip
-        width="120"/>
+        width="200"/>
 
-      <!--创建时间-->
+      <!--播放结束时间-->
       <el-table-column
-        prop="createTime"
-        label="创建时间"
-        sortable
+        prop="movieEndTime"
+        label="播放结束时间"
         show-overflow-tooltip
-        width="180"/>
+        sortable
+        width="200"/>
 
     </el-table>
     <!--暂无数据-->
@@ -180,10 +135,9 @@
 
 <script>
   import {
-    getDCPTableList
-  } from '@/api/dcp-api'
+    getKDMTableList
+  } from '@/api/kdm-api'
   import {
-    consum,
     createDateFun,
     createTableIconList,
     messageFun
@@ -210,36 +164,8 @@
           {text: '暂停', value: '暂停'},
           {text: '暂停（欠费）', value: '暂停（欠费）'},
           {text: '失败', value: '失败'},
-          {text: '已完成', value: '已完成'}
-        ],
-        typeList: [
-          {text: '广告片ADV', value: '广告片ADV'},
-          {text: '正片FTR', value: '正片FTR'},
-          {text: '政策相关POL', value: '政策相关POL'},
-          {text: '推广片PRO', value: '推广片PRO'},
-          {text: '广告PSA', value: '广告PSA'},
-          {text: '短片SHR', value: '短片SHR'},
-          {text: '预告片TLR', value: '预告片TLR'},
-          {text: '样片TSR', value: '样片TSR'},
-          {text: '测试片TST', value: '测试片TST'},
-          {text: '过渡片XSN', value: '过渡片XSN'}
-        ],
-        ratioList: [
-          {text: '全画幅C', value: '全画幅C'},
-          {text: '遮幅F', value: '遮幅F'},
-          {text: '宽银幕S', value: '宽银幕S'}
-        ],
-        technologyList: [
-          {text: '2D', value: '2D'},
-          {text: '3D', value: '3D'}
-        ],
-        resolutionList: [
-          {text: '2K', value: '2K'},
-          {text: '4K', value: '4K'}
-        ],
-        encryptList: [
-          {text: '加密', value: '加密'},
-          {text: '未加密', value: '未加密'}
+          {text: '已完成', value: '已完成'},
+          {text: '待打包完成', value: '待打包完成'}
         ],
         projectList: [],
         total: 0,
@@ -259,16 +185,12 @@
       },
       // 获取表格数据
       async getList() {
-        let {data} = await getDCPTableList({
+        let {data} = await getKDMTableList({
           pageIndex: this.pageIndex,
           pageSize: this.setting.pageSize,
           keyword: this.keyword,
-          statusList: [],
+          kdmTaskStatusList: [],
           projectUuidList: [],
-          aspectRatioList: [],     // 宽高比
-          filmTypeList: [],        // 2d/3d 1:2d, 2:3d
-          resolutionList: [],      // 分辨率 1:2k, 2:4k
-          isEncryptList: [],       // 是否加密 0不加密,1加密
           sortBy: null,            // 排序字段
           sortType: 0,             // 0降序,1升序
           zoneUuid: this.zoneId
@@ -276,13 +198,8 @@
         this.total = data.total
         this.tableData = data.data.map(item => Object.assign(item, {
           'taskStatusText': this.statusList[item.taskStatus - 1]['text'],
-          'film_category': this.typeList[item.film_category - 1]['text'],
-          'useTime': consum(item.useTime),
-          'aspect_ratio': this.ratioList[item.aspect_ratio - 1]['text'],
-          'film_type': this.technologyList[item.film_type - 1]['text'],
-          'resolution': this.resolutionList[item.resolution - 1]['text'],
-          'is_encrypt': item.is_encrypt ? '加密' : '未加密',
-          'createTime': createDateFun(new Date(item.createTime)),
+          'movieStartTime': createDateFun(new Date(item.movieStartTime)),
+          'movieEndTime': createDateFun(new Date(item.movieEndTime)),
           'validPeriod': new Date().getTime() >= item.expireTime ? 0 : 1
         }))
       },
@@ -340,12 +257,13 @@
           case '失败':
             return 'error-row style-row'
           case '已完成':
+          case '待打包完成':
             return 'wait-row style-row'
         }
       },
       // 多选
       selectionFun(list) {
-         this.selectionList = list
+        this.selectionList = list
         this.$emit('tableSelectionF', list)
       }
     },

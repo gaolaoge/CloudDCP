@@ -1,12 +1,12 @@
 <template>
   <div class="screenM panel">
     <ScreenTree />
-    <Table class="table" />
+    <ScreenTable class="screen-table" />
   </div>
 </template>
 
 <script>
-  import Table from './table.vue'
+  import ScreenTable from './screen-table.vue'
   import ScreenTree from './screen-tree.vue'
 
   export default {
@@ -15,7 +15,7 @@
       return {}
     },
     components: {
-      Table,
+      ScreenTable,
       ScreenTree
     }
   }
@@ -33,7 +33,7 @@
       height: calc(100vh - 80px - 20px);
     }
 
-    .table {
+    .screen-table {
       flex-grow: 1;
     }
   }

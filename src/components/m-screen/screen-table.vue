@@ -1,20 +1,170 @@
 <template>
-  <div class="table">
-
+  <div class="screen-table">
+    <div class="table-operate">
+      <div class="btnGroup"
+           :class="[
+            {'cannotAdd': !addBtn},
+            {'cannotEdit': !editBtn},
+            {'cannotDelete': !deleteBtn},
+            {'cannotDownload': !downloadBtn}
+           ]">
+        <div :class="[item.class, 'btn']"
+             @click="operating(item['action'])"
+             v-for="(item,index) in btnGroup"
+             :key="'renderBtn-' + index">
+          <img :src="item.iconDefault" v-if="item.iconDefault" class="btnIcon default">
+          <img :src="item.iconHover" v-if="item.iconHover" class="btnIcon hover">
+          <span>
+            {{ item['action'] }}
+          </span>
+        </div>
+      </div>
+      <div class="searchInput">
+        <input type="text"
+               class="input"
+               v-model="searchInput"
+               @keyup.enter="$refs.screenTable.getList()"
+               placeholder="输入场景名、任务ID">
+        <!--搜索按钮-->
+        <img src="@/icons/global-search-icon.png"
+             class="searchIcon"
+             @click="$refs.screenTable.getList()">
+      </div>
+    </div>
+    <Table ref="screenTable"
+           :keyword="searchInput"
+           @tableSelectionF="result => selectionList = result" />
+    <!--添加银幕-->
+    <el-dialog
+      :visible.sync="addSDialogVisible"
+      :destroy-on-close="true"
+      :show-close="false"
+      width="860">
+      <AddScreen @shutMe="addSDialogVisible = false" />
+    </el-dialog>
   </div>
 </template>
 
 <script>
+  import Table from './components/table.vue'
+  import AddScreen from './components/add-screen'
+  import {mapState} from 'vuex'
+
   export default {
     name: 'screenTable',
     data() {
-      return {}
+      return {
+        addSDialogVisible: false,
+        btnGroup: [
+          {
+            action: '添加',
+            class: 'add',
+            iconDefault: require('@/icons/btn_icon_add_black.png'),
+            iconHover: require('@/icons/btn_icon_add_white.png'),
+            state: true
+          },
+          {
+            action: '编辑',
+            class: 'edit',
+            iconDefault: require('@/icons/btn_icon_edit_black.png'),
+            iconHover: require('@/icons/btn_icon_edit_white.png'),
+            state: true
+          },
+          {
+            action: '删除',
+            class: 'delete',
+            iconDefault: require('@/icons/btn_icon_delete_black.png'),
+            iconHover: require('@/icons/btn_icon_delete_white.png'),
+            state: true
+          },
+          {
+            action: '下载',
+            class: 'download',
+            iconDefault: require('@/icons/btn_icon_download_black.png'),
+            iconHover: require('@/icons/btn_icon_download_white.png'),
+            state: true
+          }
+        ],
+        searchInput: '',
+        selectionList: []     // 多选结果
+      }
+    },
+    methods: {
+      // 操作
+      operating(action) {
+        switch (action) {
+          case '添加':
+            // 所选记录都为"暂停"“暂停（欠费）且"未过期"才可以点击
+            if (this.addBtn) this.addSDialogVisible = true
+            break
+          case '编辑':
+            // 所选记录都为"进行中"且"未过期"才可以点击
+            if (this.editBtn) this.$refs.screenTable.editSDialog.visible = true
+            break
+          case '删除':
+            // 当选中项中存在「进行中」状态时不可使用
+            if (this.deleteBtn) this.$refs.screenTable.deleteFun()
+            break
+          case '下载':
+            // 单选，需在有效期内，状态在「进行中、暂停、暂停（欠费）、失败、已完成」内
+            if (this.copyBtn) this.$refs.screenTable.downloadFun()
+            break
+        }
+      },
+      // 关闭【添加银幕】
+      addSClose() {
+
+      }
+    },
+    mounted() {
+      this.$nextTick(() => this.$refs.screenTable.getList())
+    },
+    computed: {
+      ...mapState(['user', 'zone']),
+      addBtn() {
+        return true
+      },
+      editBtn() {
+        if (this.selectionList.length != 1) return false
+        else return true
+      },
+      deleteBtn() {
+        if (!this.selectionList.length) return false
+        else return true
+      },
+      downloadBtn() {
+        if (!this.selectionList.length) return false
+        else return true
+      }
+    },
+    components: {
+      Table,
+      AddScreen
     }
   }
 </script>
 
 <style lang="less" scoped>
-  .table {
+  .screen-table {
+    width: 100%;
+    .btnGroup {
+      &.cannotAdd .btn.add,
+      &.cannotEdit .btn.edit,
+      &.cannotDelete .btn.delete,
+      &.cannotDownload .btn.download {
+        cursor: no-drop;
+        color: rgba(22, 29, 37, 0.29);
+        background-color: rgba(255, 255, 255, 1);
 
+        .default {
+          display: inline-block;
+          opacity: 0.29;
+        }
+
+        .hover {
+          display: none;
+        }
+      }
+    }
   }
 </style>

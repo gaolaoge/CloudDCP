@@ -1,6 +1,6 @@
 <template>
   <div class="screenM panel">
-    <ScreenTree />
+    <ScreenTree class="screen-tree" />
     <ScreenTable class="screen-table" />
   </div>
 </template>
@@ -33,8 +33,13 @@
       height: calc(100vh - 80px - 20px);
     }
 
+    .screen-tree {
+      flex-shrink: 0;
+    }
+
     .screen-table {
-      flex-grow: 1;
+      width: calc(100% - 212px);
+      box-sizing: border-box;
     }
   }
 </style>

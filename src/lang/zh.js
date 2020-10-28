@@ -196,6 +196,8 @@ export default {
     noTimes: '本月更新次数已用完'
   },
   public: {
-    refresh: '刷新'
+    refresh: '刷新',
+    cancel: '取消',
+    save: '确定'
   }
 }

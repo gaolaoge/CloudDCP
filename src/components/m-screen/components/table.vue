@@ -67,9 +67,7 @@
     <!--暂无数据-->
     <div class="nullTableData" v-if="total == 0">
       <img src="@/icons/tableDataNull.png">
-      <span>
-        暂无数据
-      </span>
+      <span>{{ $t('public.unData') }}</span>
     </div>
     <!--分页-->
     <div class="page">
@@ -97,29 +95,41 @@
              class="closeBtn">
       </div>
       <div class="dialog-body">
-        <div class="form">
+        <div class="form_">
           <!--银幕名称-->
           <div class="form-item">
-            <label class="form-item-label">{{ editSDialog.nameL }}：</label>
+            <label class="form-item-label">{{ editSDialog.nameL }}</label>
             <input type="text"
                    :class="[{'errorVal': null}, 'form-item-input']"
                    v-model="editSDialog.nameV">
           </div>
           <!--银幕证书-->
           <div class="form-item">
-            <label class="form-item-label">{{ editSDialog.certificateL }}：</label>
+            <label class="form-item-label">{{ editSDialog.certificateL }}</label>
             <input type="text"
                    disabled
-                   :class="[{'errorVal': null}, 'form-item-input']"
+                   :class="[{'errorVal': null}, 'form-item-input', 'file-input']"
                    v-model="editSDialog.certificateV">
+            <div class="file-btn">
+              <span>{{ $t('public.preview') }}</span>
+            </div>
           </div>
           <!--银幕状态-->
           <div class="form-item">
-            <label class="form-item-label">{{ editSDialog.statusL }}：</label>
+            <label class="form-item-label">{{ editSDialog.statusL }}</label>
             <el-select v-model="editSDialog.statusV">
               <el-option label="启用" value="1"></el-option>
               <el-option label="停用" value="0"></el-option>
             </el-select>
+          </div>
+        </div>
+        <div class="dialog-btn-group">
+          <div class="dialog-btn cancel" @click="editSDialog.visible = false">
+            <span>{{ $t('public.cancel') }}</span>
+          </div>
+          <div :class="[{'cannotBeGo': !editSDialog.nameV.trim()}, 'dialog-btn', 'save']"
+               @click="editScreen">
+            <span>{{ $t('public.save') }}</span>
           </div>
         </div>
       </div>
@@ -151,7 +161,7 @@
           nameL: '银幕名称',
           nameV: '',
           certificateL: '银幕证书',
-          certificateV: 'dfsdf',
+          certificateV: '/',
           statusL: '银幕状态',
           statusV: '1'
         },
@@ -181,7 +191,8 @@
       handleCurrentChange() {
       },
       // 获取表格数据
-      async getList() {
+      async getList(obj) {
+        // if (obj.theatreUuid)
         let {data} = await getScreenList({
           pageIndex: this.pageIndex,
           pageSize: this.setting.pageSize,
@@ -199,7 +210,7 @@
         }))
       },
       // 操作 - 编辑
-      editFun() {
+      editScreen() {
 
       },
       // 操作 - 删除
@@ -256,11 +267,32 @@
     }
 
     .dialog-body {
-      padding: 20px 0px;
+      height: 220px;
 
       .form-item-input,
-      /deep/.el-input__inner {
-        width: 520px;
+      /deep/ .el-input__inner {
+        width: 510px;
+      }
+    }
+
+    .form-item-input.file-input {
+      width: 437px;
+    }
+
+    .file-btn {
+      width: 55px;
+      height: 34px;
+      border-radius: 6px;
+      border: 1px solid rgba(22, 29, 37, 0.2);
+      text-align: center;
+      margin-left: 16px;
+      cursor: pointer;
+
+      span {
+
+        font-size: 14px;
+        color: rgba(27, 83, 244, 1);
+        line-height: 34px;
       }
     }
   }

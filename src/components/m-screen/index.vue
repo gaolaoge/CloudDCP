@@ -1,7 +1,8 @@
 <template>
   <div class="screenM panel">
     <ScreenTree class="screen-tree" />
-    <ScreenTable class="screen-table" />
+    <ScreenTable ref="screenTable"
+                 class="screen-table" />
   </div>
 </template>
 

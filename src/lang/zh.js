@@ -198,6 +198,8 @@ export default {
   public: {
     refresh: '刷新',
     cancel: '取消',
-    save: '确定'
+    save: '确定',
+    preview: '预览',
+    unData: '暂无数据'
   }
 }

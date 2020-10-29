@@ -23,15 +23,15 @@
         <input type="text"
                class="input"
                v-model="searchInput"
-               @keyup.enter="$refs.screenTable.getList()"
+               @keyup.enter="$refs.screenTableReal.getList()"
                placeholder="输入场景名、任务ID">
         <!--搜索按钮-->
         <img src="@/icons/global-search-icon.png"
              class="searchIcon"
-             @click="$refs.screenTable.getList()">
+             @click="$refs.screenTableReal.getList()">
       </div>
     </div>
-    <Table ref="screenTable"
+    <Table ref="screenTableReal"
            :keyword="searchInput"
            @tableSelectionF="result => selectionList = result" />
     <!--添加银幕-->
@@ -99,15 +99,15 @@
             break
           case '编辑':
             // 所选记录都为"进行中"且"未过期"才可以点击
-            if (this.editBtn) this.$refs.screenTable.editSDialog.visible = true
+            if (this.editBtn) this.$refs.screenTableReal.editSDialog.visible = true
             break
           case '删除':
             // 当选中项中存在「进行中」状态时不可使用
-            if (this.deleteBtn) this.$refs.screenTable.deleteFun()
+            if (this.deleteBtn) this.$refs.screenTableReal.deleteFun()
             break
           case '下载':
             // 单选，需在有效期内，状态在「进行中、暂停、暂停（欠费）、失败、已完成」内
-            if (this.copyBtn) this.$refs.screenTable.downloadFun()
+            if (this.copyBtn) this.$refs.screenTableReal.downloadFun()
             break
         }
       },
@@ -117,7 +117,7 @@
       }
     },
     mounted() {
-      this.$nextTick(() => this.$refs.screenTable.getList())
+      this.$nextTick(() => this.$refs.screenTableReal.getList())
     },
     computed: {
       ...mapState(['user', 'zone']),

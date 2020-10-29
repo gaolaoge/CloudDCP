@@ -48,9 +48,14 @@
           <!--银幕证书-->
           <el-table-column
             label="银幕证书">
-            <template slot-scope="scope">{{ scope.row.date }}</template>
+            <template slot-scope="scope">{{ scope.row.certificate }}</template>
           </el-table-column>
         </el-table>
+        <!--暂无数据-->
+        <div class="nullTableData" v-show="!tableData.length">
+          <img src="@/icons/tableDataNull.png">
+          <span>{{ $t('public.unData') }}</span>
+        </div>
       </div>
       <div class="dialog-btn-group">
         <div class="dialog-btn cancel" @click="$emit('shutMe')">
@@ -88,7 +93,12 @@
             state: true
           }
         ],
-        tableData: [],
+        tableData: [
+          // {
+          //   name: 'name',
+          //   certificate: 'certificate'
+          // }
+        ],
         selectionList: []
       }
     },

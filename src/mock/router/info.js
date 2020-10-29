@@ -80,7 +80,7 @@ module.exports = [
   },
   // 获取分区列表
   {
-    url: /\//,
+    url: /\/sdsd/,
     type: 'get',
     response: () => {
       return {

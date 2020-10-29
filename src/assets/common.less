@@ -771,6 +771,8 @@ td {
 // 标签
 .el-tabs {
   .el-tabs__header {
+    margin: 0px 0px 9px !important;
+
     .el-tabs__item {
       color: rgba(22, 29, 37, 0.59);
       font-weight: 400;
@@ -819,6 +821,10 @@ td {
     cursor: pointer;
     opacity: 0.8;
   }
+}
+
+.dialog-body {
+  padding: 20px 0px;
 }
 
 .dialog-btn-group {
@@ -996,7 +1002,7 @@ td {
 }
 
 //form
-.form {
+.form_ {
   .form-item {
     min-height: 36px;
     margin-bottom: 20px;
@@ -1041,9 +1047,47 @@ td {
       margin-bottom: 0px;
     }
 
-    /deep/.el-input__inner {
+    /deep/ .el-input__inner {
       border: 1px solid rgba(22, 29, 37, 0.2);
       outline: none;
     }
   }
+}
+
+// tree
+.custom-tree-node {
+  position: relative;
+  width: 100%;
+
+  .tree-node-span {
+    font-size: 14px;
+  }
+}
+
+.el-tree-node__content {
+  height: 40px;
+  line-height: 40px;
+}
+
+//tooltip
+.el-tooltip__popper {
+  background-color: rgba(22, 29, 37, 0.81)!important;
+  box-shadow: 0px 2px 6px 0px rgba(255, 255, 255, 0.08), 0px 1px 2px -4px rgba(255, 255, 255, 0.12);
+  padding: 6px 10px;
+
+  &.largePadding {
+    padding: 10px 24px;
+  }
+
+  &.is-dark {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 1);
+    line-height: 18px;
+  }
+
+  .default {}
+}
+
+.el-message-box__headerbtn {
+  top: 11px;
 }

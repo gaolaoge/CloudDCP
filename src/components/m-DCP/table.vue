@@ -169,7 +169,7 @@
         layout="prev, pager, next, jumper"
         :total="total">
       </el-pagination>
-      <div class="farm-primary-form-btn btn" @click="getList(null, true)">
+      <div class="refresh-btn" @click="getList(null, true)">
         <span>{{ $t('public.refresh') }}</span>
       </div>
     </div>

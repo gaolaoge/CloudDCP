@@ -4,14 +4,18 @@ let login = require('./router/login'),
   info = require('./router/info'),
   dcp = require('./router/dcp'),
   kdm = require('./router/kdm'),
-  screen = require('./router/screen')
+  screen = require('./router/screen'),
+  bill = require('./router/bill'),
+  set = require('./router/set')
 
 let mocks = [
   ...login,
   ...info,
   ...dcp,
   ...kdm,
-  ...screen
+  ...screen,
+  ...bill,
+  ...set
 ]
 
 function mockXHR() {

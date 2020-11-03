@@ -715,11 +715,37 @@ td {
   font-size: 14px;
 }
 
+.page {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+
+  .refresh-btn {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0px 15px;
+    margin-left: 10px;
+    cursor: pointer;
+    height: 24px;
+    border-radius: 5px;
+    font-size: 13px;
+    background-color: rgba(248, 248, 248, 1);
+    border: 1px solid rgba(22, 29, 37, 0.1);
+    color: rgba(22, 29, 37, 0.79);
+
+    &:hover {
+      background-color: rgba(27, 83, 244, 1);
+      color: rgba(255, 255, 255, 1);
+    }
+  }
+}
+
 // 分页
 .el-pagination {
   padding-left: 0px;
   margin-left: 22px;
-  margin-top: 14px;
+  display: inline-block;
 }
 
 .el-pagination.is-background {
@@ -1001,7 +1027,7 @@ td {
   }
 }
 
-//form
+//form 非验证
 .form_ {
   .form-item {
     min-height: 36px;
@@ -1090,4 +1116,126 @@ td {
 
 .el-message-box__headerbtn {
   top: 11px;
+}
+
+// 选项卡
+.tableGroup {
+  position: relative;
+
+  .navList {
+    position: relative;
+
+    .navBtn {
+      display: inline-block;
+      font-size: 16px;
+      color: rgba(22, 29, 37, 0.49);
+      padding: 10px 30px;
+      cursor: pointer;
+      user-select: none;
+
+      &.active {
+        background-color: rgba(255, 255, 255, 1);
+        border-radius: 8px 8px 0px 0px;
+        font-weight: 600;
+        color: rgba(27, 83, 244, 1);
+      }
+    }
+  }
+
+  .tableList {
+    background-color: rgba(255, 255, 255, 1);
+    border-radius: 0px 8px 8px 8px;
+  }
+}
+
+.filter {
+  display: flex;
+  align-items: center;
+
+  .filter-item {
+    flex-shrink: 0;
+
+    .filter-item-label {
+      font-size: 13px;
+      font-weight: 400;
+      color: rgba(22, 29, 37, 0.59);
+    }
+
+    .filter-item-i {
+      margin-right: 20px;
+      background-color: transparent;
+      border: 1px solid rgba(22, 29, 37, 0.19);
+      height: 30px;
+      width: 130px;
+      border-radius: 4px;
+      padding-left: 12px;
+      box-sizing: border-box;
+      color: rgba(22, 29, 37, 0.8);
+      outline: none;
+
+      &.filter-item-time {
+        width: 200px;
+      }
+
+      &.filter-item-select {
+        width: 200px;
+        padding-left: 0px;
+
+        .el-input__inner {
+          height: 30px;
+        }
+
+        .el-input__icon {
+          line-height: 30px;
+        }
+      }
+
+      &.filter-item-select-mini {
+        width: 130px;
+      }
+    }
+  }
+
+  .filter-btn {
+    height: 28px;
+    text-align: center;
+    line-height: 28px;
+    border-radius: 4px;
+    border: 1px solid rgba(22, 29, 37, 0.2);
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(22, 29, 37, 1);
+    cursor: pointer;
+    margin-right: 20px;
+    padding: 0px 20px;
+    background-color: rgba(248, 248, 248, 1);
+    flex-shrink: 0;
+
+    &.primary {
+      height: 30px;
+      line-height: 30px;
+      background-color: rgba(0, 97, 255, 1);
+      border-radius: 4px;
+      color: rgba(255, 255, 255, 1);
+      border: 0px;
+    }
+  }
+}
+
+// 日期模块
+.el-input__inner {
+  height: 30px;
+  line-height: 30px;
+}
+
+.el-input__icon {
+  line-height: 30px;
+}
+
+.el-date-table td span {
+  font-size: 14px;
+}
+
+.el-date-editor--daterange.el-input__inner {
+  width: 236px;
 }

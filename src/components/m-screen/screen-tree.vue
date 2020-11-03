@@ -29,8 +29,7 @@
         :data="mineScreenListNode"
         :allow-drop="allowDrop"
         draggable>
-        <span class="custom-tree-node" slot-scope="{ node, data }"
-              @click="">
+        <span class="custom-tree-node" slot-scope="{ node, data }">
           <div class="l">
             <img src="@/icons/filer.png" class="filer default">
             <img src="@/icons/filer-hover.png" class="filer hover">

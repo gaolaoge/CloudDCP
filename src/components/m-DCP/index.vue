@@ -1,5 +1,5 @@
 <template>
-  <div class="dcp">
+  <div class="dcp-wrapper">
     <div class="table-operate">
       <div class="btnGroup"
            :class="[
@@ -34,6 +34,7 @@
              @click="$refs.dcptable.getList()">
       </div>
     </div>
+    <hr>
     <div class="dcp-table panel">
       <Table ref="dcptable"
              :keyword="searchInput"
@@ -196,7 +197,7 @@
 </script>
 
 <style lang="less" scoped>
-  .dcp {
+  .dcp-wrapper {
     width: 100%;
 
     .btnGroup {

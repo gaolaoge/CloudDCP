@@ -1,5 +1,5 @@
 <template>
-  <div class="kdm">
+  <div class="kdm-wrapper">
     <div class="table-operate">
       <div class="btnGroup"
            :class="[
@@ -179,7 +179,7 @@
 </script>
 
 <style lang="less" scoped>
-  .kdm {
+  .kdm-wrapper {
     width: 100%;
 
     .btnGroup {

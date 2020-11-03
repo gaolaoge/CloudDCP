@@ -46,6 +46,16 @@ export default new Router({
           path: 'set',
           name: 'set',
           component: () => import('@/components/m-set/index.vue')
+        },
+        {
+          path: 'upTop',     // 充值
+          name: 'upTop',
+          component: () => import('@/components/m-bill/components/recharge-page.vue')
+        },
+        {
+          path: 'invoice',     // 开发票
+          name: 'invoice',
+          component: () => import('@/components/m-bill/components/invoice-page.vue')
         }
       ]
     }

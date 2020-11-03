@@ -47,4 +47,9 @@
   .set {
     width: 100%;
   }
+
+  .tableList {
+    height: calc(100vh - 80px - 42px - 20px);
+  }
+
 </style>

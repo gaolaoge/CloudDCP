@@ -1,5 +1,5 @@
 <template>
-  <div class="dcp-wrapper">
+  <div class="dcp-wrapper panel">
     <div class="table-operate">
       <div class="btnGroup"
            :class="[
@@ -199,6 +199,8 @@
 <style lang="less" scoped>
   .dcp-wrapper {
     width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
 
     .btnGroup {
       &.cannotStart .btn.start,
@@ -223,8 +225,8 @@
       }
     }
 
-    .panel {
-      height: calc(100vh - 80px - 52px - 20px - 20px);
+    &.panel {
+      height: calc(100vh - 80px - 20px);
     }
   }
 </style>

@@ -199,7 +199,9 @@ export default {
     refresh: '刷新',
     cancel: '取消',
     save: '确定',
+    save2: '保存',
     preview: '预览',
-    unData: '暂无数据'
+    unData: '暂无数据',
+    export: '导出'
   }
 }

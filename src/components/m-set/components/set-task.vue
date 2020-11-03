@@ -85,8 +85,8 @@
         @current-change="jump"
         :total="page.total">
       </el-pagination>
-      <div class="farm-primary-form-btn btn" @click="getList('', 1, page.size)">
-        <span>{{ refresh }}</span>
+      <div class="refresh-btn" @click="getList('', 1, page.size)">
+        <span>{{ $t('public.refresh') }}</span>
       </div>
     </div>
 
@@ -252,8 +252,7 @@
         },
         btnCancel: '取消',
         btnSave: '确定',
-        editAvatar: '修改图片',
-        refresh: '刷新'
+        editAvatar: '修改图片'
       }
     },
     watch: {
@@ -445,8 +444,7 @@
   }
 
   hr{
-    margin-bottom: 20px;
-    opacity: 0.09;
+    margin: 20px 0px;
   }
 
   .createProject,
@@ -623,5 +621,21 @@
     opacity: 0;
     top: 0px;
     z-index: 9;
+  }
+
+  .table-operate {
+    padding-left: 20px;
+  }
+
+  /deep/.el-table__body-wrapper {
+    height: calc(100vh - 80px - 42px - 20px - 47px - 20px - 52px - 52px - 20px);
+  }
+
+  .operateBtn {
+    color: #0061ff;
+    display: inline-block;
+    margin-right: 10px;
+    cursor: pointer;
+    text-decoration: underline;
   }
 </style>

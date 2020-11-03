@@ -242,6 +242,7 @@
 
       &:nth-of-type(1) {
         margin-bottom: 20px;
+        border-top-left-radius: 0px;
       }
 
       &:nth-of-type(2) {

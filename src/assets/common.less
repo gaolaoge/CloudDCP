@@ -106,10 +106,8 @@ div {
 .table-operate {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  height: 52px;
+  align-items: flex-start;
   margin: 0px 0px 20px;
-  padding: 0px 30px;
   background-color: rgba(255, 255, 255, 1);
   border-radius: 8px;
 
@@ -164,7 +162,7 @@ div {
 
   .input {
     width: 280px;
-    height: 32px;
+    height: 28px;
     border-radius: 4px;
     border: 1px solid rgba(22, 29, 37, 0.1);
     box-sizing: border-box;
@@ -181,7 +179,7 @@ div {
   .searchIcon {
     position: absolute;
     left: 16px;
-    top: 10px;
+    top: 7px;
     width: 14px;
     cursor: pointer;
   }
@@ -744,7 +742,7 @@ td {
 // 分页
 .el-pagination {
   padding-left: 0px;
-  margin-left: 22px;
+  margin-left: 0px;
   display: inline-block;
 }
 
@@ -1033,6 +1031,7 @@ td {
     min-height: 36px;
     margin-bottom: 20px;
     display: flex;
+    align-items: center;
 
     .form-item-label {
       display: inline-block;
@@ -1054,6 +1053,12 @@ td {
       padding-left: 20px;
       box-sizing: border-box;
       color: rgba(22, 29, 37, 1);
+    }
+
+    .form-item-span {
+      color: rgba(22, 29, 37, 1);
+      font-size: 14px;
+      line-height: 100%;
     }
 
     .form-item-val {
@@ -1238,4 +1243,8 @@ td {
 
 .el-date-editor--daterange.el-input__inner {
   width: 236px;
+}
+
+hr {
+  opacity: 0.09;
 }

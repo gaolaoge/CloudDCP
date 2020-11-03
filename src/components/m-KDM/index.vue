@@ -1,5 +1,5 @@
 <template>
-  <div class="kdm-wrapper">
+  <div class="kdm-wrapper panel">
     <div class="table-operate">
       <div class="btnGroup"
            :class="[
@@ -34,7 +34,8 @@
              @click="$refs.kdmtable.getList()">
       </div>
     </div>
-    <div class="kdm-table panel">
+    <hr>
+    <div class="kdm-table">
       <Table ref="kdmtable"
              :keyword="searchInput"
              @tableSelectionF="result => selectionList = result"/>
@@ -181,6 +182,8 @@
 <style lang="less" scoped>
   .kdm-wrapper {
     width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
 
     .btnGroup {
       &.cannotStart .btn.start,
@@ -204,8 +207,8 @@
       }
     }
 
-    .panel {
-      height: calc(100vh - 80px - 52px - 20px - 20px);
+    &.panel {
+      height: calc(100vh - 80px - 20px);
     }
   }
 </style>

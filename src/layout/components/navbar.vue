@@ -19,58 +19,47 @@
       <ul>
         <li v-for="(item,index) in navList"
             :key="index"
-            class="navLink"
-            :class="[
-              {'active': index == navActive},
-            ]"
+            :class="[{'active': index == navActive}, 'navLink']"
             @click="jump(index,item.link)">
           <div class="ib">
-            <img :src="item.iconUrl" alt="" class="selectIcon">
-            <img :src="item.iconsUrlDefault" alt="" class="defaultIcon">
+            <img :src="item.iconUrl" class="selectIcon">
+            <img :src="item.iconsUrlDefault" class="defaultIcon">
           </div>
-          <span class="text">
-            {{ item.text }}
-          </span>
+          <span class="text">{{ item.text }}</span>
         </li>
       </ul>
     </div>
-    <div class="addTask" @click="createTask">
-      <img src="@/icons/addIcon-Whit.png" alt="" class="addTaskIcon">
+    <div class="addTask" @click="selectCreateDialogVisible = true">
+      <img src="@/icons/addIcon-Whit.png" class="addTaskIcon">
     </div>
     <div class="systemList">
       <ul>
         <li v-for="(item,index) in systemList"
             :key="index"
-            class="systemLink"
-            :class="[
-              {'active': index + 4 == navActive},
-            ]"
+            :class="[{'active': index + 4 == navActive}, 'systemLink']"
             @click="jump(index + 4,item.link)">
           <div class="ib">
-            <img :src="item.iconUrl" alt="" class="selectIcon">
-            <img :src="item.iconsUrlDefault" alt="" class="defaultIcon">
+            <img :src="item.iconUrl" class="selectIcon">
+            <img :src="item.iconsUrlDefault" class="defaultIcon">
           </div>
-          <span class="text">
-            {{ item.text }}
-          </span>
+          <span class="text">{{ item.text }}</span>
         </li>
       </ul>
     </div>
-    <!--弹窗 新建任务-->
-    <el-dialog :visible.sync="createTaskDialog"
-               :show-close=false
-               :destroy-on-close=true
-               top="8vh"
-               @opened="r()"
-               width="862px">
-<!--      <newTask @closeDialogFun="closeDialogFun" ref="dialog"/>-->
+    <!--选择新建项-->
+    <el-dialog
+      :visible.sync="selectCreateDialogVisible"
+      top="30vh"
+      width="300px">
+      <div class="selectCreateType">
+        <el-button @click="createFun('createDCP')">DCP打包</el-button>
+        <el-button @click="createFun('createKDM')">KDM制作</el-button>
+      </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-  // import newTask from '@/components/m-addOne/index.vue'
-
   export default {
     name: 'navBar',
     data() {
@@ -118,28 +107,19 @@
           }
         ],
         navActive: 0,
-        createTaskDialog: false,
-        d: null
+        d: null,    // svg 边缘路径
+        selectCreateDialogVisible: false
       }
     },
-    components: {
-      // newTask
-    },
     methods: {
-      r() {
-        // this.$refs.dialog.readyToWork()
+      createFun(type) {
+        setTimeout(() => this.selectCreateDialogVisible = false, 500)
+        this.$emit(type)
       },
+      // 跳转
       jump(index, url) {
         this.navActive = index
         this.$router.push(url)
-      },
-      // 新建任务
-      createTask() {
-        this.createTaskDialog = true
-      },
-      // 关闭新建任务弹窗
-      closeDialogFun() {
-        this.createTaskDialog = false
       },
       // 背景 svg
       createSVG() {
@@ -154,17 +134,20 @@
       '$route.name': {
         handler: function (val) {
           switch (val) {
-            case 'home':
+            case 'dcp':
               this.navActive = 0
               break
-            case 'task':
+            case 'kdm':
               this.navActive = 1
               break
-            case 'assets':
+            case 'screenM':
               this.navActive = 2
               break
             case 'bill':
               this.navActive = 3
+              break
+            case 'set':
+              this.navActive = 4
               break
           }
         },
@@ -315,6 +298,12 @@
       padding: 0px;
       background-color: rgba(255, 255, 255, 1);
     }
+  }
+
+  .selectCreateType {
+    display: flex;
+    justify-content: space-around;
+    padding: 60px 30px;
   }
 
 </style>

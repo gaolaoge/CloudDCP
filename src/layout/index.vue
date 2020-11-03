@@ -1,20 +1,24 @@
 <template>
   <div class="layout-wrapper">
-    <Navbar v-show="!login" class="navbar"/>
+    <Navbar v-show="!login"
+            class="navbar"
+            @createDCP="createDCPDialog = true"
+            @createKDM="createKDMDialog = true" />
     <div class="main">
       <Header v-show="!login"/>
       <AppMain/>
     </div>
+    <!--右下角【传输插件】按钮-->
     <div class="gz" v-show="showGZ" @click="openPlugin">
-      <img src="@/icons/gz-black.png" alt="" class="d">
-      <img src="@/icons/gz-blue.png" alt="" class="h">
+      <img src="@/icons/gz-black.png" class="d">
+      <img src="@/icons/gz-blue.png" class="h">
       <span>{{ $t('transportBtn') }}</span>
     </div>
     <!--帧大图-->
-    <div class="thumb" v-show="thumb.showLargeThumbWin" @click="$store.commit('setShowThumb', false)">
-      <img :src="thumb.LargeImgHref" alt="">
-    </div>
-    <!--打开插件窗口-->
+    <!--    <div class="thumb" v-show="thumb.showLargeThumbWin" @click="$store.commit('setShowThumb', false)">-->
+    <!--      <img :src="thumb.LargeImgHref">-->
+    <!--    </div>-->
+    <!--启动/下载 插件窗口-->
     <el-dialog :visible.sync="pluginDialog"
                :show-close="false"
                top="34vh"
@@ -60,6 +64,26 @@
         </div>
       </div>
     </el-dialog>
+    <!--新建DCP-->
+    <el-dialog :visible.sync="createDCPDialog"
+               :show-close="false"
+               :destroy-on-close="true"
+               :close-on-press-escape="false"
+               :close-on-click-modal="false"
+               top="8vh"
+               width="862px">
+      <addDCP @closeDialogFun="closeDialogFun" />
+    </el-dialog>
+    <!--新建KDM-->
+    <el-dialog :visible.sync="createKDMDialog"
+               :show-close="false"
+               :destroy-on-close="true"
+               :close-on-press-escape="false"
+               :close-on-click-modal="false"
+               top="8vh"
+               width="862px">
+      <addKDM @closeDialogFun="closeDialogFun" />
+    </el-dialog>
   </div>
 </template>
 
@@ -73,6 +97,9 @@
     createDateFun,
     getUserInfoF
   } from '@/assets/common'
+  import addDCP from '@/components/m-addOne/addDCP.vue'
+  import addKDM from '@/components/m-addOne/addKDM.vue'
+
   import {
     mapState
   } from 'vuex'
@@ -82,7 +109,7 @@
     data() {
       return {
         inHome: false,
-        showGZ: false,
+        showGZ: true,
         pluginDialog_: {
           title: '提示信息',
           dialogMainText: '需要安装传输插件才能进行文件传输若已安装过插件，请点此',
@@ -102,13 +129,17 @@
           contant4: '修改密码',
           contant5: '。',
           btn: '重新登录'
-        }
+        },
+        createDCPDialog: false,
+        createKDMDialog: false
       }
     },
     components: {
       Header,
       Navbar,
-      AppMain
+      AppMain,
+      addDCP,
+      addKDM
     },
     computed: {
       ...mapState(['login', 'user', 'thumb', 'socket_plugin', 'pluginDialog', 'remoteLoginDate', 'socket_backS_msg'])
@@ -121,6 +152,10 @@
       }
     },
     methods: {
+      // 关闭新建项目窗口
+      closeDialogFun(win) {
+        this[win] = false
+      },
       shutRemoteLogin(editPS) {
         this.remoteLoginDialog.show = false
         editPS ? this.$router.push({name: 'login', params: {modify: true}}) : this.$router.push({
@@ -259,6 +294,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding-bottom: 30px;
 
     .main {
       margin: 30px 0px;

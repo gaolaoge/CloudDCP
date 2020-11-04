@@ -2,6 +2,29 @@ div {
   font-size: 0px;
 }
 
+// 滚动条
+.setScollBarStyle {
+  &::-webkit-scrollbar {
+    /*滚动条整体样式*/
+    width: 8px; /*高宽分别对应横竖滚动条的尺寸*/
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    /*滚动条里面小方块*/
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 5px rgba(102, 89, 89, 0);
+    background-color: rgba(27, 83, 244, 0.1);
+  }
+
+  &::-webkit-scrollbar-track {
+    /*滚动条里面轨道*/
+    -webkit-box-shadow: inset 0 0 5px rgba(52, 59, 67, 0);
+    border-radius: 10px;
+    background-color: rgba(52, 59, 67, 0);
+  }
+}
+
 .farm-input {
   width: 100%;
   background-color: transparent;
@@ -815,6 +838,9 @@ td {
 
 // 弹框
 .el-dialog {
+  border-radius: 8px;
+  overflow: hidden;
+
   .el-dialog__header {
     display: none;
   }
@@ -1025,7 +1051,7 @@ td {
   }
 }
 
-//form 非验证
+// form 非验证
 .form_ {
   .form-item {
     min-height: 36px;
@@ -1085,6 +1111,165 @@ td {
   }
 }
 
+// form 验证
+.form {
+  position: relative;
+
+  .switchLabel {
+    font-size: 12px;
+    color: rgba(22, 29, 37, 1);
+    vertical-align: middle;
+    margin-left: 8px;
+  }
+
+  .item {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 30px;
+
+    &.mini {
+      margin-bottom: 15px;
+    }
+
+    .farm-label {
+      color: rgba(22, 29, 37, 0.6);
+      font-size: 14px;
+      line-height: 40px;
+      width: 72px;
+      flex-shrink: 0;
+    }
+
+    .farm-input {
+      border: 1px solid rgba(22, 29, 37, 0.2);
+      border-radius: 6px;
+      padding-left: 20px;
+      color: rgba(22, 29, 37, 1);
+      box-sizing: border-box;
+      margin-bottom: 0px;
+
+      &.farm-cord-input {
+        width: 220px;
+      }
+
+      &.farm-name-input {
+        flex-shrink: 1;
+      }
+
+      &::-webkit-input-placeholder {
+        color: rgba(22, 29, 37, 0.4);
+      }
+    }
+
+    .box {
+      flex-grow: 1;
+    }
+
+    .farm-select {
+      border: 1px solid rgba(22, 29, 37, 0.2);
+      border-radius: 6px;
+      flex-grow: 1;
+      /deep/ .el-input {
+        height: 36px;
+        .el-input__inner {
+          height: 36px;
+          border: 0px;
+        }
+
+      }
+    }
+
+    .verif {
+      position: absolute;
+      right: 0px;
+      top: 0px;
+      height: 38px;
+      width: 90px;
+      border-radius: 8px;
+      border: 1px solid rgba(22, 29, 37, 0.19);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      &.register {
+        height: 34px;
+      }
+
+      .btn {
+        font-size: 14px;
+        font-weight: 500;
+        color: rgba(22, 29, 37, 0.4);
+
+        &.canClick,
+        &.suc {
+          cursor: pointer;
+          color: rgba(27, 83, 244, 0.8);
+        }
+      }
+
+      .delayDate {
+        font-size: 14px;
+        color: rgba(27, 83, 244, 1);
+
+      }
+    }
+
+    .warnInfo {
+      user-select: none;
+      position: absolute;
+      left: 20px;
+      bottom: -23px;
+      font-size: 11px;
+      color: rgba(255, 62, 77, 0.79);
+      line-height: 16px;
+      width: 300px;
+    }
+
+    .swicthPWI {
+      position: absolute;
+      top: 0px;
+      right: 10px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .i {
+      position: absolute;
+      width: 14px;
+      right: -20px;
+      top: 14px;
+      cursor: pointer;
+    }
+  }
+
+  .bigBtn {
+    margin-top: 54px;
+    width: 320px;
+    height: 36px;
+    background-color: rgba(240, 240, 240, 1);
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    span {
+      font-size: 16px;
+      color: rgba(22, 29, 37, 0.39);
+    }
+
+    &.canClick {
+      cursor: pointer;
+      background-color: rgba(22, 113, 255, 0.8);
+
+      span {
+        color: rgba(255, 255, 255, 1);
+      }
+    }
+  }
+}
+
 // tree
 .custom-tree-node {
   position: relative;
@@ -1102,7 +1287,7 @@ td {
 
 //tooltip
 .el-tooltip__popper {
-  background-color: rgba(22, 29, 37, 0.81)!important;
+  background-color: rgba(22, 29, 37, 0.81) !important;
   box-shadow: 0px 2px 6px 0px rgba(255, 255, 255, 0.08), 0px 1px 2px -4px rgba(255, 255, 255, 0.12);
   padding: 6px 10px;
 
@@ -1116,7 +1301,8 @@ td {
     line-height: 18px;
   }
 
-  .default {}
+  .default {
+  }
 }
 
 .el-message-box__headerbtn {

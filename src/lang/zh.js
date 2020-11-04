@@ -202,6 +202,8 @@ export default {
     save2: '保存',
     preview: '预览',
     unData: '暂无数据',
-    export: '导出'
+    export: '导出',
+    nextStop: '下一步',
+    previous: '上一步'
   }
 }

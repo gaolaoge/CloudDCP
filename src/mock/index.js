@@ -6,7 +6,8 @@ let login = require('./router/login'),
   kdm = require('./router/kdm'),
   screen = require('./router/screen'),
   bill = require('./router/bill'),
-  set = require('./router/set')
+  set = require('./router/set'),
+  addTask = require('./router/addTask')
 
 let mocks = [
   ...login,
@@ -15,7 +16,8 @@ let mocks = [
   ...kdm,
   ...screen,
   ...bill,
-  ...set
+  ...set,
+  ...addTask
 ]
 
 function mockXHR() {

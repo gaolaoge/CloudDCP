@@ -30,11 +30,15 @@
       <div class="dl_wrapper">
         <span class="main">
           {{ pluginDialog_.dialogMainText }}
-          <span class="blue" @click="triggerPlugin">{{ pluginDialog_.triggerText }}</span>
+          <p>
+            <span>{{ pluginDialog_.dialogMainText2 }}</span>
+            <span class="blue" @click="triggerPlugin">{{ pluginDialog_.triggerText }}</span>
+          </p>
         </span>
         <div class="download_btn" @click="w"><span>{{ pluginDialog_.downloadText }}</span></div>
         <div class="warnInfo">
-          <span>{{ pluginDialog_.warnInfo }}</span>
+          <p>{{ pluginDialog_.warnInfo }}</p>
+          <p>{{ pluginDialog_.warnInfo2 }}</p>
         </div>
       </div>
     </el-dialog>
@@ -112,10 +116,12 @@
         showGZ: true,
         pluginDialog_: {
           title: '提示信息',
-          dialogMainText: '需要安装传输插件才能进行文件传输若已安装过插件，请点此',
+          dialogMainText: '需要安装传输插件才能进行文件传输',
+          dialogMainText2: '若已安装过插件，请点此',
           triggerText: '启动传输插件',
           downloadText: '下载传输插件',
-          warnInfo: '若已启用，依然无法传输，\n 请联系24小时在线客服18560651927'
+          warnInfo: '若已启用，依然无法传输',
+          warnInfo2: '请联系24小时在线客服18560651927'
         },
         remoteLoginDialog: {
           show: false,
@@ -297,9 +303,10 @@
     padding-bottom: 30px;
 
     .main {
+      text-align: center;
       margin: 30px 0px;
       flex-grow: 0;
-      width: 238px;
+      width: 250px;
       font-size: 14px;
       color: rgba(22, 29, 37, 1);
       line-height: 26px;
@@ -320,7 +327,7 @@
       justify-content: center;
       align-items: center;
       cursor: pointer;
-      margin-bottom: 10px;
+      margin-bottom: 26px;
 
       span {
         font-size: 14px;
@@ -335,9 +342,10 @@
     }
 
     .warnInfo {
-      width: 188px;
+      width: 200px;
+      text-align: center;
 
-      span {
+      p {
         font-size: 11px;
         color: rgba(22, 29, 37, 0.6);
         line-height: 16px;

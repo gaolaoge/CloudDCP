@@ -83,7 +83,7 @@
         </el-radio-group>
       </div>
       <!--协议-->
-      <div class="item">
+      <div class="item m">
         <div class="protocol">
           <img src="@/icons/df.png" class="protocolIcon" v-show="!tick" @click="tick = true">
           <img src="@/icons/dfg.png" class="protocolIcon" v-show="tick" @click="tick = false">

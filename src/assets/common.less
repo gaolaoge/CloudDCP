@@ -1114,6 +1114,7 @@ td {
 // form 验证
 .form {
   position: relative;
+  width: 100%;
 
   .switchLabel {
     font-size: 12px;
@@ -1130,6 +1131,10 @@ td {
 
     &.mini {
       margin-bottom: 15px;
+    }
+
+    &.m {
+      margin-bottom: 0px;
     }
 
     .farm-label {
@@ -1169,8 +1174,11 @@ td {
       border: 1px solid rgba(22, 29, 37, 0.2);
       border-radius: 6px;
       flex-grow: 1;
+      padding-left: 0px!important;
+
       /deep/ .el-input {
         height: 36px;
+
         .el-input__inner {
           height: 36px;
           border: 0px;

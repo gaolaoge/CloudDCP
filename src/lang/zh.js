@@ -1,5 +1,4 @@
 export default {
-  title: '这是一个demo',
   transportBtn: '传输列表',
   // layout - 导航
   navbar: ['DCP打包', 'KDM制作', '银幕管理', '我的账单', '统计', '设置'],
@@ -105,72 +104,6 @@ export default {
     getCode: '获取验证码',
     getCodeAgain: '重新发送'
   },
-  // 首页 home
-  home: {
-    taskStatus: {
-      label: '任务状态',
-      list: ['待设置参数', '渲染中', '待全部渲染', '渲染暂停', '渲染完成']
-    },
-    statistics: {
-      label: '数据统计',
-      list: {
-        text: ['累计消费', '累计渲染用时'],
-        unit: ['金币', '小时', '（万）金币']
-      }
-    },
-    pastWeek: {
-      label: '近七天任务',
-      miniLabel: '/单位：个'
-    },
-    recentProjects: {
-      label: '近期项目'
-    }
-  },
-  // 统计页
-  statistics_mainM: {
-    // 任务数统计
-    taskData: {
-      name: '任务数统计',
-      navLi_one: '新增任务数统计',
-      navLi_two: '累计任务数统计'
-    },
-    numberOfFrames: {
-      name: '帧数统计',
-      navLi_one: '新增帧数统计',
-      navLi_two: '累计帧数统计'
-    },
-    consumption: {
-      name: '消费统计',
-      navLi_one: '新增消费统计',
-      navLi_two: '累计消费统计'
-    },
-    taskStatus: {
-      name: '任务状态统计'
-    }
-  },
-  // 任务
-  task: {
-    tableNavList: ['上传分析', '渲染下载'],
-    uploadBtnGroup: ['新建任务', '删除', '重新分析'],
-    renderBtnGroup: ['新建任务','删除', '重新渲染', '下载完成帧', '全部渲染',  '开始', '暂停', '拷贝', '归档'],
-    archiveRecords: '归档记录',
-    status: {
-      wait: '等待',
-      canceled: '已取消',
-      giveUp: '已放弃',
-      upload_ing: '上传中...',
-      upload_timeOut: '上传暂停',
-      upload_err: '上传失败',
-      analysis_ing: '分析中...',
-      render_ing: '渲染中',
-      render_timeOut: '渲染暂停',
-      render_timeOut_t: '渲染暂停（超时）',
-      render_timeOut_a: '渲染暂停（欠费）',
-      render_all: '待全部渲染',
-      render_done: '渲染完成',
-      toBeSet: '待设置参数'
-    }
-  },
   // 资产
   assets: {
     myUploadBtnGroup: ['上传', '新建文件夹', '下载'],
@@ -195,6 +128,7 @@ export default {
     editSuc: '修改成功',
     noTimes: '本月更新次数已用完'
   },
+  // 公共文本
   public: {
     refresh: '刷新',
     cancel: '取消',
@@ -204,6 +138,15 @@ export default {
     unData: '暂无数据',
     export: '导出',
     nextStop: '下一步',
-    previous: '上一步'
+    previous: '上一步',
+    set: '设置',
+    browse: '浏览',
+    areaList: {
+      INT: '全球INT',
+      CN: '中国CN',
+      HK: '中国香港HK',
+      TW: '中国台湾TW',
+      MO: '中国澳门MO'
+    }
   }
 }

@@ -11,9 +11,9 @@ export function createTaskSet() {
 }
 
 // DCP 设置渲染模板-获取所有软件名和版本号
-export function createTaskSetSoftware() {
+export function deleteTemplate(packageTemplateUuid) {
   return http({
-    url: `/professional/template/getSoftList`,
-    method: 'GET'
+    url: `/professional/dcp/deletePackageTemplate/${packageTemplateUuid}`,
+    method: 'DELETE'
   })
 }

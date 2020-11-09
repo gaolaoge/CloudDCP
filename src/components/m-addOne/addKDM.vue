@@ -3,7 +3,7 @@
     <header class="header">
       <span class="title">{{ title }}</span>
       <img src="@/icons/shutDialogIcon.png"
-           @click="closeDialogFun"
+           @click="$emit('closeDialogFun', 'createKDMDialog')"
            class="closeBtn">
     </header>
     <section class="stepGroup">
@@ -45,15 +45,7 @@
       }
     },
     methods: {
-      // 0.关闭窗口
-      closeDialogFun() {
-        this.$emit('closeDialogFun', 'createKDMDialog')
-        this.reset()
-      },
-      // 数据复位
-      reset() {
 
-      }
     }
   }
 </script>
@@ -63,29 +55,6 @@
     user-select: none;
     height: 80vh;
     position: relative;
-
-    .header {
-      background-color: rgba(241, 244, 249, 1);
-      box-shadow: 0px 1px 6px 0px rgba(27, 83, 244, 0.3);
-      height: 35px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0px 30px;
-
-      .title {
-        font-size: 14px;
-        font-weight: 600;
-        color: rgba(22, 29, 37, 1);
-        line-height: 25px;
-      }
-
-      .closeBtn {
-        width: 12px;
-        cursor: pointer;
-        opacity: 0.8;
-      }
-    }
 
     .stepGroup {
       height: calc(100% - 35px - 20px - 72px);

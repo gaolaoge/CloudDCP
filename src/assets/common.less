@@ -34,6 +34,13 @@ div {
   margin-bottom: 20px;
   outline: none;
 
+  &.showBorder {
+    border: 1px solid rgba(22, 29, 37, 0.2);
+    border-radius: 6px;
+    padding-left: 20px;
+    box-sizing: border-box;
+  }
+
   &::-webkit-input-placeholder { /* WebKit browsers */
     color: rgba(22, 29, 37, 0.3);
     font-size: 14px;
@@ -51,40 +58,38 @@ div {
 }
 
 // 单选
-.el-radio-group {
-  .el-radio {
-    //圈儿
-    .el-radio__input {
+.el-radio {
+  //圈儿
+  .el-radio__input {
+    width: 16px;
+    height: 16px;
+
+    .el-radio__inner {
       width: 16px;
       height: 16px;
+      background-color: transparent;
+      border-color: rgba(22, 29, 37, 1);
+      transition: all 0.2s;
+    }
+  }
 
+  //文本
+  .el-radio__label {
+    vertical-align: middle;
+    font-size: 14px;
+    font-weight: 400;
+    color: rgba(22, 29, 37, 0.6);
+  }
+
+  &.is-checked {
+    .el-radio__input {
       .el-radio__inner {
-        width: 16px;
-        height: 16px;
-        background-color: transparent;
-        border-color: rgba(22, 29, 37, 1);
-        transition: all 0.2s;
-      }
-    }
+        border-color: rgba(22, 29, 37, 0.6);
 
-    //文本
-    .el-radio__label {
-      vertical-align: middle;
-      font-size: 14px;
-      font-weight: 400;
-      color: rgba(22, 29, 37, 0.6);
-    }
-
-    &.is-checked {
-      .el-radio__input {
-        .el-radio__inner {
-          border-color: rgba(22, 29, 37, 0.6);
-
-          &::after {
-            width: 7px;
-            height: 7px;
-            background-color: rgba(0, 97, 255, 1);
-          }
+        &::after {
+          width: 7px;
+          height: 7px;
+          background-color: rgba(0, 97, 255, 1);
         }
       }
     }
@@ -1166,15 +1171,22 @@ td {
       }
     }
 
+    .farm-span {
+      flex-grow: 1;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
     .box {
       flex-grow: 1;
     }
 
+    // 下拉框
     .farm-select {
       border: 1px solid rgba(22, 29, 37, 0.2);
       border-radius: 6px;
       flex-grow: 1;
-      padding-left: 0px!important;
+      padding-left: 0px !important;
 
       /deep/ .el-input {
         height: 36px;
@@ -1187,6 +1199,7 @@ td {
       }
     }
 
+    // 验证按钮
     .verif {
       position: absolute;
       right: 0px;
@@ -1222,6 +1235,7 @@ td {
       }
     }
 
+    // 报错信息
     .warnInfo {
       user-select: none;
       position: absolute;
@@ -1243,6 +1257,7 @@ td {
       cursor: pointer;
     }
 
+    // 图标
     .i {
       position: absolute;
       width: 14px;

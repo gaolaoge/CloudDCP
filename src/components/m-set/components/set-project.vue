@@ -1,5 +1,5 @@
 <template>
-  <div class="set-task">
+  <div class="set-project">
     <div class="table-operate">
       <div class="btnGroup">
         <div :class='[item.class, {notTriggerable: item.triggerable}, "btn"]'
@@ -193,7 +193,7 @@
   } from '@/assets/common'
 
   export default {
-    name: 'set-task',
+    name: 'set-project',
     data() {
       return {
         newNameErr: false,     // 新建项目 项目名状态
@@ -434,7 +434,7 @@
 </script>
 
 <style lang="less" scoped>
-  .set-task {
+  .set-project {
     height: calc(100vh - 203px);
     padding: 10px;
   }

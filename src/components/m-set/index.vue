@@ -14,7 +14,7 @@
         <!--系统设置-->
         <m-system v-show="navListActiveIndex == 0" />
         <!--项目设置-->
-        <m-task v-show="navListActiveIndex == 1" />
+        <m-project v-show="navListActiveIndex == 1" />
         <!--消息设置-->
         <m-message v-show="navListActiveIndex == 2" />
       </div>
@@ -24,7 +24,7 @@
 
 <script>
   import mSystem from './components/set-system'
-  import mTask from './components/set-task'
+  import mProject from './components/set-project'
   import mMessage from './components/set-message'
 
   export default {
@@ -37,7 +37,7 @@
     },
     components: {
       mSystem,
-      mTask,
+      mProject,
       mMessage
     }
   }

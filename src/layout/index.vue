@@ -3,7 +3,7 @@
     <Navbar v-show="!login"
             class="navbar"
             @createDCP="createDCPDialog = true"
-            @createKDM="createKDMDialog = true" />
+            @createKDM="selectDCODialog = true"/>
     <div class="main">
       <Header v-show="!login"/>
       <AppMain/>
@@ -14,10 +14,6 @@
       <img src="@/icons/gz-blue.png" class="h">
       <span>{{ $t('transportBtn') }}</span>
     </div>
-    <!--帧大图-->
-    <!--    <div class="thumb" v-show="thumb.showLargeThumbWin" @click="$store.commit('setShowThumb', false)">-->
-    <!--      <img :src="thumb.LargeImgHref">-->
-    <!--    </div>-->
     <!--启动/下载 插件窗口-->
     <el-dialog :visible.sync="pluginDialog"
                :show-close="false"
@@ -76,7 +72,7 @@
                :close-on-click-modal="false"
                top="8vh"
                width="862px">
-      <addDCP @closeDialogFun="closeDialogFun" />
+      <addDCP @closeDialogFun="closeDialogFun"/>
     </el-dialog>
     <!--新建KDM-->
     <el-dialog :visible.sync="createKDMDialog"
@@ -86,7 +82,18 @@
                :close-on-click-modal="false"
                top="8vh"
                width="862px">
-      <addKDM @closeDialogFun="closeDialogFun" />
+      <addKDM @closeDialogFun="closeDialogFun"/>
+    </el-dialog>
+    <!--新建KDM前选择DCP-->
+    <el-dialog :visible.sync="selectDCODialog"
+               :show-close="false"
+               :destroy-on-close="true"
+               :close-on-press-escape="false"
+               :close-on-click-modal="false"
+               top="8vh"
+               width="80%"
+               style="maxWidth: 1412px; margin: 0px auto">
+      <selectDCP @closeDialogFun="closeDialogFun"/>
     </el-dialog>
   </div>
 </template>
@@ -103,6 +110,7 @@
   } from '@/assets/common'
   import addDCP from '@/components/m-addOne/addDCP.vue'
   import addKDM from '@/components/m-addOne/addKDM.vue'
+  import selectDCP from "../components/m-addOne/components/selectDCP"
 
   import {
     mapState
@@ -137,7 +145,8 @@
           btn: '重新登录'
         },
         createDCPDialog: false,
-        createKDMDialog: false
+        createKDMDialog: false,
+        selectDCODialog: false
       }
     },
     components: {
@@ -145,7 +154,8 @@
       Navbar,
       AppMain,
       addDCP,
-      addKDM
+      addKDM,
+      selectDCP
     },
     computed: {
       ...mapState(['login', 'user', 'thumb', 'socket_plugin', 'pluginDialog', 'remoteLoginDate', 'socket_backS_msg'])
@@ -395,4 +405,29 @@
   /*    width: 100vh;*/
   /*  }*/
   /*}*/
+</style>
+
+<style lang="less">
+  .header {
+    background-color: rgba(241, 244, 249, 1);
+    box-shadow: 0px 1px 6px 0px rgba(27, 83, 244, 0.3);
+    height: 35px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px 30px;
+
+    .title {
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(22, 29, 37, 1);
+      line-height: 25px;
+    }
+
+    .closeBtn {
+      width: 12px;
+      cursor: pointer;
+      opacity: 0.8;
+    }
+  }
 </style>

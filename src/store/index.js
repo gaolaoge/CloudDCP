@@ -1,6 +1,12 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import {messageFun} from '../assets/common'
+import {
+  messageFun,
+  createDateFun
+} from '../assets/common'
+import {
+  getObjectList
+} from '@/api/set-api'
 
 Vue.use(Vuex)
 
@@ -60,7 +66,8 @@ export default new Vuex.Store({
     taskState: null,        // 站内信选中项目
     setting: {
       pageSize: 10
-    }
+    },
+    projectList: []         // 项目列表
   },
   getter: {},
   mutations: {
@@ -303,6 +310,20 @@ export default new Vuex.Store({
           context.state.socket_plugin_msg = data
         })
       })
-    }
+    },
+    // 获取项目列表 忽略缩略图
+    async getProjectList(context) {
+      let {data} = await getObjectList(`keyword=&pageIndex=1&pageSize=999`)
+      context.state.projectList = data.data.map(object => {
+        return {
+          'taskProjectUuid': object.taskProjectUuid,
+          'createTime': createDateFun(new Date(object.createTime)),
+          'projectName': object.projectName,
+          'customerName': object.customerName,
+          'isDefault': object.isDefault == 0 ? '否' : '是',
+          'projectStatus': object.projectStatus == 0 ? '停用' : '启用',
+        }
+      })
+    },
   }
 })

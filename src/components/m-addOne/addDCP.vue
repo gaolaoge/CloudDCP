@@ -262,7 +262,7 @@
       </div>
     </section>
     <!--前进或后退按钮-->
-    <div class="btnGroup">
+    <div class="farm-btnGroup">
       <!--选择打包模板-->
       <div v-show="stepBtnActive == 1">
         <span class="checked"><el-checkbox v-model="selectUnpackBase.checked">下次不再提示</el-checkbox></span>
@@ -362,7 +362,7 @@
           </el-select>
         </div>
         <!--按钮-->
-        <div class="btnGroup">
+        <div class="farm-btnGroup">
           <div :class="[{'disable-self': null}, 'btnGroup-btn', 'confirm']">
             <span>{{ $t('public.save') }}</span>
           </div>
@@ -1252,92 +1252,10 @@
       }
     }
 
-    .btnGroup {
+    .farm-btnGroup {
       height: auto;
       margin-top: 22px;
-
-      .btnGroup-btn:nth-of-type(1) {
-        margin-right: 0px;
-      }
     }
-  }
-
-  .btnGroup {
-    position: relative;
-    height: 72px;
-    display: flex;
-    align-items: center;
-    flex-direction: row-reverse;
-
-    & > div {
-      position: relative;
-      width: 100%;
-      text-align: right;
-    }
-
-    .btnGroup-btn {
-      margin-right: 30px;
-      display: inline-block;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 500;
-      color: rgba(255, 255, 255, 0.79);
-      text-align: center;
-      cursor: pointer;
-
-      &.confirm {
-        background-color: rgba(10, 98, 241, 1);
-        border: 1px solid rgba(10, 98, 241, 1);
-        width: 76px;
-        line-height: 32px;
-
-        span {
-          color: rgba(255, 255, 255, 0.8);
-        }
-      }
-
-      &.previous {
-        border: 1px solid rgba(22, 29, 37, 0.2);
-        width: 74px;
-        line-height: 30px;
-
-        span {
-          color: rgba(22, 29, 37, 0.79);
-        }
-      }
-
-      &.cannotTrigger {
-        cursor: no-drop;
-        border: 1px solid rgba(22, 29, 37, 0.19);
-        background-color: rgba(255, 255, 255, 1);
-        width: 74px;
-        line-height: 30px;
-
-        span {
-          color: rgba(22, 29, 37, 0.19);
-        }
-      }
-    }
-
-    .checked {
-      position: absolute;
-      left: 30px;
-      top: 8px;
-
-      /deep/ .el-checkbox__label {
-        color: rgba(22, 29, 37, 0.6);
-      }
-
-    }
-  }
-
-  .wrapper-border {
-    width: 100%;
-    border: 1px solid rgba(22, 29, 37, 0.3);
-    border-radius: 4px;
-    overflow-y: scroll;
-    padding: 20px;
-    box-sizing: border-box;
   }
 
   .farm-select input {

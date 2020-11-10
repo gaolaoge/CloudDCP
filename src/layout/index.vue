@@ -82,7 +82,8 @@
                :close-on-click-modal="false"
                top="8vh"
                width="862px">
-      <addKDM @closeDialogFun="closeDialogFun"/>
+      <addKDM @closeDialogFun="closeDialogFun"
+              :selectedDCP="selectedDCP"/>
     </el-dialog>
     <!--新建KDM前选择DCP-->
     <el-dialog :visible.sync="selectDCODialog"
@@ -93,7 +94,7 @@
                top="8vh"
                width="80%"
                style="maxWidth: 1412px; margin: 0px auto">
-      <selectDCP @closeDialogFun="closeDialogFun"/>
+      <selectDCP @closeDialogFun="closeDialogFun" @didSelected="didSelected"/>
     </el-dialog>
   </div>
 </template>
@@ -146,7 +147,8 @@
         },
         createDCPDialog: false,
         createKDMDialog: false,
-        selectDCODialog: false
+        selectDCODialog: false,
+        selectedDCP: null
       }
     },
     components: {
@@ -168,6 +170,12 @@
       }
     },
     methods: {
+      // 已选择DCP文件，打开新建KDM窗口
+      didSelected(obj) {
+        this.closeDialogFun('selectDCODialog')
+        this.selectedDCP = obj
+        this.createKDMDialog = true
+      },
       // 关闭新建项目窗口
       closeDialogFun(win) {
         this[win] = false

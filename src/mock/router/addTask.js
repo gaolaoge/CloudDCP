@@ -64,5 +64,41 @@ module.exports = [
         ]
       }
     }
+  },
+  { // KDM 获取内部银幕分组列表
+    url: /\/professional\/kdm\/getInnerScreenGroupList/,
+    type: 'get',
+    response: () => {
+      return Mock.mock({
+        'code': 200,
+        'data|4': [
+          {
+            'theatreUuid': '@id()',
+            'theatreName': '@cname()',
+            'theatreNo|+1': 1,
+            'screenCount|1-5': 0
+          }
+        ],
+        total: 4
+      })
+    }
+  },
+  { // KDM 获取分组内银幕列表
+    url: /\/professional\/kdm\/getScreenList\?theatreUuid=/,
+    type: 'get',
+    response: () => {
+      return Mock.mock({
+        'code': 200,
+        'data|3': [
+          {
+            'screenUuid': '@id()',
+            'screenId': /\d{12}/,
+            'screenName': /\d{5}_[\u4e00-\u9fa5]{2}\d/,
+            'certificateName': /Barco-ICMP\.\d{10}_cert\.pem/
+          }
+        ],
+        total: 3
+      })
+    }
   }
 ]

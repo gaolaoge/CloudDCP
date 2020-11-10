@@ -17,3 +17,19 @@ export function deleteTemplate(packageTemplateUuid) {
     method: 'DELETE'
   })
 }
+
+// KDM 获取内部银幕分组列表
+export function getInternalScrGroup() {
+  return http({
+    url: `/professional/kdm/getInnerScreenGroupList`,
+    method: 'GET'
+  })
+}
+
+// KDM 获取分组内银幕列表
+export function getInternalScrList(theatreUuid) {
+  return http({
+    url: `/professional/kdm/getScreenList?theatreUuid=${theatreUuid}`,
+    method: 'GET'
+  })
+}

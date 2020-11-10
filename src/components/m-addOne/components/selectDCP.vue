@@ -194,6 +194,17 @@
           <span>{{ $t('public.refresh') }}</span>
         </div>
       </div>
+      <!--按钮-->
+      <div class="farm-btnGroup">
+        <div :class="[{'disable-self': null}, 'btnGroup-btn', 'confirm']"
+             @click="selected">
+          <span>{{ $t('public.save') }}</span>
+        </div>
+        <div class="btnGroup-btn previous"
+             @click="$emit('closeDialogFun', 'selectDCODialog')">
+          <span>{{ $t('public.cancel') }}</span>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -322,6 +333,9 @@
       },
       rowClick(row){
         this.radio = row.index
+      },
+      selected() {
+        this.$emit('didSelected', this.tableData[this.radio])
       }
     },
     mounted() {
@@ -341,7 +355,9 @@
     position: relative;
 
     .wrapper {
-      padding: 10px;
+      position: relative;
+      height: calc(100% - 35px);
+      padding: 10px 20px;
       box-sizing: border-box;
 
       .table-operate {
@@ -350,11 +366,22 @@
       }
 
       /deep/ .el-table__body-wrapper {
-        height: calc(80vh - 28px - 20px - 28px - 35px - 47px - 14px - 32px);
+        height: calc(80vh - 28px - 20px - 28px - 35px - 47px - 14px - 32px - 40px);
       }
 
       /deep/.el-radio__label {
         display: none;
+      }
+    }
+
+    .farm-btnGroup {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      height: 34px;
+
+      .btnGroup-btn:nth-of-type(1) {
+        margin-right: 0px;
       }
     }
   }

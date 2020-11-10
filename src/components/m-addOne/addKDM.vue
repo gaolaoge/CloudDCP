@@ -22,11 +22,27 @@
           </li>
         </ul>
       </div>
+      <!--主体-->
+      <div class="stepBody">
+        <!--选择播放银幕-->
+        <div class="stepBody-item" v-show="stepBtnActive == 1">
+          <!--从银幕管理选择-->
+          <selectScreenFromAdmin />
+          <!--从我的电脑选择-->
+          <selectScreenFromLocal />
+        </div>
+        <!--设置KDM参数-->
+        <div class="stepBody-item" v-show="stepBtnActive == 2">
+
+        </div>
+      </div>
     </section>
   </div>
 </template>
 
 <script>
+  import selectScreenFromAdmin from './components/selectScreenFromAdmin'
+  import selectScreenFromLocal from './components/selectScreenFromLocal'
   import {mapState} from 'vuex'
   import {
     messageFun
@@ -41,11 +57,30 @@
           '选择播放银幕',
           '设置KDM参数'
         ],
-        stepBtnActive: 1
+        stepBtnActive: 1,
+        selectScreen: {
+
+        },
+        setParameters: {
+
+        }
+      }
+    },
+    props: {
+      selectedDCP: {
+        type: Object,
+        required: true
       }
     },
     methods: {
 
+    },
+    mounted() {
+
+    },
+    components: {
+      selectScreenFromAdmin,
+      selectScreenFromLocal
     }
   }
 </script>
@@ -57,8 +92,8 @@
     position: relative;
 
     .stepGroup {
-      height: calc(100% - 35px - 20px - 72px);
-      padding: 20px 30px 0px;
+      height: calc(100% - 35px - 40px);
+      padding: 20px 30px;
 
       .navL {
         ul {
@@ -127,57 +162,6 @@
           height: 100%;
           display: flex;
           flex-direction: row;
-        }
-      }
-    }
-
-    .btnGroup {
-      height: 72px;
-      display: flex;
-      align-items: center;
-      flex-direction: row-reverse;
-
-      .btnGroup-btn {
-        margin-right: 30px;
-        display: inline-block;
-        border-radius: 8px;
-        font-size: 14px;
-        font-weight: 500;
-        color: rgba(255, 255, 255, 0.79);
-        text-align: center;
-        cursor: pointer;
-
-        &.confirm {
-          background-color: rgba(10, 98, 241, 1);
-          border: 1px solid rgba(10, 98, 241, 1);
-          width: 76px;
-          line-height: 32px;
-
-          span {
-            color: rgba(255, 255, 255, 0.8);
-          }
-        }
-
-        &.previous {
-          border: 1px solid rgba(22, 29, 37, 0.2);
-          width: 74px;
-          line-height: 30px;
-
-          span {
-            color: rgba(22, 29, 37, 0.79);
-          }
-        }
-
-        &.cannotTrigger {
-          cursor: no-drop;
-          border: 1px solid rgba(22, 29, 37, 0.19);
-          background-color: rgba(255, 255, 255, 1);
-          width: 74px;
-          line-height: 30px;
-
-          span {
-            color: rgba(22, 29, 37, 0.19);
-          }
         }
       }
     }

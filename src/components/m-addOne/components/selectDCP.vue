@@ -335,7 +335,7 @@
         this.radio = row.index
       },
       selected() {
-        this.$emit('didSelected', this.tableData[this.radio])
+        this.$emit('didSelected', this.tableData[this.radio]['taskUuid'])
       }
     },
     mounted() {

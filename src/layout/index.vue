@@ -83,7 +83,7 @@
                top="8vh"
                width="862px">
       <addKDM @closeDialogFun="closeDialogFun"
-              :selectedDCP="selectedDCP"/>
+              :packageTaskUuid="selectedDCPUuid"/>
     </el-dialog>
     <!--新建KDM前选择DCP-->
     <el-dialog :visible.sync="selectDCODialog"
@@ -148,7 +148,7 @@
         createDCPDialog: false,
         createKDMDialog: false,
         selectDCODialog: false,
-        selectedDCP: null
+        selectedDCPUuid: null
       }
     },
     components: {
@@ -171,9 +171,9 @@
     },
     methods: {
       // 已选择DCP文件，打开新建KDM窗口
-      didSelected(obj) {
+      didSelected(Uuid) {
         this.closeDialogFun('selectDCODialog')
-        this.selectedDCP = obj
+        this.selectedDCPUuid = Uuid
         this.createKDMDialog = true
       },
       // 关闭新建项目窗口
@@ -436,6 +436,48 @@
       width: 12px;
       cursor: pointer;
       opacity: 0.8;
+    }
+  }
+
+  .fileItem {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px!important;
+
+    label {
+      color: rgba(22, 29, 37, 0.6);
+      font-size: 14px;
+      margin-right: 60px;
+      display: inline-block;
+      width: 96px!important;
+      text-align: right;
+    }
+
+    input {
+      flex-grow: 1;
+      border-radius: 6px;
+      border: 1px solid rgba(22, 29, 37, 0.15);
+      background-color: rgba(255, 255, 255, 1);
+      height: 36px;
+      outline: none;
+      padding-left: 17px;
+    }
+
+    .btn {
+      height: 32px;
+      border-radius: 6px;
+      border: 1px solid rgba(27, 83, 244, 0.3);
+      text-align: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      margin-left: 23px;
+      padding: 0px 12px;
+
+      span {
+        line-height: 32px;
+        color: rgba(27, 83, 244, 1);
+        font-size: 12px;
+      }
     }
   }
 </style>

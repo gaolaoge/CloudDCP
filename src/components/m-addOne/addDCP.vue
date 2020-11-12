@@ -35,17 +35,17 @@
               <span class="addMoreText">{{ selectUnpackBase.addMoreText }}</span>
             </div>
             <!--已存在模板-->
-            <div :class="[{'active': selectUnpackBase.renderListActive == index},
+            <div :class="[{'active': selectUnpackBase.renderTListActive == index},
                            'set-renderTemplate-item', 'ed']"
-                 @click="selectUnpackBase.renderListActive = index"
-                 v-for="(item,index) in selectUnpackBase.renderList"
+                 @click="selectUnpackBase.renderTListActive = index"
+                 v-for="(item,index) in selectUnpackBase.renderTList"
                  :key="'template-' + index">
               <div class="headerB">
-                <span class="headerText" :title="item.renderTemplate.templateName">
-                  {{ item.renderTemplate.templateName }}
+                <span class="headerText" :title="item.templateName">
+                  {{ item.templateName }}
                 </span>
                 <span class="opacityBtnGroup">
-                  <span v-show="selectUnpackBase.renderListActive == index">
+                  <span v-show="selectUnpackBase.renderTListActive == index">
                     <!--编辑-->
                     <img src="@/icons/set-renderTemplate-item-edit.png"
                          @click.stop="addTemplate('editOne',index)"
@@ -55,7 +55,7 @@
                          @click="deleteTemplateF(index)"
                          class="item-icon">
                   </span>
-                  <span v-show="selectUnpackBase.renderListActive != index">
+                  <span v-show="selectUnpackBase.renderTListActive != index">
                     <!--编辑-->
                     <img src="@/icons/set-renderTemplate-item-edit-b.png"
                          alt=""
@@ -70,13 +70,9 @@
                 </span>
               </div>
               <div class="bodyB">
-                <span class="software">
-                  {{ item.renderTemplate.softName }} - {{ item.renderTemplate.softVer }}
-                </span>
-                <span class="plugin" v-for="(plugin,index) in item.xxlPlugins" :key="index" v-show="index < 2">
-                  {{ plugin.pluginName }} - {{ plugin.version }},
-                </span>
-                <span class="plugin" v-show="item.xxlPlugins.length > 2">...</span>
+                <span class="software">{{ dialogAdd.normL }}： {{ dialogAdd['normList'][item.codingRule]['label'] }}</span>
+                <span class="software">{{ dialogAdd.internetSL }}： {{ item.codingRate }}Mb/s</span>
+                <span class="software">{{ dialogAdd.speedL }}： {{ dialogAdd['speedList'][item.frameRate]['label'] }}</span>
                 <img src="@/icons/item-selected.png" class="item-selected">
               </div>
             </div>
@@ -130,7 +126,8 @@
                   :value="item.val">
                 </el-option>
               </el-select>
-              <div class="btn" @click="addProjectDialog.visible = true"><span>{{ setUnpackBase.createObject }}</span></div>
+              <div class="btn" @click="addProjectDialog.visible = true"><span>{{ setUnpackBase.createObject }}</span>
+              </div>
             </div>
             <!--任务名称-->
             <div class="fileItem">
@@ -267,7 +264,7 @@
       <div v-show="stepBtnActive == 1">
         <span class="checked"><el-checkbox v-model="selectUnpackBase.checked">下次不再提示</el-checkbox></span>
         <!--下一步-->
-        <div :class="[{'cannotTrigger': selectUnpackBase.renderListActive < 0}, 'btnGroup-btn', 'confirm']"
+        <div :class="[{'cannotTrigger': selectUnpackBase.renderTListActive < 0}, 'btnGroup-btn', 'confirm']"
              @click="goToMode('next')">
           <span class="nextStep">{{ $t('public.nextStop') }}</span>
         </div>
@@ -380,7 +377,7 @@
       :visible.sync="setFileNameDialog.visible"
       @close="closesetFileNameDialog"
       append-to-body>
-      <setName @shutMe="setFileNameDialog.visible = false" />
+      <setName @shutMe="setFileNameDialog.visible = false"/>
     </el-dialog>
     <!--新建项目-->
     <el-dialog
@@ -397,7 +394,7 @@
              class="closeBtn">
       </div>
       <div class="dialog-body">
-        <addProject @cancelAdd="shutAddProjectDialog" />
+        <addProject @cancelAdd="shutAddProjectDialog"/>
       </div>
     </el-dialog>
   </div>
@@ -405,8 +402,9 @@
 
 <script>
   import {
-    createTaskSet,              // 选择打包模板-获取模板
-    deleteTemplate              // 选择打包模板-删除模板
+    getTemplateList,              // 选择打包模板-获取模板
+    deleteTemplate,             // 选择打包模板-删除模板
+    createNewDCP                // 创建DCP
   } from '@/api/addOne-api'
   import {
     mapState
@@ -431,8 +429,8 @@
         // 选择打包模板
         selectUnpackBase: {
           addMoreText: '添加模板',
-          renderListActive: null,   // 渲染模板默认选中项索引
-          renderList: [],           // 设置渲染模板 已存在记录
+          renderTListActive: null,   // 渲染模板默认选中项索引
+          renderTList: [],           // 设置渲染模板 已存在记录
           checked: false            // 下次不再提示
         },
         // 设置打包参数
@@ -709,21 +707,37 @@
           normList: [
             {
               label: 'SMPTE',
-              val: 'SMPTE'
+              val: 0
             },
             {
               label: 'Interop',
-              val: 'Interop'
+              val: 1
             }
           ],
           speedList: [
             {
-              label: 'SMPTE',
-              val: 'SMPTE'
+              label: '24FPS',
+              val: 0
             },
             {
-              label: 'Interop',
-              val: 'Interop'
+              label: '48FPS',
+              val: 1
+            },
+            {
+              label: '60FPS',
+              val: 2
+            },
+            {
+              label: '72FPS',
+              val: 3
+            },
+            {
+              label: '96FPS',
+              val: 4
+            },
+            {
+              label: '120FPS',
+              val: 5
             }
           ],
           editOrAdd: '',    // 【确定】标记编辑or新建
@@ -758,20 +772,21 @@
           let data = JSON.parse(e.data)
           if (data.code == 201) {
             if (data.result == 0) {
-              let fileType = data.key.splice(0, 2),
+              let fileType = data.key.slice(0, 2),
                 team
               if (fileType == 'SY') team = this.selectFileBase.mp3FileList
               else if (fileType == 'TX') team = this.selectFileBase.imgFileList
               else if (fileType == 'ZM') team = this.selectFileBase.subtitleFileList
               else {
                 console.log('-------------------')
-                throw '获取插件返回值类型报错，位置 addDCP-406'
+                console.log('获取插件返回值类型报错，位置 addDCP-406')
                 console.log(data)
                 console.log('-------------------')
-                return
+                return false
               }
               let index = team.findIndex(curr => curr.key == data.key)
               team[index]['localPath'] = data.localPath
+
             }
           }
         },
@@ -782,7 +797,7 @@
       // 关闭新建项目窗口
       shutAddProjectDialog(status) {
         this.addProjectDialog.visible = false
-        if(status) this.dispatch('getObjectList')
+        if (status) this.getList()
       },
       // 1.选择打包模板 - 添加模板 - 检验模板名格式
       nameVerif() {
@@ -798,7 +813,7 @@
       // 0.设置渲染文件 - 下一步
       goToMode(dire) {
         if (dire == 'previous') this.stepBtnActive = 2
-        else if (this.selectUnpackBase.renderListActive < 0) messageFun('info', '尚未选择模板')// 我的资产
+        else if (this.selectUnpackBase.renderTListActive < 0) messageFun('info', '尚未选择模板')// 我的资产
         else this.stepBtnActive = 2
       },
       // 0.关闭窗口
@@ -808,10 +823,10 @@
       },
       // 1.选择打包模板 - 获取渲染模板列表
       async getList() {
-        let {data} = await createTaskSet(),
+        let {data} = await getTemplateList(),
           {selectUnpackBase} = this
-        selectUnpackBase.renderList = data.data
-        selectUnpackBase.renderListActive = data.data.findIndex(curr => curr.renderTemplate.isDefault == 1)
+        selectUnpackBase.renderTList = data.data
+        selectUnpackBase.renderTListActive = data.data.findIndex(curr => curr.isDefault == 1)
       },
       // 1.选择打包模板 - 打开【新建模板】
       async addTemplate(s, index) {
@@ -832,7 +847,7 @@
           showClose: false
         })
           .then(() => {
-            deleteTemplate(this.selectUnpackBase.renderList[index]['renderTemplate']['templateUuid'])
+            deleteTemplate(this.selectUnpackBase.renderTList[index]['renderTemplate']['templateUuid'])
               .then(data => {
                 this.getList()
                 messageFun('success', '删除成功')
@@ -864,7 +879,47 @@
 
       },
       // 3.保存
-      confirmFun() {
+      async confirmFun() {
+        // let {data}  =await createNewDCP(JSON.stringify({
+        //   'taskName': '',                  // 任务名
+        //   'packageName': '',               // dcp文件名
+        //   'projectUuid': '',               // 项目uuid
+        //   'filmName': '',                  // 影片名称
+        //   'filmCategory': '',              // 影片类型
+        //   'filmVersion': '',               // 类型版本
+        //   'aspectRatio': '',               // 宽高比
+        //   'resolution': '',                // 分辨率
+        //   'filmType': '',                  // 2d/3d 1:2d, 2:3d
+        //   'sourceColor': '',               // 源色彩
+        //   'soundLanguage': '',             // 声音语言
+        //   'captionLanguage': '',           // 字幕语言
+        //   'soundtrack': '',                // 声道类型
+        //   'captionType': '',               // 字幕类型
+        //   'region': '',                    // 地区
+        //   'packageType': '',               // DCP类型
+        //   'presenter': '',                 // 出品方
+        //   'productor': '',                 // 制作方
+        //   'packageDate': '',               // 打包日期
+        //   'patternUuid': '',               // 打包模式uuid
+        //   'packageTemplateUuid': '',       // 模板uuid
+        //   'zoneUuid': '',                  // 分区uuid
+        //   'operateSource': 1,              // 网页端: 1,客户端: 2
+        //   'isEncrypt': '',                 // 是否加密 0不加密, 1加密
+        //   'inputFileIndex': {              // 上传文件本地路径
+        //     'image': '',                   // 图像
+        //     'leftImage': '',               // 图像(左)
+        //     'rightImage': '',              // 图像(右)
+        //     'leftSound': '',               // 左声道
+        //     'rightSound': '',              // 右声道
+        //     'centerSound': '',             // 中置声道
+        //     'leftRoundSound': '',          // 左环绕
+        //     'rightRoundSound': '',         // 右环绕
+        //     'leftBackRoundSound': '',      // 左后环绕
+        //     'rightBackRoundSound': '',     // 右后环绕
+        //     'subWoofer': '',               // 低音炮
+        //     'subtitle': ''                 // 字幕文件
+        //   }
+        // }))
         let {imgFileList, mp3FileList, subtitleFileList} = this.selectFileBase
         this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
           code: 202,
@@ -873,13 +928,34 @@
           ID: '003',
           files: [
             ...imgFileList.map(item => {
-              item.localPath, item.networkPath, item.type
+              return {
+                'localPath': item.localPath,
+                'networkPath': {
+                  'front': '/front',
+                  'back': 'file/'
+                },
+                'type': item.type
+              }
             }),
             ...mp3FileList.map(item => {
-              item.localPath, item.networkPath, item.type
+              return {
+                'localPath': item.localPath,
+                'networkPath': {
+                  'front': '/front',
+                  'back': item.localPath
+                },
+                'type': item.type
+              }
             }),
             ...subtitleFileList.map(item => {
-              item.localPath, item.networkPath, item.type
+              return {
+                'localPath': item.localPath,
+                'networkPath': {
+                  'front': '/front',
+                  'back': item.localPath
+                },
+                'type': item.type
+              }
             })
           ]
         })
@@ -897,7 +973,6 @@
     },
     mounted() {
       this.getList()  // 1.选择打包模板 - 获取渲染模板列表
-      this.dispatch('getObjectList')
     },
     components: {
       addProject,
@@ -991,48 +1066,6 @@
             margin-bottom: 15px;
           }
 
-          .fileItem {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-
-            label {
-              color: rgba(22, 29, 37, 0.6);
-              font-size: 14px;
-              margin-right: 60px;
-              display: inline-block;
-              width: 96px;
-              text-align: right;
-            }
-
-            input {
-              flex-grow: 1;
-              border-radius: 6px;
-              border: 1px solid rgba(22, 29, 37, 0.15);
-              background-color: rgba(255, 255, 255, 1);
-              height: 36px;
-              outline: none;
-              padding-left: 17px;
-            }
-
-            .btn {
-              height: 32px;
-              border-radius: 6px;
-              border: 1px solid rgba(27, 83, 244, 0.3);
-              text-align: center;
-              cursor: pointer;
-              flex-shrink: 0;
-              margin-left: 23px;
-              padding: 0px 12px;
-
-              span {
-                line-height: 32px;
-                color: rgba(27, 83, 244, 1);
-                font-size: 12px;
-              }
-            }
-          }
-
           /*设置渲染模板*/
 
           .set-renderTemplate {
@@ -1114,7 +1147,6 @@
                   box-sizing: border-box;
 
                   .hardware,
-                  .plugin,
                   .software {
                     display: block;
                     font-size: 14px;
@@ -1157,10 +1189,6 @@
                     .hardware,
                     .software {
                       color: rgba(255, 255, 255, 1);
-                    }
-
-                    .plugin {
-                      color: rgba(255, 255, 255, 0.8);
                     }
 
                     .item-selected {
@@ -1259,6 +1287,6 @@
   }
 
   .farm-select input {
-    border: 0px!important;
+    border: 0px !important;
   }
 </style>

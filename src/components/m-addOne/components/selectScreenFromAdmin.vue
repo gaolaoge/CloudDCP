@@ -60,23 +60,27 @@
         <span class="text" v-show="screenType == 'internalScreen'">{{ backText.fromInterval }}</span>
         <span class="text" v-show="screenType == 'theaterScreen'">{{ backText.fromTheater }}</span>
       </div>
-      <div class="filter rightOperate">
+      <div class="dialog-btn-group rightOperate">
+        <!--院线银幕-->
         <div class="totalText" v-show="false">
           <div class="filter-btn primary">{{btn}}</div>
         </div>
+        <!--内部银幕按钮-->
         <div class="totalText" v-show="true">
+          <!--已选择n个场景-->
           <span class="internalScrSelText">
             {{ bottomOperate.selectedText1 }}
             <span class="internalScrSelTotal">{{ internalScrSelTotal }}</span>
             {{ bottomOperate.selectedText2 }}
           </span>
-          <div class="filter-btn primary">{{ $t('public.nextStop') }}</div>
+          <!--下一步-->
+          <div :class="[{'cannotBeGo': !internalScrSelTotal}, 'dialog-btn', 'save']"
+               @click="nextFun">
+            <span>{{ $t('public.nextStop') }}</span>
+          </div>
         </div>
-
       </div>
-
     </div>
-    ying
   </div>
 </template>
 
@@ -101,9 +105,17 @@
           children: 'zones',
           isLeaf: 'leaf'
         },
-        checkedList: [],
-        adminTreeResolve: null,   // 内部系统tree回调函数
-        checkAlling: false,       // 全选-即时状态
+        checkedList: [
+          // {
+          //   theatreUuid,        // 分组ID
+          //   checkAll: false,    // 分组全选状态
+          //   acquired: false,    // 分组内荧幕是否已被加载
+          //   itemList: [],       // 分组内银幕列表
+          //   checkItemList: []   // 分组内被选中银幕
+          // }
+        ],                         // 内部银幕 - 银幕分组结构和即时状态
+        adminTreeResolve: null,    // 内部银幕 - 系统tree回调函数
+        checkAll_ing: false,       // 内部银幕 - 全选指令（加载并展开分组时是否需要全选动作）
         btn: '去选择',
         backText: {
           fromInterval: '从我的电脑选择',
@@ -123,16 +135,20 @@
           let {data} = await getInternalScrGroup()
           if (data.code == 200) {
             this.checkedList = new Array(data.total).fill(undefined).map(() => new Object({
+              theatreUuid: null,
               checkAll: false,
               acquired: false,
               itemList: [],
               checkItemList: []
             }))
-            return resolve(data.data.map((item, index) => Object.assign(item, {
-                leaf: false,
-                index
-              }
-            )))
+            return resolve(data.data.map((item, index) => {
+              this.checkedList[index]['theatreUuid'] = item['theatreUuid']
+              return Object.assign(item, {
+                  leaf: false,
+                  index
+                }
+              )
+            }))
           } else {
             messageFun('error', '获取内部银幕分组列表')
             console.log('-------------------')
@@ -152,8 +168,8 @@
                 fatherIndex: index
               })
             }))
-            if (this.checkAlling) {   // 全选事件
-              this.checkAlling = false
+            if (this.checkAll_ing) {   // 全选事件
+              this.checkAll_ing = false
               checkedList[index]['checkItemList'] = [...checkedList[index]['itemList']]
             }
           } else {
@@ -172,16 +188,28 @@
       checkAllScreen(index) {
         let {checkedList} = this
         // 判断是否已展开 未展开tree数据为空
-        if (!checkedList[index]['acquired']) this.checkAlling = true
-          //   this.loadNode(null, this.adminTreeResolve).then(() => {
-          //   console.log('then')
-          //   setTimeout(() => checkedList[index]['checkItemList'] = [...checkedList[index]['itemList']], 1000)
-        // })
+        if (!checkedList[index]['acquired']) this.checkAll_ing = true
         else if (checkedList[index]['checkAll']) checkedList[index]['checkItemList'] = [...checkedList[index]['itemList']]
         else checkedList[index]['checkItemList'] = []
+      },
+      // 下一步
+      nextFun() {
+        if (!this.internalScrSelTotal) return false
+        let theatreUuidList = [],
+          screenUuidList = []
+        this.checkedList.forEach(item => {
+          if (item.checkAll) theatreUuidList.push(item.theatreUuid)
+          else screenUuidList = [...screenUuidList, ...item.checkItemList]
+        })
+        this.$emit('selectedAndNext', {
+          theatreUuidList,     // 全选集合
+          screenUuidList,      // 单选集合
+          certificateSource: this.screenType == 'internalScreen' ? 3 : 2
+        })
       }
     },
     computed: {
+      // 选中项长度
       internalScrSelTotal() {
         return this.checkedList.reduce((total, item) => total + item['checkItemList'].length, 0)
       }
@@ -265,6 +293,7 @@
 
             .internalScrSelTotal {
               color: rgba(27, 83, 244, 1);
+              font-weight: 500;
               font-size: 21px;
             }
           }
@@ -272,5 +301,11 @@
 
       }
     }
+  }
+
+  .dialog-btn-group {
+    position: relative;
+    right: 0px;
+    bottom: 2px;
   }
 </style>

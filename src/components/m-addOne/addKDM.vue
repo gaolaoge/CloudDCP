@@ -224,7 +224,7 @@
       async createKDMF() {
         let {theatreUuidList, screenUuidList, certificateSource} = this.selectScreen,
           {zoneUuid, packageTaskUuid} = this,
-          {data} = await createNewKDM(JSON.stringify({
+          {data} = await createNewKDM({
             'kdmFilenameTemplateUuid': '',      // kdm模板uuid
             'kdmCreateDate': '',                // kdm制作时间
             packageTaskUuid,                    // 选中DCP文件的Uuid
@@ -240,7 +240,7 @@
             zoneUuid,                           // 分区uuid
             'operateSource': 1,                 // 操作来源, 1,网页端 2客户端
             certificateSource                   // 证书来源 1我的电脑, 2银幕列表-院线银幕, 3银幕列表-内部银幕
-          }))
+          })
       }
     },
     mounted() {

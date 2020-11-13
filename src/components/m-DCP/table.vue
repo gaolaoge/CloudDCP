@@ -257,7 +257,8 @@
       },
       // 获取表格数据
       async getList() {
-        let {data} = await getDCPTableList({
+        let {zoneUuid} = this,
+          {data} = await getDCPTableList({
           pageIndex: this.pageIndex,
           pageSize: this.setting.pageSize,
           keyword: this.keyword,
@@ -269,7 +270,7 @@
           isEncryptList: [],       // 是否加密 0不加密,1加密
           sortBy: null,            // 排序字段
           sortType: 0,             // 0降序,1升序
-          zoneUuid: this.zoneId
+          zoneUuid
         })
         this.total = data.total
         this.tableData = data.data.map(item => Object.assign(item, {
@@ -351,7 +352,7 @@
       this.$nextTick(() => createTableIconList())
     },
     computed: {
-      ...mapState(['setting', 'zoneId'])
+      ...mapState(['setting', 'zoneUuid'])
     },
     watch: {
       'selectionList': {

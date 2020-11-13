@@ -310,7 +310,7 @@
       }
     },
     computed: {
-      ...mapState(['user', 'login', 'zoneId', 'socket_backS', 'socket_plugin_msg'])
+      ...mapState(['user', 'login', 'zoneUuid', 'socket_backS', 'socket_plugin_msg'])
     },
     mounted() {
       // this.getList()
@@ -336,7 +336,7 @@
       },
       workBenchVal: {
         handler: function (val) {
-          if (val === this.zoneId) return false
+          if (val === this.zoneUuid) return false
           this.$store.commit('changeZoneId', val)
           sessionStorage.setItem('zoneUuid', val)
           this.$store.commit('changeZone', this.workBenchList.find(item => item.val === val).zone)
@@ -351,7 +351,7 @@
         },
         immediate: true
       },
-      zoneId: {
+      zoneUuid: {
         handler: function (val) {
           this.getBulletinF()   // 获取公告
           // putNewZoneID({'zoneUuid': val})   // 传达切换分区事件

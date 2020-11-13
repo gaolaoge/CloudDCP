@@ -107,7 +107,8 @@
   } from './components'
   import {
     createDateFun,
-    getUserInfoF
+    getUserInfoF,
+    throwInfoFun
   } from '@/assets/common'
   import addDCP from '@/components/m-addOne/addDCP.vue'
   import addKDM from '@/components/m-addOne/addKDM.vue'
@@ -206,6 +207,7 @@
     },
     mounted() {
       getUserInfoF()
+      throwInfoFun('示例报错', 'index.vue-210', '示例报错data')
     }
   }
 </script>

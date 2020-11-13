@@ -25,6 +25,13 @@ module.exports = [
       }
     }
   },
+  { // DCP 设置渲染模板-获取已存在记录
+    url: /\/dcpProfessional\/dcp\/checkPackageTemplateName\?templateName=/,
+    type: 'get',
+    response: () => {
+      return {code: 200}
+    }
+  },
   { // DCP 设置渲染模板-获取所有软件名和版本号
     url: /\/professional\/template\/getSoftList/,
     type: 'get',

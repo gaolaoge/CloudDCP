@@ -148,7 +148,7 @@
       }
     },
     computed: {
-      ...mapState(['zoneId', 'user'])
+      ...mapState(['zoneUuid', 'user'])
     },
     methods: {
       // 打开消息详情
@@ -170,7 +170,7 @@
 
           if (type == 0) messageFun('info', '项目已删除')
           else {
-            if (this.zoneId != zoneUuid) this.$store.commit('changeZoneId', zoneUuid)
+            if (this.zoneUuid != zoneUuid) this.$store.commit('changeZoneId', zoneUuid)
             sessionStorage.setItem('taskListActive', type == 2 ? 0 : 1)
             if (this.$route.name != 'task') this.$router.push({
               name: 'task',

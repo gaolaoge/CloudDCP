@@ -188,13 +188,15 @@
           </el-select>
         </div>
         <!--按钮-->
-        <div class="btnGroup">
-          <div :class="[{'disable-self': null}, 'btnGroup-btn', 'confirm']"
-               @click="saveFun">
-            <span>{{ $t('public.save') }}</span>
-          </div>
-          <div class="btnGroup-btn previous" @click="shutMe">
-            <span>{{ $t('public.cancel') }}</span>
+        <div class="farm-btnGroup">
+          <div class="btnGroup">
+            <div :class="[{'disable-self': null}, 'btnGroup-btn', 'confirm']"
+                 @click="saveFun">
+              <span>{{ $t('public.save') }}</span>
+            </div>
+            <div class="btnGroup-btn previous" @click="shutMe">
+              <span>{{ $t('public.cancel') }}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -814,7 +816,7 @@
     .setFileNameForm {
       margin: -10px 0px;
       overflow-y: scroll;
-      height: 700px;
+      height: 630px;
 
       .farm-label {
         width: 100px;
@@ -822,6 +824,10 @@
         margin-right: 60px;
       }
     }
+    .btnGroup-btn:nth-of-type(2) {
+      margin-right: 0px;
+    }
+
   }
 
 </style>

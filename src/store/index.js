@@ -47,7 +47,7 @@ export default new Vuex.Store({
       header: /^[\u4e00-\u9fa5_a-zA-Z0-9]+$/          // 发票抬头
     },
     login: false,
-    zoneId: null,               // 所在区ID
+    zoneUuid: null,               // 所在区ID
     zone: null,                 // 分区 1影视区 2效果图区
     taskType: 'profession',     // 渲染模式 「profession」专业版 「easy」一键版
     isGup: null,
@@ -244,7 +244,7 @@ export default new Vuex.Store({
     //   s.user.token = val
     // }
     changeZoneId(s, val) {
-      s.zoneId = val
+      s.zoneUuid = val
     },
     changePayAmount(s, val) {
       s.user.payAmount = val  // 累计支付金额

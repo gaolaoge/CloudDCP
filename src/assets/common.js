@@ -165,6 +165,15 @@ const messageFun = function (type, message) {
   })
 }
 
+// 报错信息
+const throwInfoFun = function(info, site, data) {
+  messageFun('error', info)
+  console.log('╔══════════════════════════════════════╗')
+  console.log(`║ ${info}， 位置 ${site}`)
+  console.log('║ ' + data)
+  console.log('╚══════════════════════════════════════╝')
+}
+
 // 渲染帧范围
 const renderingRange = function (min, max, interval) {
   let a = [min],
@@ -312,6 +321,7 @@ export {
   consum,
   createTableIconList,
   messageFun,
+  throwInfoFun,
   renderingRange,
   itemDownloadStatus,
   UuidFun,

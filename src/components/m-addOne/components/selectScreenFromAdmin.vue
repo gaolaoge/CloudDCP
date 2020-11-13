@@ -89,7 +89,10 @@
     getInternalScrGroup,
     getInternalScrList
   } from '@/api/addOne-api'
-  import {messageFun} from "../../../assets/common";
+  import {
+    messageFun,
+    throwInfoFun
+  } from '../../../assets/common'
 
   export default {
     name: 'selectScreenFromAdmin',
@@ -149,13 +152,7 @@
                 }
               )
             }))
-          } else {
-            messageFun('error', '获取内部银幕分组列表')
-            console.log('-------------------')
-            console.log('获取内部银幕分组列表报错， 位置 selectScreenFromAdmin-200')
-            console.log(data)
-            console.log('-------------------')
-          }
+          } else throwInfoFun('获取内部银幕分组列表报错', 'm-addOne/components/selectScreenFromAdmin-155', data)
         } else if (node.level == 1) {
           let {data} = await getInternalScrList(node.data.theatreUuid)
           if (data.code == 200) {
@@ -172,13 +169,7 @@
               this.checkAll_ing = false
               checkedList[index]['checkItemList'] = [...checkedList[index]['itemList']]
             }
-          } else {
-            messageFun('error', '获取内部银幕分组内列表')
-            console.log('-------------------')
-            console.log('获取内部银幕分组内列表报错， 位置 selectScreenFromAdmin-112')
-            console.log(data)
-            console.log('-------------------')
-          }
+          } else throwInfoFun('获取内部银幕分组内列表报错', 'selectScreenFromAdmin-172', data)
         }
       },
       getList() {

@@ -10,7 +10,15 @@ export function getTemplateList() {
   })
 }
 
-// DCP 设置渲染模板-获取所有软件名和版本号
+// DCP 设置渲染模板-创建模板-判断模板名是否已存在
+export function existedTName(templateName) {
+  return http({
+    url: `/dcpProfessional/dcp/checkPackageTemplateName?templateName=${templateName}`,
+    method: 'GET'
+  })
+}
+
+// DCP 设置渲染模板-删除模板
 export function deleteTemplate(packageTemplateUuid) {
   return http({
     url: `/professional/dcp/deletePackageTemplate/${packageTemplateUuid}`,
@@ -18,7 +26,25 @@ export function deleteTemplate(packageTemplateUuid) {
   })
 }
 
-// DCP 设置渲染模板-获取所有软件名和版本号
+// DCP 设置渲染模板-创建模板
+export function createTemplate(data) {
+  return http({
+    url: `/professional/dcp/addPackageTemplate`,
+    method: 'POST',
+    data
+  })
+}
+
+// DCP 设置渲染模板-编辑模板
+export function editTemplate(data) {
+  return http({
+    url: `/professional/dcp/updatePackageTemplate`,
+    method: 'PUT',
+    data
+  })
+}
+
+// DCP 创建DCP
 export function createNewDCP(data) {
   return http({
     url: `/professional/dcp/addDcpTask`,

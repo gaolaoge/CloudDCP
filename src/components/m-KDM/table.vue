@@ -183,7 +183,8 @@
       },
       // 获取表格数据
       async getList() {
-        let {data} = await getKDMTableList({
+        let {zoneUuid} = this,
+          {data} = await getKDMTableList({
           pageIndex: this.pageIndex,
           pageSize: this.setting.pageSize,
           keyword: this.keyword,
@@ -191,7 +192,7 @@
           projectUuidList: [],
           sortBy: null,            // 排序字段
           sortType: 0,             // 0降序,1升序
-          zoneUuid: this.zoneId
+          zoneUuid
         })
         this.total = data.total
         this.tableData = data.data.map(item => Object.assign(item, {
@@ -269,7 +270,7 @@
       this.$nextTick(() => createTableIconList())
     },
     computed: {
-      ...mapState(['setting', 'zoneId'])
+      ...mapState(['setting', 'zoneUuid'])
     },
     watch: {
       'selectionList': {

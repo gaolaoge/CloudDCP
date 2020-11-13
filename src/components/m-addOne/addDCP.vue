@@ -29,7 +29,7 @@
           <div class="set-renderTemplate setScollBarStyle">
             <!--添加模板-->
             <div class="set-renderTemplate-item addMore"
-                 @click="addTemplate('addMore','')">
+                 @click="addOrEditTemplate('addMore','')">
               <img src="@/icons/addIcon.png"
                    class="addMoreIcon">
               <span class="addMoreText">{{ selectUnpackBase.addMoreText }}</span>
@@ -48,7 +48,7 @@
                   <span v-show="selectUnpackBase.renderTListActive == index">
                     <!--编辑-->
                     <img src="@/icons/set-renderTemplate-item-edit.png"
-                         @click.stop="addTemplate('editOne',index)"
+                         @click.stop="addOrEditTemplate('editOne',index)"
                          class="item-icon">
                     <!--删除-->
                     <img src="@/icons/set-renderTemplate-item-delete.png"
@@ -59,7 +59,7 @@
                     <!--编辑-->
                     <img src="@/icons/set-renderTemplate-item-edit-b.png"
                          alt=""
-                         @click.stop="addTemplate('editOne',index)"
+                         @click.stop="addOrEditTemplate('editOne',index)"
                          class="item-icon">
                     <!--删除-->
                     <img src="@/icons/set-renderTemplate-item-delete-b.png"
@@ -70,9 +70,11 @@
                 </span>
               </div>
               <div class="bodyB">
-                <span class="software">{{ dialogAdd.normL }}： {{ dialogAdd['normList'][item.codingRule]['label'] }}</span>
+                <span
+                  class="software">{{ dialogAdd.normL }}： {{ dialogAdd['normList'][item.codingRule]['label'] }}</span>
                 <span class="software">{{ dialogAdd.internetSL }}： {{ item.codingRate }}Mb/s</span>
-                <span class="software">{{ dialogAdd.speedL }}： {{ dialogAdd['speedList'][item.frameRate]['label'] }}</span>
+                <span
+                  class="software">{{ dialogAdd.speedL }}： {{ dialogAdd['speedList'][item.frameRate]['label'] }}</span>
                 <img src="@/icons/item-selected.png" class="item-selected">
               </div>
             </div>
@@ -310,22 +312,25 @@
       </div>
       <div class="dialog-body form">
         <!--模板名称-->
-        <div class="item mini">
+        <div class="item">
           <label for="templateName" class="farm-label">{{ dialogAdd.nameL }}</label>
           <input type="text"
                  id="templateName"
                  ref="templateName"
-                 :class="[{'inputError': null}, 'farm-input', 'farm-name-input']"
+                 :class="[{'inputError': dialogAdd.format.name === false}, 'farm-input', 'farm-name-input']"
                  :placeholder="dialogAdd.placeholder"
                  @blur="nameVerif(false)"
                  @input="nameVerif(true)"
                  @focus="dialogAdd.format.name = null"
-                 v-model="dialogAdd.form.name">
+                 v-model="dialogAdd.form.templateName">
+          <span class="warnInfo" v-show="dialogAdd.format.name === false">
+            {{ dialogAdd.warnInfo.name }}
+          </span>
         </div>
         <!--打包标准-->
         <div class="item mini">
           <label class="farm-label">{{ dialogAdd.normL }}</label>
-          <el-select v-model="dialogAdd.form.normV"
+          <el-select v-model="dialogAdd.form.codingRule"
                      class="farm-select">
             <el-option
               v-for="(item,index) in dialogAdd.normList"
@@ -340,15 +345,15 @@
           <label class="farm-label">{{ dialogAdd.internetSL }}</label>
           <div class="box">
             <div>
-              <el-slider :max="500" v-model="dialogAdd.form.internetS"/>
+              <el-slider :max="500" v-model="dialogAdd.form.codingRate"/>
             </div>
-            <span>{{ dialogAdd.form.internetS }} (MB/s)</span>
+            <span>{{ dialogAdd.form.codingRate }} (MB/s)</span>
           </div>
         </div>
         <!--帧速率-->
         <div class="item mini">
           <label class="farm-label">{{ dialogAdd.speedL }}</label>
-          <el-select v-model="dialogAdd.form.speed"
+          <el-select v-model="dialogAdd.form.frameRate"
                      class="farm-select">
             <el-option
               v-for="(item,index) in dialogAdd.speedList"
@@ -360,7 +365,8 @@
         </div>
         <!--按钮-->
         <div class="farm-btnGroup">
-          <div :class="[{'disable-self': null}, 'btnGroup-btn', 'confirm']">
+          <div :class="[{'cannotTrigger': !dialogAdd.format.name},'no-margin', 'btnGroup-btn', 'confirm']"
+               @click="createOrEditDCPT">
             <span>{{ $t('public.save') }}</span>
           </div>
           <div class="btnGroup-btn previous" @click="dialogAdd.visible = false">
@@ -402,15 +408,19 @@
 
 <script>
   import {
-    getTemplateList,              // 选择打包模板-获取模板
+    getTemplateList,            // 选择打包模板-获取模板
     deleteTemplate,             // 选择打包模板-删除模板
+    existedTName,               // 选择打包模板-创建模板-判断模板名是否已存在
+    createTemplate,             // 创建模板
+    editTemplate,               // 编辑模板
     createNewDCP                // 创建DCP
   } from '@/api/addOne-api'
   import {
     mapState
   } from 'vuex'
   import {
-    messageFun
+    messageFun,
+    throwInfoFun
   } from '@/assets/common.js'
   import addProject from '@/components/public-module/add_project'
   import setName from './components/setDCPFileName'
@@ -696,12 +706,16 @@
           internetSL: '码率',
           speedL: '帧速率',
           form: {
-            name: null,
-            normV: null,
-            speed: null,
-            internetS: 250
+            'templateName': null,        // 模板名称
+            'codingRule': 0,             // 打包标准
+            'frameRate': 0,              // 帧速率
+            'codingRate': 250,           // 码率
+            'packageTemplateUuid': null
           },
           format: {
+            name: false
+          },
+          warnInfo: {
             name: null
           },
           normList: [
@@ -755,7 +769,7 @@
       }
     },
     computed: {
-      ...mapState(['zone', 'zoneId', 'user', 'socket_backS', 'socket_backS_msg', 'socket_plugin', 'socket_plugin_msg', 'projectList']),
+      ...mapState(['zone', 'zoneUuid', 'user', 'socket_backS', 'socket_backS_msg', 'socket_plugin', 'socket_plugin_msg', 'projectList']),
     },
     watch: {
       'socket_backS_msg': {
@@ -778,37 +792,77 @@
               else if (fileType == 'TX') team = this.selectFileBase.imgFileList
               else if (fileType == 'ZM') team = this.selectFileBase.subtitleFileList
               else {
-                console.log('-------------------')
-                console.log('获取插件返回值类型报错，位置 addDCP-406')
-                console.log(data)
-                console.log('-------------------')
+                throwInfoFun('获取插件返回值类型报错', 'm-addOne/addDCP-406', data)
                 return false
               }
               let index = team.findIndex(curr => curr.key == data.key)
               team[index]['localPath'] = data.localPath
-
             }
           }
         },
         immediate: true
+      },
+      'dialogAdd.visible': function (boolean) {
+        if (!boolean) this.resetdialogAdd()
       }
     },
     methods: {
-      // 关闭新建项目窗口
+      // 1.选择打包模板 - 关闭添加or编辑模板窗口 数据复位
+      resetdialogAdd() {
+        let {form, format} = this.dialogAdd
+        Object.assign(form, {
+          name: null,
+          normV: 0,
+          speed: 0,
+          internetS: 250
+        })
+        Object.assign(format, {
+          name: false
+        })
+      },
+      // 1.选择打包模板 - 关闭添加or编辑模板窗口 创建模板
+      async createOrEditDCPT() {
+        let {zoneUuid, dialogAdd} = this,
+          {templateName, codingRule, frameRate, codingRate, packageTemplateUuid} = dialogAdd.form,
+          {data} = dialogAdd.editOrAdd == 'addMore' ? await createTemplate({
+            templateName,        // 模板名称
+            codingRule,          // 打包标准
+            frameRate,           // 帧速率
+            codingRate,          // 码率
+            zoneUuid
+          }) : await editTemplate({
+            templateName,        // 模板名称
+            codingRule,          // 打包标准
+            frameRate,           // 帧速率
+            codingRate,          // 码率
+            packageTemplateUuid
+          })
+        if (data.code == 200) {
+          messageFun('success', '操作成功！')
+          this.getList()
+          this.dialogAdd.visible = false
+        }
+      },
+      // 1.关闭新建项目窗口
       shutAddProjectDialog(status) {
         this.addProjectDialog.visible = false
         if (status) this.getList()
       },
       // 1.选择打包模板 - 添加模板 - 检验模板名格式
-      nameVerif() {
-        if (!this.dialogAdd.form.valName) {
-          this.dialogAdd.form.formatName = null
-          return false
-        } else if (this.dialogAdd.form.valName.length > 50) {
-          messageFun('error', '最多输入50个字符')
-          this.dialogAdd.form.formatName = false
-          return false
-        } else this.dialogAdd.form.formatName = true
+      async nameVerif(ing) {
+        let {form, format, warnInfo} = this.dialogAdd
+        if (!form.templateName || !form.templateName.trim() || (form.templateName.trim().length > 50 && ing)) format.name = null
+        else if (!form.templateName.trim() && !ing) format.name = false
+        else if (form.templateName.trim().length > 50) {
+          warnInfo.name = '最多输入50个字符'
+          format.name = false
+        } else {
+          let {data} = await existedTName(form.templateName.trim())
+          if (data.code == 101) {
+            warnInfo.name = '模板名称已存在，请重新输入'
+            format.name = false
+          } else format.name = true
+        }
       },
       // 0.设置渲染文件 - 下一步
       goToMode(dire) {
@@ -828,15 +882,27 @@
         selectUnpackBase.renderTList = data.data
         selectUnpackBase.renderTListActive = data.data.findIndex(curr => curr.isDefault == 1)
       },
-      // 1.选择打包模板 - 打开【新建模板】
-      async addTemplate(s, index) {
+      // 1.选择打包模板 - 新建/编辑 - 打开【新建模板】
+      async addOrEditTemplate(type, index) {
         // 打开弹窗
-        this.dialogAdd.visible = true
-        this.$nextTick(() => this.$refs.templateName.focus())
-        this.dialogAdd.editOrAdd = s
-        let v = this.dialogAdd
-        if (s == 'addMore') {
-
+        let {dialogAdd} = this,
+          {form, format} = this.dialogAdd
+        dialogAdd.visible = true
+        this.$nextTick(() => {
+          this.$refs.templateName.focus()
+          if (type == 'editOne') format.name = true
+        })
+        dialogAdd.editOrAdd = type
+        if (type == 'editOne') {
+          let {templateName, codingRule, frameRate, codingRate, packageTemplateUuid} = this.selectUnpackBase.renderTList[index]
+          // 赋值
+          Object.assign(form, {
+            templateName,
+            codingRule,
+            frameRate,
+            codingRate,
+            packageTemplateUuid
+          })
         }
       },
       // 1.选择打包模板 - 删除模板
@@ -880,7 +946,7 @@
       },
       // 3.保存
       async confirmFun() {
-        // let {data}  =await createNewDCP(JSON.stringify({
+        // let {data}  =await createNewDCP({
         //   'taskName': '',                  // 任务名
         //   'packageName': '',               // dcp文件名
         //   'projectUuid': '',               // 项目uuid
@@ -919,7 +985,7 @@
         //     'subWoofer': '',               // 低音炮
         //     'subtitle': ''                 // 字幕文件
         //   }
-        // }))
+        // })
         let {imgFileList, mp3FileList, subtitleFileList} = this.selectFileBase
         this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
           code: 202,

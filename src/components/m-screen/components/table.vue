@@ -246,7 +246,7 @@
       this.$nextTick(() => createTableIconList())
     },
     computed: {
-      ...mapState(['setting', 'zoneId'])
+      ...mapState(['setting', 'zoneUuid'])
     },
     watch: {
       'selectionList': {

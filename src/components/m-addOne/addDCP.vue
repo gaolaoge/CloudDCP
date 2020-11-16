@@ -150,7 +150,7 @@
                   v-for="(item,index) in setUnpackBase.movieTypeList"
                   :key="index"
                   :label="item.label"
-                  :value="item.val">
+                  :value="item.value">
                 </el-option>
               </el-select>
             </div>
@@ -163,7 +163,7 @@
                   v-for="(item,index) in setUnpackBase.proportionList"
                   :key="index"
                   :label="item.label"
-                  :value="item.val">
+                  :value="item.value">
                 </el-option>
               </el-select>
             </div>
@@ -176,7 +176,7 @@
                   v-for="(item,index) in setUnpackBase.resolutionList"
                   :key="index"
                   :label="item.label"
-                  :value="item.val">
+                  :value="item.value">
                 </el-option>
               </el-select>
             </div>
@@ -189,7 +189,7 @@
                   v-for="(item,index) in setUnpackBase.colorTypeList"
                   :key="index"
                   :label="item.label"
-                  :value="item.val">
+                  :value="item.value">
                 </el-option>
               </el-select>
             </div>
@@ -202,7 +202,7 @@
                   v-for="(item,index) in setUnpackBase.modeList"
                   :key="index"
                   :label="item.label"
-                  :value="item.val">
+                  :value="item.value">
                 </el-option>
               </el-select>
             </div>
@@ -215,13 +215,13 @@
                   v-for="(item,index) in setUnpackBase.channelTypeList"
                   :key="index"
                   :label="item.label"
-                  :value="item.val">
+                  :value="item.value">
                 </el-option>
               </el-select>
             </div>
             <div class="fileTitle">{{ setUnpackBase.directory[1] }}</div>
             <div class="radio el-radio-group">
-              <el-radio v-model="setUnpackBase.mode"
+              <el-radio v-model="setUnpackBase.form.missionMode"
                         v-for="item in setUnpackBase.modeRadioList"
                         :key="'mode-' + item.value"
                         :label="item.value">
@@ -435,7 +435,7 @@
           '设置打包参数',
           '选择文件目录'
         ],
-        stepBtnActive: 1,           // 当前所在步骤 1.选择打包模板 2.设置打包参数 3.选择文件目录
+        stepBtnActive: 2,           // 当前所在步骤 1.选择打包模板 2.设置打包参数 3.选择文件目录
         // 选择打包模板
         selectUnpackBase: {
           addMoreText: '添加模板',
@@ -461,128 +461,129 @@
           form: {
             // DCPFileName: '0103S_FTR-2_F_EN-XX_INT_51_2K_NULL_20200801_NULL_SMPTE_OV',
             fileName: '0103S',    // 影片名称
-            movieType: 'AS',      // 影片类型
+            movieType: 0,         // 影片类型
             version: 4,           // 类型版本
             project: '任务一',
             taskName: '',
             movieName: '',
-            proportion: '',       // 宽高比
+            proportion: 0,        // 宽高比
             mp3Language: '',      // 声音语言
             textLanguage: 'QMS',  // 字幕语言
             AP: '开放式字幕OCAP',   // OCAP/CCAP
             area: 'CN',           // 地区
             mp3Type: '版本1',      // 声道类型
-            resolution: '2K',     // 分辨率
-            colorType: '',
+            resolution: 0,        // 分辨率
+            colorType: 0,         // 源色彩
             producer: '',         // 出品方
             date: '',             // 打包日期
-            mode: '2D',           // 2D/3D
+            mode: 0,              // 2D/3D
             made: '中影',          // 制作方
             DCPType: 'OV',        // DCP类型
-            channelType: ''
+            channelType: 0,       // 声道类型
+            missionMode: 0        // 任务模式
           },
           movieTypeList: [
             {
               label: '正片FTR（Feature）',
-              value: '001'
+              value: 0
             },
             {
               label: '预告片TLR（Trailer）',
-              value: '002'
+              value: 1
             },
             {
               label: '短版本预告片TSR（Teaser）',
-              value: '003'
+              value: 2
             },
             {
               label: '分级RTG（Rating）',
-              value: '004'
+              value: 3
             },
             {
               label: '政策相关POL（Policy）',
-              value: '005'
+              value: 4
             },
             {
               label: '公告服务或公告PSA（Public Service Announcement）',
-              value: '006'
+              value: 5
             },
             {
               label: '广告片ADV（Advertisement）',
-              value: '007'
+              value: 6
             },
             {
               label: '短片SHR（Short）',
-              value: '008'
+              value: 7
             },
             {
               label: '过度片XSN（Transitional）',
-              value: '009'
+              value: 8
             },
             {
               label: '测试片TST（Test）',
-              value: '010'
+              value: 9
             }
-          ],
+          ],   // 影片类型
           proportionList: [
             {
               label: '遮幅F（Flat   1.85：1）',
-              value: '001'
+              value: 0
             },
             {
               label: '宽荧幕S（Sope   2.39：1）',
-              value: '002'
+              value: 1
             },
             {
               label: '全画幅C（Full   1.90：1）',
-              value: '003'
+              value: 2
             }
-          ],
+          ],  // 宽高比
           resolutionList: [
             {
               label: '2K（2048*1080）',
-              value: '001'
+              value: 0
             },
             {
               label: '4K（4096*2160）',
-              value: '002'
+              value: 1
             }
-          ],
+          ],  // 分辨率
           colorTypeList: [
             {
               label: 'REC 709',
-              value: '001'
+              value: 0
             },
             {
               label: 'P3 DCI',
-              value: '002'
+              value: 1
             },
             {
               label: 'REC 2020',
-              value: '003'
+              value: 2
             }
-          ],
+          ],   // 源色彩
           modeList: [
             {
               label: '2D',
-              value: '001'
+              value: 0
             },
             {
               label: '3D',
-              value: '002'
+              value: 1
             }
           ],
           channelTypeList: [
             {
               label: '2.1立体音',
-              value: '002'
+              value: 0
             },
             {
               label: '5.1立体音',
-              value: '005'
+              value: 1
             },
             {
               label: '7.1立体音',
-              value: '007'
+              value: 2
             }
           ],
           pl: {
@@ -590,22 +591,21 @@
             movieName: '请输入影片名称'
           },
           createObject: '新建项目',
-          mode: '',
           modeRadioList: [
             {
               number: '10台',
               type: '普通模式',
-              value: 1
+              value: 0
             },
             {
               number: '20台',
               type: '加速模式',
-              value: 2
+              value: 1
             },
             {
               number: '50台',
               type: '极速模式',
-              value: 3
+              value: 2
             }
           ]
         },

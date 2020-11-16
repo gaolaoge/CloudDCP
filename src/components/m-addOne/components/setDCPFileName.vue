@@ -11,9 +11,7 @@
         <!--DCP文件名-->
         <div class="item mini">
           <label class="farm-label">{{ label.fileName }}</label>
-          <input type="text"
-                 :class="['farm-input', 'farm-name-input']"
-                 v-model="form.fileName">
+          <span class="farm-span">{{ form.fileName }}</span>
         </div>
         <!--影片名称-->
         <div class="item mini">
@@ -95,8 +93,8 @@
             <el-option
               v-for="(item,index) in APList"
               :key="'APList-' + index"
-              :label="item"
-              :value="index + 1">
+              :label="item.label"
+              :value="item.val">
             </el-option>
           </el-select>
         </div>
@@ -109,7 +107,7 @@
               v-for="(item,index) in areaList"
               :key="'area-' + index"
               :label="item"
-              :value="index + 1">
+              :value="index">
             </el-option>
           </el-select>
         </div>
@@ -213,101 +211,101 @@
         movieTypeList: [
           {
             label: '广告片 ADV',
-            val: '001'
+            val: 0
           },
           {
             label: '正片 FTR',
-            val: '002'
+            val: 1
           },
           {
             label: '政策相关 POL',
-            val: '003'
+            val: 2
           },
           {
             label: '推广片 PRO',
-            val: '004'
+            val: 3
           },
           {
             label: '公告 PSA',
-            val: '005'
+            val: 4
           },
           {
             label: '短片 SHR',
-            val: '006'
+            val: 5
           },
           {
             label: '预告片 TLR',
-            val: '007'
+            val: 6
           },
           {
             label: '样片 TSR',
-            val: '008'
+            val: 7
           },
           {
             label: '测试片 TST',
-            val: '009'
+            val: 8
           },
           {
             label: '过度片 XSN',
-            val: '010'
+            val: 9
           }
-        ],
+        ],    // 影片类型
         versionList: [
           {
             label: '无版本',
-            val: '000'
+            val: 0
           },
           {
             label: '版本1',
-            val: '001'
+            val: 1
           },
           {
             label: '版本2',
-            val: '002'
+            val: 2
           },
           {
             label: '版本3',
-            val: '003'
+            val: 3
           },
           {
             label: '版本4',
-            val: '004'
+            val: 4
           },
           {
             label: '版本5',
-            val: '005'
+            val: 5
           },
           {
             label: '版本6',
-            val: '006'
+            val: 6
           },
           {
             label: '版本7',
-            val: '007'
+            val: 7
           },
           {
             label: '版本8',
-            val: '008'
+            val: 8
           },
           {
             label: '版本9',
-            val: '009'
+            val: 9
           }
-        ],
+        ],      // 类型版本
         proportionList: [
           {
             label: '全画幅C（Full   1.90：1）',
-            val: '000'
+            val: 0
           },
           {
             label: '遮幅F（Flat   1.85：1）',
-            val: '001'
+            val: 1
           },
           {
             label: '宽银幕S（Sope   2.39：1）',
-            val: '002'
+            val: 2
           }
-        ],
+        ],   // 宽高比
         mp3LanguageList: [
           {
             label: '中文普通话 CMN',
@@ -709,57 +707,66 @@
           }
         ],
         APList: [
-          '无字幕',
-          '开放式字幕OCAP',
-          '隐藏式字幕CCAP'
-        ],
+          {
+            label: '无字幕',
+            val: 0
+          },
+          {
+            label: '开放式字幕OCAP',
+            val: 1
+          },
+          {
+            label: '隐藏式字幕CCAP',
+            val: 2
+          }
+        ],           // OCAP/CCAP
         areaList: [
           this.$t('public.areaList.INT'),
           this.$t('public.areaList.CN'),
           this.$t('public.areaList.HK'),
           this.$t('public.areaList.TW'),
           this.$t('public.areaList.MO')
-        ],
+        ],         // 地区
         mp3TypeList: [
           {
             label: '无版本',
-            val: '000'
+            val: 0
           },
           {
             label: '版本1',
-            val: '001'
+            val: 1
           }
-        ],
+        ],      // 声道类型
         resolutionList: [
           {
             label: '2K 2048*1080',
-            val: '2K'
+            val: 0
           },
           {
             label: '4K 4096*2160',
-            val: '4K'
+            val: 1
           }
-        ],
+        ],   // 分辨率
         typeList: [
           {
             label: '2D',
-            val: '2D'
+            val: 0
           },
           {
             label: '3D',
-            val: '3D'
+            val: 1
           }
-        ],
+        ],         // 2D/3D
         DCPTypeList: [
           {
             label: '原版OV Original Version',
-            val: '000'
+            val: 0
           },
           {
             label: '版本文件VF Version File',
-            val: '001'
+            val: 1
           }
-        ],
+        ],      // DCP类型
         label: {
           fileName: 'DCP文件名',
           movieName: '影片名称',
@@ -779,22 +786,22 @@
           DCPType: 'DCP类型'
         },
         form: {
-          fileName: '',
-          movieName: '',
-          movieType: '',
-          version: '',
-          proportion: '',
-          mp3Language: '',
-          textLanguage: '',
-          AP: '',
-          area: '',
-          mp3Type: '',
-          resolution: '',
-          producer: '',
-          date: '',
-          made: '',
-          type: '',
-          DCPType: ''
+          fileName: '',          // DCP文件名
+          movieName: '',         // 影片名称
+          movieType: 0,         // 影片类型
+          version: 0,            // 类型版本
+          proportion: 0,         // 宽高比
+          mp3Language: 1,        // 声音语言
+          textLanguage: '',      // 字幕语言
+          AP: 0,                 // OCAP/CCAP
+          area: 0,               // 地区
+          mp3Type: 0,            // 声道类型
+          resolution: 0,         // 分辨率
+          producer: '',          // 出品方
+          date: '',              // 打包日期
+          made: '',              // 制作方
+          type: 0,               // 2D/3D
+          DCPType: 0             // DCP类型
         }
       }
     },

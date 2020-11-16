@@ -207,7 +207,6 @@
     },
     mounted() {
       getUserInfoF()
-      throwInfoFun('示例报错', 'index.vue-210', '示例报错data')
     }
   }
 </script>

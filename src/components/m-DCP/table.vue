@@ -5,7 +5,7 @@
       :data="tableData"
       @selection-change="selectionFun"
       @filter-change="filterChangeF"
-      @row-click="showDetails"
+      @row-click="j"
       :row-class-name="tableRowStyle"
       ref="dcp-table-real"
       style="width: 100%">
@@ -252,6 +252,10 @@
       }
     },
     methods: {
+      //
+      j(row) {
+        this.$emit('tableRowClick', row)
+      },
       // 页码跳转
       handleCurrentChange() {
       },
@@ -322,10 +326,6 @@
       },
       //
       filterChangeF() {
-
-      },
-      //
-      showDetails() {
 
       },
       // table 行样式

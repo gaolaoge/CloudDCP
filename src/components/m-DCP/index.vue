@@ -38,8 +38,11 @@
     <div class="dcp-table panel">
       <Table ref="dcptable"
              :keyword="searchInput"
+             @tableRowClick="showDetails"
              @tableSelectionF="result => selectionList = result"/>
     </div>
+    <!--详情窗口-->
+    <Win :class="['win', {showMe: showWin}]"/>
   </div>
 </template>
 
@@ -48,11 +51,13 @@
     mapState
   } from 'vuex'
   import Table from './table.vue'
+  import Win from './detailsWin'
 
   export default {
     name: 'dcp',
     data() {
       return {
+        showWin: false,
         btnGroup: [
           {
             action: '开始',
@@ -109,6 +114,11 @@
       }
     },
     methods: {
+      //
+      showDetails(data) {
+        console.log(data)
+        this.showWin = true
+      },
       // 操作
       operating(action) {
         switch (action) {
@@ -191,7 +201,8 @@
       }
     },
     components: {
-      Table
+      Table,
+      Win
     }
   }
 </script>
@@ -201,6 +212,7 @@
     width: 100%;
     padding: 20px;
     box-sizing: border-box;
+    position: relative;
 
     .btnGroup {
       &.cannotStart .btn.start,
@@ -227,6 +239,17 @@
 
     &.panel {
       height: calc(100vh - 80px - 20px);
+    }
+  }
+
+  .win {
+    position: absolute;
+    bottom: 0px;
+    right: -904px;
+    transition: all 0.2s;
+
+    &.showMe {
+      right: 0px;
     }
   }
 </style>

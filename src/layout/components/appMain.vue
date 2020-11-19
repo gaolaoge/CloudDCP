@@ -39,7 +39,7 @@
     box-sizing: border-box;
     /*padding-bottom: 20px;*/
     /*box-sizing: border-box;*/
-    overflow: hidden;
+    /*overflow: hidden;*/
     display: flex;
     flex-wrap: nowrap;
 

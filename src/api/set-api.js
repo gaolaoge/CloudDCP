@@ -57,7 +57,7 @@ export function editTask(data) {
 // 项目设置 - 新建任务
 export function createTask(data) {
   return http({
-    url: `/professional/project/addCustomerProject`,
+    url: `/dcpProfessional/project/addCustomerProject`,
     method: 'POST',
     data
   })

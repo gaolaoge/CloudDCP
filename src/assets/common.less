@@ -621,6 +621,10 @@ td {
   border-color: rgba(27, 83, 244, 1);
 }
 
+.el-checkbox.is-checked .el-checkbox__label {
+  color: rgba(22, 29, 37, 1);
+}
+
 .el-table__header-wrapper {
   th:nth-of-type(1) {
     .cell {
@@ -1182,6 +1186,10 @@ td {
       flex-grow: 1;
       font-size: 14px;
       font-weight: 500;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      width: 1px;
     }
 
     .box {
@@ -1552,4 +1560,9 @@ hr {
 
 .no-margin {
   margin: 0px!important;
+}
+
+.el-popover {
+  min-width: 48px!important;
+  padding: 0px;
 }

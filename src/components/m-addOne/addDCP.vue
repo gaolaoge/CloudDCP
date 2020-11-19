@@ -52,7 +52,7 @@
                          class="item-icon">
                     <!--删除-->
                     <img src="@/icons/set-renderTemplate-item-delete.png"
-                         @click="deleteTemplateF(index)"
+                         @click="deleteTemplateF(item.templateUuid)"
                          class="item-icon">
                   </span>
                   <span v-show="selectUnpackBase.renderTListActive != index">
@@ -64,17 +64,19 @@
                     <!--删除-->
                     <img src="@/icons/set-renderTemplate-item-delete-b.png"
                          alt=""
-                         @click="deleteTemplateF(index)"
+                         @click="deleteTemplateF(item.templateUuid)"
                          class="item-icon">
                   </span>
                 </span>
               </div>
               <div class="bodyB">
-                <span
-                  class="software">{{ dialogAdd.normL }}： {{ dialogAdd['normList'][item.codingRule]['label'] }}</span>
+                <span class="software">
+                  {{ dialogAdd.normL }}： {{ dialogAdd['normList'][item.codingRule]['label'] }}
+                </span>
                 <span class="software">{{ dialogAdd.internetSL }}： {{ item.codingRate }}Mb/s</span>
-                <span
-                  class="software">{{ dialogAdd.speedL }}： {{ dialogAdd['speedList'][item.frameRate]['label'] }}</span>
+                <span class="software">
+                  {{ dialogAdd.speedL }}： {{ dialogAdd['speedList'][item.frameRate]['label'] }}
+                </span>
                 <img src="@/icons/item-selected.png" class="item-selected">
               </div>
             </div>
@@ -85,33 +87,17 @@
         <div class="stepBody-item" v-show="stepBtnActive == 2">
           <div class="wrapper-border setScollBarStyle form">
             <div class="fileTitle">{{ setUnpackBase.directory[0] }}</div>
+            <div class="checkbox">
+              <!--加密打包-->
+              <el-checkbox v-model="setUnpackBase.form.isEncrypt"
+                           :checked="true"
+                           true-label=1
+                           false-label=0>{{ setUnpackBase.encryptionL }}</el-checkbox>
+            </div>
             <!--DCP文件名-->
             <div class="fileItem item">
               <label>{{ setUnpackBase.label.fileName }}：</label>
-              <span class="farm-span">
-                <!--影片名称-->
-                <span>{{ setUnpackBase.form.fileName }}</span>_
-                <!--影片类型-类型版本-->
-                <span>{{ setUnpackBase.form.movieType }}-{{ setUnpackBase.form.version }}</span>_
-                <!--声音语言-字幕语言-OCAP/CCAP-->
-                <span>{{ setUnpackBase.form.mp3Language }}-{{ setUnpackBase.form.textLanguage }}-{{ setUnpackBase.form.AP }}</span>_
-                <!--地区-分区-->
-                <span>{{ setUnpackBase.form.area }}-{{ setUnpackBase.form.area }}</span>_
-                <!--声道类型-补充声道-->
-                <span>{{ setUnpackBase.form.mp3Type }}-{{ setUnpackBase.form.fileName }}</span>_
-                <!--分辨率-->
-                <span>{{ setUnpackBase.form.resolution }}</span>_
-                <!--出品方-->
-                <span>{{ setUnpackBase.form.producer }}</span>_
-                <!--打包日期-->
-                <span>{{ setUnpackBase.form.date }}</span>_
-                <!--制作方-->
-                <span>{{ setUnpackBase.form.made }}</span>_
-                <!--2D/3D-->
-                <span>{{ setUnpackBase.form.mode }}</span>_
-                <!--DCP类型-->
-                <span>{{ setUnpackBase.form.DCPType }}</span>
-              </span>
+              <span class="farm-span" :title="packageName">{{ packageName }}</span>
               <div class="btn" @click="setFileNameDialog.visible = true">
                 <span>{{ $t('public.set') }}</span>
               </div>
@@ -119,10 +105,10 @@
             <!--所属项目-->
             <div class="fileItem item">
               <label class="farm-label">{{ setUnpackBase.label.project }}：</label>
-              <el-select v-model="setUnpackBase.form.project"
+              <el-select v-model="setUnpackBase.form.projectUuid"
                          class="farm-input farm-select">
                 <el-option
-                  v-for="(item,index) in setUnpackBase.projectList"
+                  v-for="(item,index) in projectList"
                   :key="index"
                   :label="item.label"
                   :value="item.val">
@@ -144,10 +130,10 @@
             <!--影片类型-->
             <div class="fileItem item">
               <label class="farm-label">{{ setUnpackBase.label.movieType }}：</label>
-              <el-select v-model="setUnpackBase.form.movieType"
+              <el-select v-model="setUnpackBase.form.filmCategory"
                          class="farm-input farm-select">
                 <el-option
-                  v-for="(item,index) in setUnpackBase.movieTypeList"
+                  v-for="(item,index) in movieTypeList"
                   :key="index"
                   :label="item.label"
                   :value="item.value">
@@ -157,10 +143,10 @@
             <!--宽高比-->
             <div class="fileItem item">
               <label class="farm-label">{{ setUnpackBase.label.proportion }}：</label>
-              <el-select v-model="setUnpackBase.form.proportion"
+              <el-select v-model="setUnpackBase.form.aspectRatio"
                          class="farm-input farm-select">
                 <el-option
-                  v-for="(item,index) in setUnpackBase.proportionList"
+                  v-for="(item,index) in proportionList"
                   :key="index"
                   :label="item.label"
                   :value="item.value">
@@ -173,7 +159,7 @@
               <el-select v-model="setUnpackBase.form.resolution"
                          class="farm-input farm-select">
                 <el-option
-                  v-for="(item,index) in setUnpackBase.resolutionList"
+                  v-for="(item,index) in resolutionList"
                   :key="index"
                   :label="item.label"
                   :value="item.value">
@@ -183,10 +169,10 @@
             <!--源色彩-->
             <div class="fileItem item">
               <label class="farm-label">{{ setUnpackBase.label.colorType }}：</label>
-              <el-select v-model="setUnpackBase.form.colorType"
+              <el-select v-model="setUnpackBase.form.sourceColor"
                          class="farm-input farm-select">
                 <el-option
-                  v-for="(item,index) in setUnpackBase.colorTypeList"
+                  v-for="(item,index) in colorTypeList"
                   :key="index"
                   :label="item.label"
                   :value="item.value">
@@ -196,10 +182,10 @@
             <!--2D/3D-->
             <div class="fileItem item">
               <label class="farm-label">{{ setUnpackBase.label.mode }}：</label>
-              <el-select v-model="setUnpackBase.form.mode"
+              <el-select v-model="setUnpackBase.form.filmType"
                          class="farm-input farm-select">
                 <el-option
-                  v-for="(item,index) in setUnpackBase.modeList"
+                  v-for="(item,index) in modeList"
                   :key="index"
                   :label="item.label"
                   :value="item.value">
@@ -209,10 +195,10 @@
             <!--声道类型-->
             <div class="fileItem item">
               <label class="farm-label">{{ setUnpackBase.label.channelType }}：</label>
-              <el-select v-model="setUnpackBase.form.channelType"
+              <el-select v-model="setUnpackBase.form.soundtrack"
                          class="farm-input farm-select">
                 <el-option
-                  v-for="(item,index) in setUnpackBase.channelTypeList"
+                  v-for="(item,index) in channelTypeList"
                   :key="index"
                   :label="item.label"
                   :value="item.value">
@@ -221,7 +207,7 @@
             </div>
             <div class="fileTitle">{{ setUnpackBase.directory[1] }}</div>
             <div class="radio el-radio-group">
-              <el-radio v-model="setUnpackBase.form.missionMode"
+              <el-radio v-model="setUnpackBase.form.patternUuid"
                         v-for="item in setUnpackBase.modeRadioList"
                         :key="'mode-' + item.value"
                         :label="item.value">
@@ -236,21 +222,28 @@
           <div class="wrapper-border setScollBarStyle">
             <!--图像目录-->
             <div class="fileTitle">{{ selectFileBase.directory[0] }}</div>
-            <div class="fileItem" v-for="(item,index) in selectFileBase.imgFileList" :key="'imgFile-' + index">
+            <div class="fileItem"
+                 v-show="setUnpackBase.form.filmType == 0 ? index == 0 : index != 0"
+                 v-for="(item,index) in selectFileBase.imgFileList"
+                 :key="'imgFile-' + index">
               <label>{{ item.label }}：</label>
               <input type="text" disabled v-model="item.localPath">
               <div class="btn" @click="selectFile(item)"><span>{{ $t('public.browse') }}</span></div>
             </div>
             <!--声音目录-->
             <div class="fileTitle">{{ selectFileBase.directory[1] }}</div>
-            <div class="fileItem" v-for="(item,index) in selectFileBase.mp3FileList" :key="'mp3File-' + index">
+            <div class="fileItem"
+                 v-show="showSoundInput(index)"
+                 v-for="(item,index) in selectFileBase.mp3FileList"
+                 :key="'mp3File-' + index">
               <label>{{ item.label }}：</label>
               <input type="text" disabled v-model="item.localPath">
               <div class="btn" @click="selectFile(item)"><span>{{ $t('public.browse') }}</span></div>
             </div>
             <!--字幕目录-->
             <div class="fileTitle">{{ selectFileBase.directory[2] }}</div>
-            <div class="fileItem" v-for="(item,index) in selectFileBase.subtitleFileList"
+            <div class="fileItem"
+                 v-for="(item,index) in selectFileBase.subtitleFileList"
                  :key="'subtitleFile-' + index">
               <label>{{ item.label }}：</label>
               <input type="text" disabled v-model="item.localPath">
@@ -285,8 +278,6 @@
       </div>
       <!--选择文件目录-->
       <div v-show="stepBtnActive == 3">
-        <!--启动插件-临时-->
-        <div class="btnGroup-btn previous" @click="$store.commit('WEBSOCKET_PLUGIN_INIT', true)"><span>启动插件</span></div>
         <!--上一步-->
         <div class="btnGroup-btn previous" @click="goToMode('previous')">
           <span>{{ $t('public.previous') }}</span>
@@ -383,7 +374,8 @@
       :visible.sync="setFileNameDialog.visible"
       @close="closesetFileNameDialog"
       append-to-body>
-      <setName @shutMe="setFileNameDialog.visible = false"/>
+      <setName @shutMe="shutSetNameDialog"
+               :codingRule="dialogAdd['normList'][selectUnpackBase.renderTList[selectUnpackBase.renderTListActive]['codingRule']]['label']"/>
     </el-dialog>
     <!--新建项目-->
     <el-dialog
@@ -419,6 +411,19 @@
     mapState
   } from 'vuex'
   import {
+    movieTypeList,
+    proportionList,
+    resolutionList,
+    colorTypeList,
+    modeList,
+    channelTypeList,
+    APList,
+    DCPTypeList,
+    soundtrackList,
+    versionList,
+    mp3LanguageList,
+    textLanguageList,
+    areaList,
     messageFun,
     throwInfoFun
   } from '@/assets/common.js'
@@ -435,7 +440,7 @@
           '设置打包参数',
           '选择文件目录'
         ],
-        stepBtnActive: 2,           // 当前所在步骤 1.选择打包模板 2.设置打包参数 3.选择文件目录
+        stepBtnActive: 1,           // 当前所在步骤 1.选择打包模板 2.设置打包参数 3.选择文件目录
         // 选择打包模板
         selectUnpackBase: {
           addMoreText: '添加模板',
@@ -459,138 +464,34 @@
             channelType: '声道类型'
           },
           form: {
-            // DCPFileName: '0103S_FTR-2_F_EN-XX_INT_51_2K_NULL_20200801_NULL_SMPTE_OV',
-            fileName: '0103S',    // 影片名称
-            movieType: 0,         // 影片类型
-            version: 4,           // 类型版本
-            project: '任务一',
-            taskName: '',
+            fileName: '',            // 影片名称
+            filmCategory: 0,         // 影片类型
+            filmVersion: 0,          // 类型版本
+            projectUuid: '',         // 所属项目Uuid
+            taskName: '',            // 任务名称
             movieName: '',
-            proportion: 0,        // 宽高比
-            mp3Language: '',      // 声音语言
-            textLanguage: 'QMS',  // 字幕语言
-            AP: '开放式字幕OCAP',   // OCAP/CCAP
-            area: 'CN',           // 地区
-            mp3Type: '版本1',      // 声道类型
-            resolution: 0,        // 分辨率
-            colorType: 0,         // 源色彩
-            producer: '',         // 出品方
-            date: '',             // 打包日期
-            mode: 0,              // 2D/3D
-            made: '中影',          // 制作方
-            DCPType: 'OV',        // DCP类型
-            channelType: 0,       // 声道类型
-            missionMode: 0        // 任务模式
+            aspectRatio: 0,          // 宽高比
+            soundLanguage: 1,        // 声音语言
+            captionLanguage: 1,      // 字幕语言
+            captionType: 0,          // OCAP/CCAP
+            region: 0,               // 地区
+            resolution: 0,           // 分辨率
+            sourceColor: 0,          // 源色彩
+            presenter: '',           // 出品方
+            packageDate: new Date(),    // 打包日期
+            filmType: 0,             // 2D/3D
+            productor: '',           // 制作方
+            packageType: 0,          // DCP类型
+            soundtrack: 0,           // 声道类型
+            patternUuid: 0,          // 任务模式
+            isEncrypt: 1
           },
-          movieTypeList: [
-            {
-              label: '正片FTR（Feature）',
-              value: 0
-            },
-            {
-              label: '预告片TLR（Trailer）',
-              value: 1
-            },
-            {
-              label: '短版本预告片TSR（Teaser）',
-              value: 2
-            },
-            {
-              label: '分级RTG（Rating）',
-              value: 3
-            },
-            {
-              label: '政策相关POL（Policy）',
-              value: 4
-            },
-            {
-              label: '公告服务或公告PSA（Public Service Announcement）',
-              value: 5
-            },
-            {
-              label: '广告片ADV（Advertisement）',
-              value: 6
-            },
-            {
-              label: '短片SHR（Short）',
-              value: 7
-            },
-            {
-              label: '过度片XSN（Transitional）',
-              value: 8
-            },
-            {
-              label: '测试片TST（Test）',
-              value: 9
-            }
-          ],   // 影片类型
-          proportionList: [
-            {
-              label: '遮幅F（Flat   1.85：1）',
-              value: 0
-            },
-            {
-              label: '宽荧幕S（Sope   2.39：1）',
-              value: 1
-            },
-            {
-              label: '全画幅C（Full   1.90：1）',
-              value: 2
-            }
-          ],  // 宽高比
-          resolutionList: [
-            {
-              label: '2K（2048*1080）',
-              value: 0
-            },
-            {
-              label: '4K（4096*2160）',
-              value: 1
-            }
-          ],  // 分辨率
-          colorTypeList: [
-            {
-              label: 'REC 709',
-              value: 0
-            },
-            {
-              label: 'P3 DCI',
-              value: 1
-            },
-            {
-              label: 'REC 2020',
-              value: 2
-            }
-          ],   // 源色彩
-          modeList: [
-            {
-              label: '2D',
-              value: 0
-            },
-            {
-              label: '3D',
-              value: 1
-            }
-          ],
-          channelTypeList: [
-            {
-              label: '2.1立体音',
-              value: 0
-            },
-            {
-              label: '5.1立体音',
-              value: 1
-            },
-            {
-              label: '7.1立体音',
-              value: 2
-            }
-          ],
           pl: {
             taskName: '请输入任务名称',
             movieName: '请输入影片名称'
           },
           createObject: '新建项目',
+          encryptionL: '加密打包',
           modeRadioList: [
             {
               number: '10台',
@@ -614,7 +515,16 @@
           directory: ['图像目录', '声音目录', '字幕目录'],
           imgFileList: [
             {
+              label: '导入图像',
+              tag: 'image',
+              localPath: null,    // 文件本地路径
+              key: 'TX003',
+              type: ['tif', 'tiff', 'dpx', 'openEXR'],
+              networkPath: null   // 文件网盘路径
+            },
+            {
               label: '导入图像(左)',
+              tag: 'leftImage',
               localPath: null,
               key: 'TX001',
               type: ['tif', 'tiff', 'dpx', 'openEXR'],
@@ -622,6 +532,7 @@
             },
             {
               label: '导入图像(右)',
+              tag: 'rightImage',
               localPath: null,
               key: 'TX002',
               type: ['tif', 'tiff', 'dpx', 'openEXR'],
@@ -631,6 +542,7 @@
           mp3FileList: [
             {
               label: '左声道',
+              tag: 'leftSound',
               localPath: null,
               key: 'SY001',
               type: ['wav', 'pcm'],
@@ -638,6 +550,7 @@
             },
             {
               label: '右声道',
+              tag: 'rightSound',
               localPath: null,
               key: 'SY002',
               type: ['wav', 'pcm'],
@@ -645,6 +558,7 @@
             },
             {
               label: '中置声道',
+              tag: 'centerSound',
               localPath: null,
               key: 'SY003',
               type: ['wav', 'pcm'],
@@ -652,6 +566,7 @@
             },
             {
               label: '左环绕',
+              tag: 'leftRoundSound',
               localPath: null,
               key: 'SY004',
               type: ['wav', 'pcm'],
@@ -659,6 +574,7 @@
             },
             {
               label: '右环绕',
+              tag: 'rightRoundSound',
               localPath: null,
               key: 'SY005',
               type: ['wav', 'pcm'],
@@ -666,6 +582,7 @@
             },
             {
               label: '左后环绕',
+              tag: 'leftBackRoundSound',
               localPath: null,
               key: 'SY006',
               type: ['wav', 'pcm'],
@@ -673,6 +590,7 @@
             },
             {
               label: '右后环绕',
+              tag: 'rightBackRoundSound',
               localPath: null,
               key: 'SY007',
               type: ['wav', 'pcm'],
@@ -680,6 +598,7 @@
             },
             {
               label: '低音炮',
+              tag: 'subWoofer',
               localPath: null,
               key: 'SY008',
               type: ['wav', 'pcm'],
@@ -689,6 +608,7 @@
           subtitleFileList: [
             {
               label: '导入字幕',
+              tag: 'subtitle',
               localPath: null,
               key: 'ZM001',
               type: ['png', 'txt'],
@@ -769,6 +689,26 @@
       }
     },
     computed: {
+      packageName() {
+        let {movieName, filmCategory, filmVersion, packageDate, aspectRatio, soundLanguage, region, resolution, presenter, productor, filmType, packageType, soundtrack} = this.setUnpackBase.form
+          , {dialogAdd, movieTypeList, proportionList, mp3LanguageList, areaList, resolutionList, modeList, DCPTypeList, channelTypeList} = this
+          , {renderTList, renderTListActive} = this.selectUnpackBase
+        , name = [
+          movieName
+          , movieTypeList ? movieTypeList[filmCategory]['tag'] + '-' + filmVersion : null
+          , proportionList ? proportionList[aspectRatio]['tag'] : null
+          , mp3LanguageList ? mp3LanguageList.find(curr => curr.val == soundLanguage)['label'].split(' ')[1] + '-' + '字幕语言-AP' : null
+          , areaList ? areaList.find(curr => curr.val == region)['label'].split(' ')[1] : null
+          , channelTypeList ? channelTypeList[soundtrack]['tag'] : null
+          , resolutionList[resolution]['tag']
+          , presenter ? presenter : 'NULL'
+          , packageDate.toLocaleDateString().split('/').join('')
+          , productor ? productor : 'NULL'
+          , dialogAdd.normList.find(curr => curr.val == renderTList[renderTListActive]['codingRule'])['label'] + modeList ? modeList[filmType]['label'] : ''
+          , DCPTypeList ? DCPTypeList[packageType]['tag'] : ''
+        ]
+        return name.join('_')
+      },
       ...mapState(['zone', 'zoneUuid', 'user', 'socket_backS', 'socket_backS_msg', 'socket_plugin', 'socket_plugin_msg', 'projectList']),
     },
     watch: {
@@ -807,6 +747,25 @@
       }
     },
     methods: {
+      // 3.选择文件目录 - 显示上传文件选项
+      showSoundInput(index) {
+        let {soundtrack} = this.setUnpackBase.form
+        switch(soundtrack) {
+          case 0:
+            if(index == 0 || index == 1 || index == 7) return true
+            else return false
+          case 1:
+            if(index == 0 || index == 1 || index == 2 || index == 3 || index == 4 || index == 7) return true
+            else return false
+          case 2:
+            return true
+        }
+      },
+      // 2.设置打包参数 - 关闭【设置】
+      shutSetNameDialog(obj) {
+        if (obj) Object.assign(this.setUnpackBase.form, obj)
+        this.setFileNameDialog.visible = false
+      },
       // 1.选择打包模板 - 关闭添加or编辑模板窗口 数据复位
       resetdialogAdd() {
         let {form, format} = this.dialogAdd
@@ -820,7 +779,7 @@
           name: false
         })
       },
-      // 1.选择打包模板 - 关闭添加or编辑模板窗口 创建模板
+      // 1.选择打包模板 - 关闭添加or编辑模板窗口 创建or确认编辑模板
       async createOrEditDCPT() {
         let {zoneUuid, dialogAdd} = this,
           {templateName, codingRule, frameRate, codingRate, packageTemplateUuid} = dialogAdd.form,
@@ -837,7 +796,7 @@
             codingRate,          // 码率
             packageTemplateUuid
           })
-        if (data.code == 200) {
+        if (data.code == 201) {
           messageFun('success', '操作成功！')
           this.getList()
           this.dialogAdd.visible = false
@@ -877,7 +836,7 @@
       },
       // 1.选择打包模板 - 获取渲染模板列表
       async getList() {
-        let {data} = await getTemplateList(),
+        let {data} = await getTemplateList(this.zoneUuid),
           {selectUnpackBase} = this
         selectUnpackBase.renderTList = data.data
         selectUnpackBase.renderTListActive = data.data.findIndex(curr => curr.isDefault == 1)
@@ -906,29 +865,29 @@
         }
       },
       // 1.选择打包模板 - 删除模板
-      deleteTemplateF(index) {
+      deleteTemplateF(templateUuid) {
         this.$confirm('删除后将无法找回，确认删除当前模板吗？', '提示信息', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           showClose: false
         })
           .then(() => {
-            deleteTemplate(this.selectUnpackBase.renderTList[index]['renderTemplate']['templateUuid'])
+            deleteTemplate(templateUuid)
               .then(data => {
                 this.getList()
                 messageFun('success', '删除成功')
               })
           })
-          .catch(() => messageFun('info', '已取消删除'))
       },
       // 1.选择打包模板 - 关闭【新建/编辑模板窗口】数据初始化
       closeAddTemplateDialog() {
         let {dialogAdd} = this
         dialogAdd.form = {
-          name: null,
-          normV: null,
-          speed: null,
-          internetS: 250
+          'templateName': null,        // 模板名称
+          'codingRule': 0,             // 打包标准
+          'frameRate': 0,              // 帧速率
+          'codingRate': 250,           // 码率
+          'packageTemplateUuid': null
         }
         dialogAdd.format = {
           name: null
@@ -946,59 +905,68 @@
       },
       // 3.保存
       async confirmFun() {
-        // let {data}  =await createNewDCP({
-        //   'taskName': '',                  // 任务名
-        //   'packageName': '',               // dcp文件名
-        //   'projectUuid': '',               // 项目uuid
-        //   'filmName': '',                  // 影片名称
-        //   'filmCategory': '',              // 影片类型
-        //   'filmVersion': '',               // 类型版本
-        //   'aspectRatio': '',               // 宽高比
-        //   'resolution': '',                // 分辨率
-        //   'filmType': '',                  // 2d/3d 1:2d, 2:3d
-        //   'sourceColor': '',               // 源色彩
-        //   'soundLanguage': '',             // 声音语言
-        //   'captionLanguage': '',           // 字幕语言
-        //   'soundtrack': '',                // 声道类型
-        //   'captionType': '',               // 字幕类型
-        //   'region': '',                    // 地区
-        //   'packageType': '',               // DCP类型
-        //   'presenter': '',                 // 出品方
-        //   'productor': '',                 // 制作方
-        //   'packageDate': '',               // 打包日期
-        //   'patternUuid': '',               // 打包模式uuid
-        //   'packageTemplateUuid': '',       // 模板uuid
-        //   'zoneUuid': '',                  // 分区uuid
-        //   'operateSource': 1,              // 网页端: 1,客户端: 2
-        //   'isEncrypt': '',                 // 是否加密 0不加密, 1加密
-        //   'inputFileIndex': {              // 上传文件本地路径
-        //     'image': '',                   // 图像
-        //     'leftImage': '',               // 图像(左)
-        //     'rightImage': '',              // 图像(右)
-        //     'leftSound': '',               // 左声道
-        //     'rightSound': '',              // 右声道
-        //     'centerSound': '',             // 中置声道
-        //     'leftRoundSound': '',          // 左环绕
-        //     'rightRoundSound': '',         // 右环绕
-        //     'leftBackRoundSound': '',      // 左后环绕
-        //     'rightBackRoundSound': '',     // 右后环绕
-        //     'subWoofer': '',               // 低音炮
-        //     'subtitle': ''                 // 字幕文件
-        //   }
-        // })
-        let {imgFileList, mp3FileList, subtitleFileList} = this.selectFileBase
+        let {isEncrypt, patternUuid, captionType, packageDate, productor, presenter, packageType, region, soundtrack, captionLanguage, soundLanguage, sourceColor, taskName, projectUuid, fileName, filmCategory, filmVersion, aspectRatio, resolution, filmType} = this.setUnpackBase.form
+          , {renderTList, renderTListActive, checked} = this.selectUnpackBase
+          , {imgFileList, mp3FileList, subtitleFileList} = this.selectFileBase
+          , {zoneUuid, packageName} = this
+          , {data} = await createNewDCP({
+          checked,                   // 记住模板选项
+          taskName,                  // 任务名
+          packageName,               // dcp文件名
+          projectUuid,               // 项uuid
+          fileName,                  // 影片名称
+          filmCategory,              // 影片类型
+          filmVersion,               // 类型版本
+          aspectRatio,               // 宽高比
+          resolution,                // 分辨率
+          'filmType': filmType + 1,  // 2d/3d 1:2d, 2:3d
+          sourceColor,               // 源色彩
+          soundLanguage,             // 声音语言
+          captionLanguage,           // 字幕语言
+          soundtrack,                // 声道类型
+          captionType,               // 字幕类型 AP
+          region,                    // 地区
+          packageType,               // DCP类型
+          presenter,                 // 出品方
+          productor,                 // 制作方
+          'packageDate': packageDate.getTime(),               // 打包日期
+          patternUuid,               // 打包模式uuid  【任务模式】
+          'packageTemplateUuid': renderTList[renderTListActive]['packageTemplateUuid'],  // 模板uuid
+          zoneUuid,                  // 分区uuid
+          'operateSource': 1,        // 网页端: 1,客户端: 2
+          isEncrypt,                 // 是否加密 0不加密, 1加密
+          'inputFileIndex': {
+            'image': imgFileList[0]['localPath'],                   // 图像
+            'leftImage': imgFileList[1]['localPath'],               // 图像(左)
+            'rightImage': imgFileList[2]['localPath'],              // 图像(右)
+            'leftSound': mp3FileList[0]['localPath'],               // 左声道
+            'rightSound': mp3FileList[1]['localPath'],              // 右声道
+            'centerSound': mp3FileList[2]['localPath'],             // 中置声道
+            'leftRoundSound': mp3FileList[3]['localPath'],          // 左环绕
+            'rightRoundSound': mp3FileList[4]['localPath'],         // 右环绕
+            'leftBackRoundSound': mp3FileList[5]['localPath'],      // 左后环绕
+            'rightBackRoundSound': mp3FileList[6]['localPath'],     // 右后环绕
+            'subWoofer': mp3FileList[7]['localPath'],               // 低音炮
+            'subtitle': subtitleFileList[0]['localPath']            // 字幕文件
+          }    // 上传文件本地路径
+        })
+        if(data.code != 200) {
+          throwInfoFun('新建DCP失败（信息传递到JAVA报错）', 'm-addOne/addDCP-953', data.data)
+          return false
+        }
+        let {pathPrefix} = data.data
         this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
           code: 202,
-          userID: '001',
-          TaskUUid: '002',
-          ID: '003',
+          userID: '1',
+          TaskUUid: data.data.packageTaskUuid,
+          ID: 1,
           files: [
             ...imgFileList.map(item => {
               return {
                 'localPath': item.localPath,
                 'networkPath': {
-                  'front': '/front',
-                  'back': 'file/'
+                  'front': data.data[item.tag] ? pathPrefix : null,
+                  'back': data.data[item.tag]
                 },
                 'type': item.type
               }
@@ -1007,8 +975,8 @@
               return {
                 'localPath': item.localPath,
                 'networkPath': {
-                  'front': '/front',
-                  'back': item.localPath
+                  'front': data.data[item.tag] ? pathPrefix : null,
+                  'back': data.data[item.tag]
                 },
                 'type': item.type
               }
@@ -1017,8 +985,8 @@
               return {
                 'localPath': item.localPath,
                 'networkPath': {
-                  'front': '/front',
-                  'back': item.localPath
+                  'front': data.data[item.tag] ? pathPrefix : null,
+                  'back': data.data[item.tag]
                 },
                 'type': item.type
               }
@@ -1038,7 +1006,23 @@
       }
     },
     mounted() {
+      Object.assign(this, {
+        movieTypeList,
+        proportionList,
+        resolutionList,
+        colorTypeList,
+        modeList,
+        channelTypeList,
+        APList,
+        DCPTypeList,
+        soundtrackList,
+        versionList,
+        mp3LanguageList,
+        textLanguageList,
+        areaList
+      })
       this.getList()  // 1.选择打包模板 - 获取渲染模板列表
+      this.$store.commit('WEBSOCKET_PLUGIN_INIT', true)
     },
     components: {
       addProject,
@@ -1354,5 +1338,11 @@
 
   .farm-select input {
     border: 0px !important;
+  }
+
+  .checkbox {
+    position: absolute;
+    right: 20px;
+    top: 14px;
   }
 </style>

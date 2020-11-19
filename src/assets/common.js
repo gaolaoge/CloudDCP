@@ -1,6 +1,7 @@
 import {
   Message
 } from 'element-ui'
+import i18n from '@/lang'
 import store from '../store'
 import {
   getUserInfo
@@ -313,7 +314,674 @@ const openPlugin = function () {
   else store.commit('openPluginDialog', true)
 }
 
+// 下拉框 - 影片类型
+const movieTypeList = [
+  {
+    label: '正片FTR（Feature）',
+    tag: 'FTR',
+    value: 0
+  },
+  {
+    label: '预告片TLR（Trailer）',
+    tag: 'TLR',
+    value: 1
+  },
+  {
+    label: '短版本预告片TSR（Teaser）',
+    tag: 'TSR',
+    value: 2
+  },
+  {
+    label: '分级RTG（Rating）',
+    tag: 'RTG',
+    value: 3
+  },
+  {
+    label: '政策相关POL（Policy）',
+    tag: 'POL',
+    value: 4
+  },
+  {
+    label: '公告服务或公告PSA（Public Service Announcement）',
+    tag: 'PSA',
+    value: 5
+  },
+  {
+    label: '广告片ADV（Advertisement）',
+    tag: 'ADV',
+    value: 6
+  },
+  {
+    label: '短片SHR（Short）',
+    tag: 'SHR',
+    value: 7
+  },
+  {
+    label: '过度片XSN（Transitional）',
+    tag: 'XSN',
+    value: 8
+  },
+  {
+    label: '测试片TST（Test）',
+    tag: 'TST',
+    value: 9
+  }
+]
+
+// 下拉框 - 宽高比
+const proportionList = [
+  {
+    label: '遮幅F（Flat   1.85：1）',
+    tag: 'F',
+    value: 0
+  },
+  {
+    label: '宽荧幕S（Sope   2.39：1）',
+    tag: 'S',
+    value: 1
+  },
+  {
+    label: '全画幅C（Full   1.90：1）',
+    tag: 'C',
+    value: 2
+  }
+]
+
+// 下拉框 - 分辨率
+const resolutionList = [
+  {
+    label: '2K（2048*1080）',
+    tag: '2K',
+    value: 0
+  },
+  {
+    label: '4K（4096*2160）',
+    tag: '4K',
+    value: 1
+  }
+]
+
+// 下拉框 - 源色彩
+const colorTypeList = [
+  {
+    label: 'REC 709',
+    tag: 'REC',
+    value: 0
+  },
+  {
+    label: 'P3 DCI',
+    tag: 'P3',
+    value: 1
+  },
+  {
+    label: 'REC 2020',
+    tag: 'REC',
+    value: 2
+  }
+]
+
+// 下拉框 - 2D/3D
+const modeList = [
+  {
+    label: '2D',
+    value: 0
+  },
+  {
+    label: '3D',
+    value: 1
+  }
+]
+
+// 下拉框 - 声道类型
+const channelTypeList = [
+  {
+    label: '2.1立体音',
+    tag: '21',
+    value: 0
+  },
+  {
+    label: '5.1立体音',
+    tag: '51',
+    value: 1
+  },
+  {
+    label: '7.1立体音',
+    tag: '71',
+    value: 2
+  }
+]
+
+// 下拉框 - 字幕
+const APList = [
+  {
+    label: '无字幕',
+    tag: 'XX',
+    val: 0
+  },
+  {
+    label: '开放式字幕OCAP',
+    tag: 'OCAP',
+    val: 1
+  },
+  {
+    label: '隐藏式字幕CCAP',
+    tag: 'CCAP',
+    val: 2
+  }
+]
+
+// 下拉框 - DCP类型
+const DCPTypeList = [
+  {
+    label: '原版OV Original Version',
+    tag: 'OV',
+    val: 0
+  },
+  {
+    label: '版本文件VF Version File',
+    tag: 'VF',
+    val: 1
+  }
+]
+
+// 下拉框 -
+const soundtrackList = [
+  {
+    label: '无版本',
+    val: 0
+  },
+  {
+    label: '版本1',
+    val: 1
+  }
+]
+
+// 下拉框 - 类型版本
+const versionList = [
+  {
+    label: '无版本',
+    val: 0
+  },
+  {
+    label: '版本1',
+    val: 1
+  },
+  {
+    label: '版本2',
+    val: 2
+  },
+  {
+    label: '版本3',
+    val: 3
+  },
+  {
+    label: '版本4',
+    val: 4
+  },
+  {
+    label: '版本5',
+    val: 5
+  },
+  {
+    label: '版本6',
+    val: 6
+  },
+  {
+    label: '版本7',
+    val: 7
+  },
+  {
+    label: '版本8',
+    val: 8
+  },
+  {
+    label: '版本9',
+    val: 9
+  }
+]
+
+// 下拉框 - 声音语言
+const mp3LanguageList = [
+  {
+    label: i18n.t('selectionList.voiceLanguageList.CMN'),
+    val: 1
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.YUE'),
+    val: 2
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.VI'),
+    val: 5
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.EN'),
+    val: 6
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.IND'),
+    val: 7
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.HI'),
+    val: 8
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.IT'),
+    val: 9
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.HU'),
+    val: 10
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.EL'),
+    val: 11
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.HE'),
+    val: 12
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.QSA'),
+    val: 14
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.ES'),
+    val: 15
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.LAS'),
+    val: 16
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.QSM'),
+    val: 17
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.UK'),
+    val: 18
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.TR'),
+    val: 19
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.TH'),
+    val: 20
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.TA'),
+    val: 21
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.TE'),
+    val: 22
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.SL'),
+    val: 23
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.SK'),
+    val: 24
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.SR'),
+    val: 25
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.SV'),
+    val: 26
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.JA'),
+    val: 27
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.QBP'),
+    val: 28
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.PT'),
+    val: 29
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.NO'),
+    val: 30
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.MSA'),
+    val: 31
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.RO'),
+    val: 32
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.LT'),
+    val: 33
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.LV'),
+    val: 34
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.HR'),
+    val: 35
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.CS'),
+    val: 36
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.CA'),
+    val: 37
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.NL'),
+    val: 38
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.KO'),
+    val: 39
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.VLS'),
+    val: 40
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.FI'),
+    val: 41
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.QFC'),
+    val: 42
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.FR'),
+    val: 43
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.RU'),
+    val: 44
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.DE'),
+    val: 45
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.DA'),
+    val: 46
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.BS'),
+    val: 47
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.PL'),
+    val: 48
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.IS'),
+    val: 49
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.ET'),
+    val: 50
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.AR'),
+    val: 51
+  },
+  {
+    label: i18n.t('selectionList.voiceLanguageList.SQ'),
+    val: 52
+  }
+]
+
+// 下拉框 - 字幕语言
+const textLanguageList = [
+  {
+    label: i18n.t('selectionList.textLanguageList.XX'),
+    val: 1
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.QMS'),
+    val: 2
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.QMT'),
+    val: 3
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.VI'),
+    val: 6
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.EN'),
+    val: 7
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.IND'),
+    val: 8
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.HI'),
+    val: 9
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.IT'),
+    val: 10
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.HU'),
+    val: 11
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.EL'),
+    val: 12
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.HE'),
+    val: 13
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.QSA'),
+    val: 15
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.ES'),
+    val: 16
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.LAS'),
+    val: 17
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.QSM'),
+    val: 18
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.UK'),
+    val: 19
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.TR'),
+    val: 20
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.TH'),
+    val: 21
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.TA'),
+    val: 22
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.TE'),
+    val: 23
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.SL'),
+    val: 24
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.SK'),
+    val: 25
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.SR'),
+    val: 26
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.SV'),
+    val: 27
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.JA'),
+    val: 28
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.QBP'),
+    val: 29
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.PT'),
+    val: 30
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.NO'),
+    val: 31
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.MSA'),
+    val: 32
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.RO'),
+    val: 33
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.LT'),
+    val: 34
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.LV'),
+    val: 35
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.HR'),
+    val: 36
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.CS'),
+    val: 37
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.CA'),
+    val: 38
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.NL'),
+    val: 39
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.KO'),
+    val: 40
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.VLS'),
+    val: 41
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.FI'),
+    val: 42
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.QFC'),
+    val: 43
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.FR'),
+    val: 44
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.RU'),
+    val: 45
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.DE'),
+    val: 46
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.DA'),
+    val: 47
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.BS'),
+    val: 48
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.PL'),
+    val: 49
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.IS'),
+    val: 50
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.ET'),
+    val: 51
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.AR'),
+    val: 52
+  },
+  {
+    label: i18n.t('selectionList.textLanguageList.SQ'),
+    val: 53
+  }
+]
+
+// 下拉框 - 地区
+const areaList = [
+  {
+    label: i18n.t('selectionList.areaList.INT'),
+    val: 0
+  },
+  {
+    label: i18n.t('selectionList.areaList.CN'),
+    val: 1
+  },
+  {
+    label: i18n.t('selectionList.areaList.HK'),
+    val: 2
+  },
+  {
+    label: i18n.t('selectionList.areaList.TW'),
+    val: 3
+  },
+  {
+    label: i18n.t('selectionList.areaList.MO'),
+    val: 4
+  }
+]
+
 export {
+  movieTypeList,
+  proportionList,
+  resolutionList,
+  colorTypeList,
+  modeList,
+  channelTypeList,
+  APList,
+  DCPTypeList,
+  soundtrackList,
+  versionList,
+  mp3LanguageList,
+  textLanguageList,
+  areaList,
   createCalendar,
   createDateFun,
   getDate,

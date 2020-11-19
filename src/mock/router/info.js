@@ -25,13 +25,13 @@ module.exports = [
           account: 'gaoge1834',                   // 帐号
           phone: 18514347163,                     // 手机号
           vipLevel: 1,                            // 会员等级
-          customerUuid: 1000000000000000000,      // 用户ID
+          customerUuid: 1,                        // 用户ID
           headImg: null,                          // 头像
           nickname: '高歌',                        // 昵称
           birthday: null,                         // 生日
           email: '183412808@qq.com',              // email
           sex: 1,                                 // 性别
-          zoneUuid: 100,                          // 所在区ID
+          zoneUuid: 'zone001',                    // 所在区ID
           goldBalance: 77777777                   // 金币余额
         }
       }

@@ -3,9 +3,9 @@ import {
 } from './index.js'
 
 // DCP 设置渲染模板-获取已存在记录
-export function getTemplateList() {
+export function getTemplateList(zoneUuid) {
   return http({
-    url: `/professional/template/getCustomerTemplateList`,
+    url: `/dcpProfessional/dcp/getPackageTemplateList/${zoneUuid}`,
     method: 'GET'
   })
 }
@@ -21,7 +21,7 @@ export function existedTName(templateName) {
 // DCP 设置渲染模板-删除模板
 export function deleteTemplate(packageTemplateUuid) {
   return http({
-    url: `/professional/dcp/deletePackageTemplate/${packageTemplateUuid}`,
+    url: `/dcpProfessional/dcp/deletePackageTemplate/${packageTemplateUuid}`,
     method: 'DELETE'
   })
 }
@@ -29,7 +29,7 @@ export function deleteTemplate(packageTemplateUuid) {
 // DCP 设置渲染模板-创建模板
 export function createTemplate(data) {
   return http({
-    url: `/professional/dcp/addPackageTemplate`,
+    url: `/dcpProfessional/dcp/addPackageTemplate`,
     method: 'POST',
     data
   })
@@ -38,7 +38,7 @@ export function createTemplate(data) {
 // DCP 设置渲染模板-编辑模板
 export function editTemplate(data) {
   return http({
-    url: `/professional/dcp/updatePackageTemplate`,
+    url: `/dcpProfessional/dcp/updatePackageTemplate`,
     method: 'PUT',
     data
   })
@@ -47,7 +47,7 @@ export function editTemplate(data) {
 // DCP 创建DCP
 export function createNewDCP(data) {
   return http({
-    url: `/professional/dcp/addDcpTask`,
+    url: `/dcpProfessional/dcp/addDcpTask`,
     method: 'POST',
     data
   })
@@ -56,7 +56,7 @@ export function createNewDCP(data) {
 // KDM 获取内部银幕分组列表
 export function getInternalScrGroup() {
   return http({
-    url: `/professional/kdm/getInnerScreenGroupList`,
+    url: `/dcpProfessional/kdm/getInnerScreenGroupList`,
     method: 'GET'
   })
 }
@@ -64,7 +64,7 @@ export function getInternalScrGroup() {
 // KDM 获取分组内银幕列表
 export function getInternalScrList(theatreUuid) {
   return http({
-    url: `/professional/kdm/getScreenList?theatreUuid=${theatreUuid}`,
+    url: `/dcpProfessional/kdm/getScreenList?theatreUuid=${theatreUuid}`,
     method: 'GET'
   })
 }
@@ -72,7 +72,7 @@ export function getInternalScrList(theatreUuid) {
 // KDM 新建KDM任务
 export function createNewKDM(data) {
   return http({
-    url: `/professional/kdm/addKdmTask`,
+    url: `/dcpProfessional/kdm/addKdmTask`,
     method: 'POST',
     data
   })

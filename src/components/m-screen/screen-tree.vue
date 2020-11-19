@@ -6,14 +6,16 @@
     </el-tabs>
     <!--内部银幕-->
     <div class="screenW internal" v-show="activeName == 0">
-      <!--搜索框-->
+      <!--操作-->
       <div class="search">
+        <!--搜索框-->
         <input type="text" class="input"
                :placeholder="mineScreenPlaceholder"
                v-model="mineScreenKeyword"
                @keyup.enter="getMineScreenListNode">
         <img src="@/icons/search.png" class="icon search" @click="getMineScreenListNode">
-        <div class="addBase" @click="addMineScreen.visible = true">
+        <!--添加-->
+        <div class="addBase" @click="addNewInnerTreeG">
           <img src="@/icons/add.png" class="icon add default">
           <el-tooltip content="添加分组"
                       popper-class="default"
@@ -29,16 +31,26 @@
         :data="mineScreenListNode"
         :allow-drop="allowDrop"
         draggable>
-        <span class="custom-tree-node" slot-scope="{ node, data }">
+        <span class="custom-tree-node" :key="node.id" slot-scope="{ node, data }">
           <div class="l">
             <img src="@/icons/filer.png" class="filer default">
             <img src="@/icons/filer-hover.png" class="filer hover">
             <span class="tree-node-span">{{ data.theatreName }}</span>
           </div>
-          <div class="r">
-            <span class="total">{{ data.total }}</span>
-            <img src="@/icons/operate-icon-white.png" class="operate-icon hover">
-          </div>
+              <el-popover
+                placement="right-start"
+                width="72"
+                trigger="hover"
+                :visible-arrow="false">
+                <ul class="tree-node-operate-brnG">
+                  <li @click="deleteInnerTreeG(data.theatreUuid)"><span>{{ $t('public.delete') }}</span></li>
+                  <li @click="showRenameInnerTreeG(data)"><span>{{ $t('public.rename') }}</span></li>
+                </ul>
+                <div class="r" slot="reference">
+                  <span class="total">{{ data.screenCount }}</span>
+                  <img src="@/icons/operate-icon-white.png" class="operate-icon hover">
+                </div>
+              </el-popover>
         </span>
       </el-tree>
     </div>
@@ -62,7 +74,8 @@
       top="30vh"
       width="380px">
       <div class="dialog-header">
-        <span class="title">{{ addMineScreen.title }}</span>
+        <span class="title" v-if="addMineScreen.addOrEdit == 'add'">{{ addMineScreen.titleA }}</span>
+        <span class="title" v-if="addMineScreen.addOrEdit == 'edit'">{{ addMineScreen.titleE }}</span>
         <img src="@/icons/shutDialogIcon.png"
              @click="addMineScreen.visible = false"
              class="closeBtn">
@@ -73,6 +86,7 @@
                  class="farm-input addMineScreenInput"
                  :placeholder="addMineScreen.placeholder"
                  v-model="addMineScreen.input"
+                 @keyup.enter="addMineScreenGroupFun"
                  @input="verifAddMineScreenName(true)"
                  @blur="verifAddMineScreenName(false)"
                  @focus="addMineScreen.status = null">
@@ -84,9 +98,14 @@
           <div class="dialog-btn cancel" @click="addMineScreen.visible = false">
             <span>{{ $t('public.cancel') }}</span>
           </div>
-          <div class="dialog-btn save"
-               :class="[{'cannotBeGo': !addMineScreen.input.trim()}]"
+          <div :class="[{'cannotBeGo': !addMineScreen.status}, 'dialog-btn', 'save']"
+               v-if="addMineScreen.addOrEdit == 'add'"
                @click="addMineScreenGroupFun">
+            <span>{{ $t('public.save') }}</span>
+          </div>
+          <div :class="[{'cannotBeGo': !addMineScreen.status}, 'dialog-btn', 'save']"
+               v-if="addMineScreen.addOrEdit == 'edit'"
+               @click="renameInnerTreeG">
             <span>{{ $t('public.save') }}</span>
           </div>
         </div>
@@ -98,7 +117,9 @@
 <script>
   import {
     getMineScreenList,
-    addNewScreenGroup
+    addNewScreenGroup,
+    deleteMineScreenG,
+    renameMineScreenG
   } from '@/api/screen-api'
   import {messageFun} from '../../assets/common'
 
@@ -107,9 +128,12 @@
     data() {
       return {
         addMineScreen: {
+          addOrEdit: null,   // 'add' or 'edit'
           visible: false,
-          title: '添加分组',
+          titleA: '添加分组',
+          titleE: '重命名分组',
           placeholder: '请输入分组名称',
+          theatreUuid: null,
           input: '',
           status: null,
           warnInfo: ''
@@ -162,26 +186,61 @@
       async verifAddMineScreenName(ing) {
         let {input} = this.addMineScreen,
           {addMineScreen} = this
-        console.log(input)
-        if (!input.trim()) return false
-        else if (input.trim().length > 5) {
+        if (!input.trim()) {
+          ing ? addMineScreen.status = null : addMineScreen.status = false
+        } else if (input.trim().length > 50) {
           addMineScreen.status = false
           addMineScreen.warnInfo = '最多输入50个字符'
-        } else {
-
-        }
+        } else addMineScreen.status = true
       },
       // 【内部银幕】【添加分组】 - 确定
       async addMineScreenGroupFun() {
         let {status} = this.addMineScreen
         if (!status) return false
         let {data} = await addNewScreenGroup(this.addMineScreen.input)
-        if (data.code == 200) {
+        if (data.code == 201) {
           messageFun('success', '操作成功！')
           this.addMineScreen.visible = false
           this.mineScreenKeyword = ''
+          this.addMineScreen.input = ''
           this.getMineScreenListNode()
         }
+      },
+      // 【内部银幕】删除分组
+      deleteInnerTreeG(theatreUuid) {
+        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+          .then(async () => {
+          let {data} = await deleteMineScreenG(theatreUuid)
+          if (data.code == 204) {
+            messageFun('success', '操作成功！')
+            this.getMineScreenListNode()
+          }
+        })
+
+      },
+      // 【内部银幕】显示【重命名分组】窗口
+      showRenameInnerTreeG(data) {
+        let {addMineScreen} = this
+        addMineScreen.visible = true
+        addMineScreen.addOrEdit = 'edit'
+        addMineScreen.input = data.theatreName
+        addMineScreen.theatreUuid = data.theatreUuid
+        addMineScreen.status = true
+      },
+      //【内部银幕】- 重命名分组
+      async renameInnerTreeG() {
+        let {theatreUuid, input} = this.addMineScreen
+        let {data} = await renameMineScreenG(theatreUuid, input)
+      },
+      // 内部银幕】添加分组
+      addNewInnerTreeG() {
+        let {addMineScreen} = this
+        addMineScreen.visible = true
+        addMineScreen.addOrEdit = 'add'
       }
     },
     mounted() {
@@ -254,6 +313,11 @@
           display: inline-flex;
           align-items: center;
 
+          & > span {
+            display: inline-flex;
+            align-items: center;
+          }
+
           .total {
             font-size: 14px;
             display: inline-flex;
@@ -305,7 +369,10 @@
     .dialog-body {
       display: flex;
       justify-content: center;
-      height: 128px;
+
+      .item {
+        margin-bottom: 60px;
+      }
 
       .addMineScreenInput {
         margin-top: 10px;
@@ -318,4 +385,22 @@
       }
     }
   }
+
+  .tree-node-operate-brnG {
+    width: 72px;
+    padding: 10px 0px;
+
+    li {
+      list-style: none;
+      height: 33px;
+      line-height: 33px;
+      cursor: pointer;
+      padding: 0px 10px;
+
+      &:hover {
+        background-color: rgba(241, 244, 249, 1);
+      }
+    }
+  }
+
 </style>

@@ -197,8 +197,8 @@
           pageIndex: this.pageIndex,
           pageSize: this.setting.pageSize,
           screenStatusList: [],    // 银幕状态
-          cinemaUuid: [],          // 院线uuid
-          theatreUuid: [],         // 影院uuid
+          cinemaUuid: '',          // 院线uuid
+          theatreUuid: '',         // 影院uuid
           sortBy: null,            // 排序字段
           sortType: 0,             // 0降序,1升序
           keyword: this.keyword

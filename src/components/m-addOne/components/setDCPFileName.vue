@@ -11,7 +11,65 @@
         <!--DCP文件名-->
         <div class="item mini">
           <label class="farm-label">{{ label.fileName }}</label>
-          <span class="farm-span">{{ form.fileName }}</span>
+          <p class="farm-span no-font-size">
+            <!--影片名称-->
+            <span class="fns" style="color: #E02020">{{ form.movieName }}</span>
+            <span class="fns">_</span>
+            <!--影片类型-类型版本-->
+            <span class="fns" style="color: #FA6400">
+              {{ movieTypeList ? movieTypeList[form.filmCategory]['tag'] + '-' + versionList[form.filmVersion]['label'] : null }}
+            </span>
+            <span class="fns">_</span>
+            <!--宽高比-->
+            <span class="fns" style="color: #F7B500">
+              {{ proportionList ? proportionList[form.aspectRatio]['tag'] : null }}
+            </span>
+            <span class="fns">_</span>
+            <!--声音语言-字幕语言-->
+            <span class="fns" style="color: #6DD400">
+              {{ mp3LanguageList ? mp3LanguageList[form.soundLanguage]['label'].split(' ')[1] : null }}{{ textLanguageList ? '-' + textLanguageList[form.captionLanguage]['label'].split(' ')[1] : null }}
+            </span>
+            <span class="fns">_</span>
+            <!--地区-->
+            <span class="fns" style="color: #44D7B6">
+              {{ areaList ? areaList[form.region]['label'].split(' ')[1] : null }}
+            </span>
+            <span class="fns">_</span>
+            <!--声道类型-补充声道-->
+            <span class="fns" style="color: #0091FF">
+              {{ channelTypeList ? channelTypeList[form.soundtrack]['tag'] : null }}
+            </span>
+            <span class="fns">_</span>
+            <!--分辨率-->
+            <span class="fns" style="color: #6236FF">
+              {{ resolutionList ? resolutionList[form.resolution]['tag'] : null }}
+            </span>
+            <span class="fns">_</span>
+            <!--出品单位-->
+            <span class="fns" style="color: #A62727">
+              {{ form.presenter || 'NULL' }}
+            </span>
+            <span class="fns">_</span>
+            <!--打包日期-->
+            <span class="fns" style="color: #C29170">
+              {{ form.packageDate.toLocaleDateString().split('/').join('') }}
+            </span>
+            <span class="fns">_</span>
+            <!--制作单位-->
+            <span class="fns" style="color: #F7ED5C">
+              {{ form.productor || 'NULL' }}
+            </span>
+            <span class="fns">_</span>
+            <!--任务模板-打包标准-->
+            <span class="fns" style="color: #29AD40">
+              {{ codingRule + '-' + modeList[form.type]['label'] }}
+            </span>
+            <span class="fns">_</span>
+            <!--DCP类型-->
+            <span class="fns" style="color: #E5C78A">
+              {{ DCPTypeList ? DCPTypeList[form.packageType]['tag'] : '' }}
+            </span>
+          </p>
         </div>
         <!--影片名称-->
         <div class="item mini">
@@ -22,21 +80,21 @@
         </div>
         <!--影片类型-->
         <div class="item mini">
-          <label class="farm-label">{{ label.movieType }}</label>
-          <el-select v-model="form.movieType"
+          <label class="farm-label">{{ label.filmCategory }}</label>
+          <el-select v-model="form.filmCategory"
                      class="farm-select">
             <el-option
               v-for="(item,index) in movieTypeList"
               :key="index"
               :label="item.label"
-              :value="item.val">
+              :value="item.value">
             </el-option>
           </el-select>
         </div>
         <!--类型版本-->
         <div class="item mini">
           <label class="farm-label">{{ label.version }}</label>
-          <el-select v-model="form.version"
+          <el-select v-model="form.filmVersion"
                      class="farm-select">
             <el-option
               v-for="(item,index) in versionList"
@@ -48,21 +106,21 @@
         </div>
         <!--宽高比-->
         <div class="item mini">
-          <label class="farm-label">{{ label.proportion }}</label>
-          <el-select v-model="form.proportion"
+          <label class="farm-label">{{ label.aspectRatio }}</label>
+          <el-select v-model="form.aspectRatio"
                      class="farm-select">
             <el-option
               v-for="(item,index) in proportionList"
               :key="index"
               :label="item.label"
-              :value="item.val">
+              :value="item.value">
             </el-option>
           </el-select>
         </div>
         <!--声音语言-->
         <div class="item mini">
           <label class="farm-label">{{ label.mp3Language }}</label>
-          <el-select v-model="form.mp3Language"
+          <el-select v-model="form.soundLanguage"
                      class="farm-select">
             <el-option
               v-for="(item,index) in mp3LanguageList"
@@ -75,7 +133,7 @@
         <!--字幕语言-->
         <div class="item mini">
           <label class="farm-label">{{ label.textLanguage }}</label>
-          <el-select v-model="form.textLanguage"
+          <el-select v-model="form.captionLanguage"
                      class="farm-select">
             <el-option
               v-for="(item,index) in textLanguageList"
@@ -88,7 +146,7 @@
         <!--OCAP/CCAP-->
         <div class="item mini">
           <label class="farm-label">{{ label.AP }}</label>
-          <el-select v-model="form.AP"
+          <el-select v-model="form.captionType"
                      class="farm-select">
             <el-option
               v-for="(item,index) in APList"
@@ -101,26 +159,26 @@
         <!--地区-->
         <div class="item mini">
           <label class="farm-label">{{ label.area }}</label>
-          <el-select v-model="form.area"
+          <el-select v-model="form.region"
                      class="farm-select">
             <el-option
               v-for="(item,index) in areaList"
               :key="'area-' + index"
-              :label="item"
-              :value="index">
+              :label="item.label"
+              :value="item.val">
             </el-option>
           </el-select>
         </div>
         <!--声道类型-->
         <div class="item mini">
           <label class="farm-label">{{ label.mp3Type }}</label>
-          <el-select v-model="form.mp3Type"
+          <el-select v-model="form.soundtrack"
                      class="farm-select">
             <el-option
-              v-for="(item,index) in mp3TypeList"
+              v-for="(item,index) in channelTypeList"
               :key="index"
               :label="item.label"
-              :value="item.val">
+              :value="item.value">
             </el-option>
           </el-select>
         </div>
@@ -133,7 +191,7 @@
               v-for="(item,index) in resolutionList"
               :key="index"
               :label="item.label"
-              :value="item.val">
+              :value="item.value">
             </el-option>
           </el-select>
         </div>
@@ -142,13 +200,13 @@
           <label class="farm-label">{{ label.producer }}</label>
           <input type="text"
                  :class="['farm-input', 'farm-name-input']"
-                 v-model="form.producer">
+                 v-model="form.presenter">
         </div>
         <!--打包日期-->
         <div class="item mini">
           <label class="farm-label">{{ label.date }}</label>
           <el-date-picker
-            v-model="form.date"
+            v-model="form.packageDate"
             type="date"
             placeholder="选择日期"/>
         </div>
@@ -157,7 +215,7 @@
           <label class="farm-label">{{ label.made }}</label>
           <input type="text"
                  :class="[{'inputError': null}, 'farm-input', 'farm-name-input']"
-                 v-model="form.made">
+                 v-model="form.productor">
         </div>
         <!--2D/3D-->
         <div class="item mini">
@@ -165,17 +223,17 @@
           <el-select v-model="form.type"
                      class="farm-select">
             <el-option
-              v-for="(item,index) in typeList"
+              v-for="(item,index) in modeList"
               :key="index"
               :label="item.label"
-              :value="item.val">
+              :value="item.value">
             </el-option>
           </el-select>
         </div>
         <!--DCP类型-->
         <div class="item mini">
           <label class="farm-label">{{ label.DCPType }}</label>
-          <el-select v-model="form.DCPType"
+          <el-select v-model="form.packageType"
                      class="farm-select">
             <el-option
               v-for="(item,index) in DCPTypeList"
@@ -188,12 +246,11 @@
         <!--按钮-->
         <div class="farm-btnGroup">
           <div class="btnGroup">
-            <div :class="[{'disable-self': null}, 'btnGroup-btn', 'confirm']"
-                 @click="saveFun">
-              <span>{{ $t('public.save') }}</span>
-            </div>
             <div class="btnGroup-btn previous" @click="shutMe">
               <span>{{ $t('public.cancel') }}</span>
+            </div>
+            <div class="btnGroup-btn confirm" @click="saveFun">
+              <span>{{ $t('public.save') }}</span>
             </div>
           </div>
         </div>
@@ -203,576 +260,33 @@
 </template>
 
 <script>
+  import {
+    movieTypeList,
+    proportionList,
+    resolutionList,
+    colorTypeList,
+    modeList,
+    channelTypeList,
+    APList,
+    DCPTypeList,
+    soundtrackList,
+    versionList,
+    mp3LanguageList,
+    textLanguageList,
+    areaList
+  } from '@/assets/common.js'
+
   export default {
     name: 'setName',
     data() {
       return {
         title: '设置DCP文件名',
-        movieTypeList: [
-          {
-            label: '广告片 ADV',
-            val: 0
-          },
-          {
-            label: '正片 FTR',
-            val: 1
-          },
-          {
-            label: '政策相关 POL',
-            val: 2
-          },
-          {
-            label: '推广片 PRO',
-            val: 3
-          },
-          {
-            label: '公告 PSA',
-            val: 4
-          },
-          {
-            label: '短片 SHR',
-            val: 5
-          },
-          {
-            label: '预告片 TLR',
-            val: 6
-          },
-          {
-            label: '样片 TSR',
-            val: 7
-          },
-          {
-            label: '测试片 TST',
-            val: 8
-          },
-          {
-            label: '过度片 XSN',
-            val: 9
-          }
-        ],    // 影片类型
-        versionList: [
-          {
-            label: '无版本',
-            val: 0
-          },
-          {
-            label: '版本1',
-            val: 1
-          },
-          {
-            label: '版本2',
-            val: 2
-          },
-          {
-            label: '版本3',
-            val: 3
-          },
-          {
-            label: '版本4',
-            val: 4
-          },
-          {
-            label: '版本5',
-            val: 5
-          },
-          {
-            label: '版本6',
-            val: 6
-          },
-          {
-            label: '版本7',
-            val: 7
-          },
-          {
-            label: '版本8',
-            val: 8
-          },
-          {
-            label: '版本9',
-            val: 9
-          }
-        ],      // 类型版本
-        proportionList: [
-          {
-            label: '全画幅C（Full   1.90：1）',
-            val: 0
-          },
-          {
-            label: '遮幅F（Flat   1.85：1）',
-            val: 1
-          },
-          {
-            label: '宽银幕S（Sope   2.39：1）',
-            val: 2
-          }
-        ],   // 宽高比
-        mp3LanguageList: [
-          {
-            label: '中文普通话 CMN',
-            val: 1
-          },
-          {
-            label: '中文粤语 YUE',
-            val: 2
-          },
-          {
-            label: '越南语 VI',
-            val: 5
-          },
-          {
-            label: '英语 EN',
-            val: 6
-          },
-          {
-            label: '印尼语 IND',
-            val: 7
-          },
-          {
-            label: '印地语 HI',
-            val: 8
-          },
-          {
-            label: '意大利语 IT',
-            val: 9
-          },
-          {
-            label: '匈牙利语 HU',
-            val: 10
-          },
-          {
-            label: '希腊语 EL',
-            val: 11
-          },
-          {
-            label: '希伯来语 HE',
-            val: 12
-          },
-          {
-            label: '西班牙语-阿根廷 QSA',
-            val: 14
-          },
-          {
-            label: '西班牙语-卡斯蒂利亚 ES',
-            val: 15
-          },
-          {
-            label: '西班牙语-拉美 LAS',
-            val: 16
-          },
-          {
-            label: '西班牙语-墨西哥 QSM',
-            val: 17
-          },
-          {
-            label: '乌克兰语 UK',
-            val: 18
-          },
-          {
-            label: '土耳其语 TR',
-            val: 19
-          },
-          {
-            label: '泰语 TH',
-            val: 20
-          },
-          {
-            label: '泰米尔语 TA',
-            val: 21
-          },
-          {
-            label: '泰卢固语 TE',
-            val: 22
-          },
-          {
-            label: '斯洛文尼亚语 SL',
-            val: 23
-          },
-          {
-            label: '斯洛伐克语 SK',
-            val: 24
-          },
-          {
-            label: '塞尔维亚语 SR',
-            val: 25
-          },
-          {
-            label: '瑞典语 SV',
-            val: 26
-          },
-          {
-            label: '日语 JA',
-            val: 27
-          },
-          {
-            label: '葡萄牙语-巴西 QBP',
-            val: 28
-          },
-          {
-            label: '葡萄牙语-欧洲 PT',
-            val: 29
-          },
-          {
-            label: '挪威语 NO',
-            val: 30
-          },
-          {
-            label: '马来语 MSA',
-            val: 31
-          },
-          {
-            label: '罗马尼亚语 RO',
-            val: 32
-          },
-          {
-            label: '立陶宛语 LT',
-            val: 33
-          },
-          {
-            label: '拉脱维亚语 LV',
-            val: 34
-          },
-          {
-            label: '克罗地亚语 HR',
-            val: 35
-          },
-          {
-            label: '捷克－斯洛伐克语 CS',
-            val: 36
-          },
-          {
-            label: '加泰隆语 CA',
-            val: 37
-          },
-          {
-            label: '荷兰语 NL',
-            val: 38
-          },
-          {
-            label: '韩语 KO',
-            val: 39
-          },
-          {
-            label: '佛兰芒语 VLS',
-            val: 40
-          },
-          {
-            label: '芬兰语 FI',
-            val: 41
-          },
-          {
-            label: '法语-加拿大 QFC',
-            val: 42
-          },
-          {
-            label: '法语 FR',
-            val: 43
-          },
-          {
-            label: '俄语 RU',
-            val: 44
-          },
-          {
-            label: '德语 DE',
-            val: 45
-          },
-          {
-            label: '丹麦语 DA',
-            val: 46
-          },
-          {
-            label: '波斯尼亚语 BS',
-            val: 47
-          },
-          {
-            label: '波兰语 PL',
-            val: 48
-          },
-          {
-            label: '冰岛语 IS',
-            val: 49
-          },
-          {
-            label: '爱沙尼亚语 ET',
-            val: 50
-          },
-          {
-            label: '阿拉伯语 AR',
-            val: 51
-          },
-          {
-            label: '阿尔巴尼亚语 SQ',
-            val: 52
-          }
-        ],
-        textLanguageList: [
-          {
-            label: '无字幕 XX',
-            val: 'XX'
-          },
-          {
-            label: '中文简体 QMS',
-            val: 'QMS'
-          },
-          {
-            label: '中文繁体 QMT',
-            val: 'QMT'
-          },
-          {
-            label: '越南语 VI',
-            val: 'VI'
-          },
-          {
-            label: '英语 EN',
-            val: 'EN'
-          },
-          {
-            label: '印尼语 IND',
-            val: 'IND'
-          },
-          {
-            label: '印地语 HI',
-            val: 'HI'
-          },
-          {
-            label: '意大利语 IT',
-            val: 'IT'
-          },
-          {
-            label: '匈牙利语 HU',
-            val: 'HU'
-          },
-          {
-            label: '希腊语 EL',
-            val: 'EL'
-          },
-          {
-            label: '希伯来语 HE',
-            val: 'HE'
-          },
-          {
-            label: '西班牙语-阿根廷 QSA',
-            val: 'QSA'
-          },
-          {
-            label: '西班牙语-卡斯蒂利亚 ES',
-            val: 'ES'
-          },
-          {
-            label: '西班牙语-拉美 LAS',
-            val: 'LAS'
-          },
-          {
-            label: '西班牙语-墨西哥 QSM',
-            val: 'QSM'
-          },
-          {
-            label: '乌克兰语 UK',
-            val: 'UK'
-          },
-          {
-            label: '土耳其语 TR',
-            val: 'TR'
-          },
-          {
-            label: '泰语 TH',
-            val: 'TH'
-          },
-          {
-            label: '泰米尔语 TA',
-            val: 'TA'
-          },
-          {
-            label: '泰卢固语 TE',
-            val: 'TE'
-          },
-          {
-            label: '斯洛文尼亚语 SL',
-            val: 'SL'
-          },
-          {
-            label: '斯洛伐克语 SK',
-            val: 'SK'
-          },
-          {
-            label: '塞尔维亚语 SR',
-            val: 'SR'
-          },
-          {
-            label: '瑞典语 SV',
-            val: 'SV'
-          },
-          {
-            label: '日语 JA',
-            val: 'JA'
-          },
-          {
-            label: '葡萄牙语-巴西 QBP',
-            val: 'QBP'
-          },
-          {
-            label: '葡萄牙语-欧洲 PT',
-            val: 'PT'
-          },
-          {
-            label: '挪威语 NO',
-            val: 'NO'
-          },
-          {
-            label: '马来语 MSA',
-            val: 'MSA'
-          },
-          {
-            label: '罗马尼亚语 RO',
-            val: 'RO'
-          },
-          {
-            label: '立陶宛语 LT',
-            val: 'LT'
-          },
-          {
-            label: '拉脱维亚语 LV',
-            val: 'LV'
-          },
-          {
-            label: '克罗地亚语 HR',
-            val: 'HR'
-          },
-          {
-            label: '捷克－斯洛伐克语 CS',
-            val: 'CS'
-          },
-          {
-            label: '加泰隆语 CA',
-            val: 'CA'
-          },
-          {
-            label: '荷兰语 NL',
-            val: 'NL'
-          },
-          {
-            label: '韩语 KO',
-            val: 'KO'
-          },
-          {
-            label: '佛兰芒语 VLS',
-            val: 'VLS'
-          },
-          {
-            label: '芬兰语 FI',
-            val: 'FI'
-          },
-          {
-            label: '法语-加拿大 QFC',
-            val: 'QFC'
-          },
-          {
-            label: '法语 FR',
-            val: 'FR'
-          },
-          {
-            label: '俄语 RU',
-            val: 'RU'
-          },
-          {
-            label: '德语 DE',
-            val: 'DE'
-          },
-          {
-            label: '丹麦语 DA',
-            val: 'DA'
-          },
-          {
-            label: '波斯尼亚语 BS',
-            val: 'BS'
-          },
-          {
-            label: '波兰语 PL',
-            val: 'PL'
-          },
-          {
-            label: '冰岛语 IS',
-            val: 'IS'
-          },
-          {
-            label: '爱沙尼亚语 ET',
-            val: 'QMSET'
-          },
-          {
-            label: '阿拉伯语 AR',
-            val: 'AR'
-          },
-          {
-            label: '阿尔巴尼亚语 SQ',
-            val: 'SQ'
-          }
-        ],
-        APList: [
-          {
-            label: '无字幕',
-            val: 0
-          },
-          {
-            label: '开放式字幕OCAP',
-            val: 1
-          },
-          {
-            label: '隐藏式字幕CCAP',
-            val: 2
-          }
-        ],           // OCAP/CCAP
-        areaList: [
-          this.$t('public.areaList.INT'),
-          this.$t('public.areaList.CN'),
-          this.$t('public.areaList.HK'),
-          this.$t('public.areaList.TW'),
-          this.$t('public.areaList.MO')
-        ],         // 地区
-        mp3TypeList: [
-          {
-            label: '无版本',
-            val: 0
-          },
-          {
-            label: '版本1',
-            val: 1
-          }
-        ],      // 声道类型
-        resolutionList: [
-          {
-            label: '2K 2048*1080',
-            val: 0
-          },
-          {
-            label: '4K 4096*2160',
-            val: 1
-          }
-        ],   // 分辨率
-        typeList: [
-          {
-            label: '2D',
-            val: 0
-          },
-          {
-            label: '3D',
-            val: 1
-          }
-        ],         // 2D/3D
-        DCPTypeList: [
-          {
-            label: '原版OV Original Version',
-            val: 0
-          },
-          {
-            label: '版本文件VF Version File',
-            val: 1
-          }
-        ],      // DCP类型
         label: {
           fileName: 'DCP文件名',
           movieName: '影片名称',
-          movieType: '影片类型',
+          filmCategory: '影片类型',
           version: '类型版本',
-          proportion: '宽高比',
+          aspectRatio: '宽高比',
           mp3Language: '声音语言',
           textLanguage: '字幕语言',
           AP: 'OCAP/CCAP',
@@ -788,32 +302,65 @@
         form: {
           fileName: '',          // DCP文件名
           movieName: '',         // 影片名称
-          movieType: 0,         // 影片类型
-          version: 0,            // 类型版本
-          proportion: 0,         // 宽高比
-          mp3Language: 1,        // 声音语言
-          textLanguage: '',      // 字幕语言
-          AP: 0,                 // OCAP/CCAP
-          area: 0,               // 地区
-          mp3Type: 0,            // 声道类型
+          filmCategory: 0,          // 影片类型
+          filmVersion: 0,            // 类型版本
+          aspectRatio: 0,         // 宽高比
+          soundLanguage: 1,        // 声音语言
+          captionLanguage: 1,      // 字幕语言
+          captionType: 0,                 // OCAP/CCAP
+          region: 0,               // 地区
+          soundtrack: 0,            // 声道类型
           resolution: 0,         // 分辨率
-          producer: '',          // 出品方
-          date: '',              // 打包日期
-          made: '',              // 制作方
+          presenter: '',          // 出品方
+          packageDate: new Date(),              // 打包日期
+          productor: '',              // 制作方
           type: 0,               // 2D/3D
-          DCPType: 0             // DCP类型
-        }
+          packageType: 0             // DCP类型
+        },
+        movieTypeList: [],
+        proportionList: [],
+        resolutionList: [],
+        colorTypeList: [],
+        modeList: [],
+        channelTypeList: [],
+        APList: [],
+        DCPTypeList: [],
+        soundtrackList: [],
+        versionList: [],
+        mp3LanguageList: [],
+        textLanguageList: [],
+        areaList: []
       }
+    },
+    props: {
+      codingRule: String
     },
     methods: {
       // 关闭
       shutMe() {
-        this.$emit('shutMe')
+        this.$emit('shutMe', null)
       },
       // 保存
       saveFun() {
-        this.shutMe()
+        this.$emit('shutMe', this.form)
       }
+    },
+    mounted() {
+      Object.assign(this, {
+        movieTypeList,
+        proportionList,
+        resolutionList,
+        colorTypeList,
+        modeList,
+        channelTypeList,
+        APList,
+        DCPTypeList,
+        soundtrackList,
+        versionList,
+        mp3LanguageList,
+        textLanguageList,
+        areaList
+      })
     }
   }
 </script>
@@ -831,10 +378,23 @@
         margin-right: 60px;
       }
     }
+
     .btnGroup-btn:nth-of-type(2) {
       margin-right: 0px;
     }
+  }
 
+  /deep/ .el-input__inner {
+    height: 40px;
+    line-height: 40px;
+  }
+
+  .no-font-size {
+    font-size: 0px !important;
+  }
+
+  .fns {
+    font-size: 14px;
   }
 
 </style>

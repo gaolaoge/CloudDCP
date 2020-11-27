@@ -192,7 +192,7 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        width: 60px;
+        width: 62px;
         list-style: none;
         margin-bottom: 23px;
         cursor: pointer;

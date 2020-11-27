@@ -31,16 +31,17 @@
              @click="$refs.screenTableReal.getList()">
       </div>
     </div>
+    <div class="hr" />
     <Table ref="screenTableReal"
            :keyword="searchInput"
-           @tableSelectionF="result => selectionList = result" />
+           @tableSelectionF="result => selectionList = result"/>
     <!--添加银幕-->
     <el-dialog
       :visible.sync="addSDialogVisible"
       :destroy-on-close="true"
       :show-close="false"
-      width="860">
-      <AddScreen @shutMe="addSDialogVisible = false" />
+      width="860px">
+      <AddScreen @shutMe="shutAddDialog"/>
     </el-dialog>
   </div>
 </template>
@@ -90,6 +91,11 @@
       }
     },
     methods: {
+      // 关闭添加银幕窗口
+      shutAddDialog(boolean) {
+        this.addSDialogVisible = false
+        if (boolean) this.getTableList()
+      },
       // 操作
       operating(action) {
         switch (action) {
@@ -99,7 +105,7 @@
             break
           case '编辑':
             // 所选记录都为"进行中"且"未过期"才可以点击
-            if (this.editBtn) this.$refs.screenTableReal.editSDialog.visible = true
+            if (this.editBtn) this.$refs.screenTableReal.editScreen()
             break
           case '删除':
             // 当选中项中存在「进行中」状态时不可使用
@@ -114,6 +120,10 @@
       // 关闭【添加银幕】
       addSClose() {
 
+      },
+      // 获取Table列表
+      getTableList() {
+        this.$refs.screenTableReal.getList()
       }
     },
     mounted() {
@@ -147,6 +157,15 @@
 <style lang="less" scoped>
   .screen-table {
     width: 100%;
+    padding: 0px 10px;
+    box-sizing: border-box;
+
+    .table-operate {
+      box-sizing: border-box;
+      padding: 10px 0px 0px 20px;
+      margin-bottom: 10px;
+    }
+
     .btnGroup {
       &.cannotAdd .btn.add,
       &.cannotEdit .btn.edit,
@@ -166,5 +185,10 @@
         }
       }
     }
+  }
+
+  .hr {
+    height: 2px;
+    background-color: #E4E7ED;
   }
 </style>

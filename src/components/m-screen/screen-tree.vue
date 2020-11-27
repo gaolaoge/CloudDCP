@@ -31,26 +31,27 @@
         :data="mineScreenListNode"
         :allow-drop="allowDrop"
         draggable>
-        <span class="custom-tree-node" :key="node.id" slot-scope="{ node, data }">
+        <span class="custom-tree-node" :key="node.id" slot-scope="{ node, data }"
+              @click="$emit('selectMineScreen', {'type': 'mineScreen', data})">
           <div class="l">
             <img src="@/icons/filer.png" class="filer default">
             <img src="@/icons/filer-hover.png" class="filer hover">
             <span class="tree-node-span">{{ data.theatreName }}</span>
           </div>
-              <el-popover
-                placement="right-start"
-                width="72"
-                trigger="hover"
-                :visible-arrow="false">
-                <ul class="tree-node-operate-brnG">
-                  <li @click="deleteInnerTreeG(data.theatreUuid)"><span>{{ $t('public.delete') }}</span></li>
-                  <li @click="showRenameInnerTreeG(data)"><span>{{ $t('public.rename') }}</span></li>
-                </ul>
-                <div class="r" slot="reference">
-                  <span class="total">{{ data.screenCount }}</span>
-                  <img src="@/icons/operate-icon-white.png" class="operate-icon hover">
-                </div>
-              </el-popover>
+          <el-popover
+            placement="right-start"
+            width="72"
+            trigger="hover"
+            :visible-arrow="false">
+            <ul class="tree-node-operate-brnG">
+              <li @click="deleteInnerTreeG(data.theatreUuid)"><span>{{ $t('public.delete') }}</span></li>
+              <li @click="showRenameInnerTreeG(data)"><span>{{ $t('public.rename') }}</span></li>
+            </ul>
+            <div class="r" slot="reference">
+              <span class="total">{{ data.screenCount }}</span>
+              <img src="@/icons/operate-icon-white.png" class="operate-icon hover">
+            </div>
+          </el-popover>
         </span>
       </el-tree>
     </div>
@@ -214,12 +215,12 @@
           type: 'warning'
         })
           .then(async () => {
-          let {data} = await deleteMineScreenG(theatreUuid)
-          if (data.code == 204) {
-            messageFun('success', '操作成功！')
-            this.getMineScreenListNode()
-          }
-        })
+            let {data} = await deleteMineScreenG(theatreUuid)
+            if (data.code == 204) {
+              messageFun('success', '操作成功！')
+              this.getMineScreenListNode()
+            }
+          })
 
       },
       // 【内部银幕】显示【重命名分组】窗口
@@ -236,7 +237,7 @@
         let {theatreUuid, input} = this.addMineScreen
         let {data} = await renameMineScreenG(theatreUuid, input)
       },
-      // 内部银幕】添加分组
+      // 【内部银幕】添加分组
       addNewInnerTreeG() {
         let {addMineScreen} = this
         addMineScreen.visible = true
@@ -251,8 +252,13 @@
 
 <style lang="less" scoped>
   .screen-tree {
+    position: relative;
+    overflow: hidden;
+    z-index: 2;
     width: 212px;
+    padding: 0px 10px;
     box-sizing: border-box;
+    box-shadow: 2px 0px 12px 0px rgba(27, 83, 244, 0.08);
 
     .screenW {
       font-size: 14px;
@@ -403,4 +409,8 @@
     }
   }
 
+  /deep/.el-tabs__item {
+    line-height: 50px;
+    height: 50px;
+  }
 </style>

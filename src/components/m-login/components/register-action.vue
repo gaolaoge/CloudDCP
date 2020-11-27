@@ -109,11 +109,9 @@
     verifAccountIsRegister,
     verifPhoneIsRegister,
     getProtocal,
-    registerAccount
+    registerAccount,
+    registerGetphoneCode
   } from '@/api/login-api'
-  import {
-    getPhoneCode
-  } from '@/api/info-api'
   import {
     messageFun,
     exportDownloadFun
@@ -239,10 +237,7 @@
       // 获取验证码
       getCode() {
         if (!this.verif.phone) return false
-        getPhoneCode({
-          phone: this.form.phone,
-          position: 'register'
-        })
+        registerGetphoneCode(this.form.phone)
         this.delayFun()
         this.codeObtained = true
       },

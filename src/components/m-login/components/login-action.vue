@@ -62,7 +62,7 @@
         <span @click="$emit('changeShowModule', 'register')">{{ $t('login_page.account_verif.register') }}</span>
       </span>
       <!--登录按钮-->
-      <div :class="[{'canBeClick': phoneVerif.phone && phoneVerif.code}, 'bigBtn']"
+      <div :class="[{'canClick': phoneVerif.phone && phoneVerif.code}, 'bigBtn']"
            @click="phoneLoginFun">
         <span>{{ $t('login_page.loginText') }}</span>
       </div>
@@ -137,12 +137,10 @@
   import {
     verifPhoneIsRegister,       // 验证手机号是否已被注册
     verifAccountIsRegister,     // 验证账号是否已被注册
+    phoneVerifFun,              // 短信登录 - 获取code
     phoneLogin,                 // 短信登录
     accountLogin                // 账号登录
   } from '@/api/login-api'
-  import {
-    getPhoneCode                // 获取短信验证码
-  } from '@/api/info-api'
   import {
     mapState
   } from 'vuex'
@@ -285,10 +283,7 @@
         let {phone} = this.phoneForm
         if (!this.phoneVerif.phone) return false
         this.delayFun()
-        let data = await getPhoneCode({
-          phone,
-          position: 'login'
-        })
+        let data = await phoneVerifFun(phone)
         if (data.data.code === 200) {
           this.phoneForm.gotten = true
           messageFun('info', this.$t('login_page.message.code_is_coming'))
@@ -350,7 +345,7 @@
         sessionStorage.setItem('token', token)
         localStorage.setItem('loginPageIndex', this.activeIndex)
         getUserInfoF()
-        this.$router.push({name: 'platform'})
+        this.$router.push('/dcp')
       },
       // 5天自动登录 保留账号登录记录
       autoLogin(boolean, phone, account, token) {

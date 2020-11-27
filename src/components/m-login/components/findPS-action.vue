@@ -49,7 +49,7 @@
       </div>
       <!--按钮-->
       <div class="bigBtn"
-           :class="[{'canBeClick': forgetVerif.phone && forgetVerif.code}]"
+           :class="[{'canClick': forgetVerif.phone && forgetVerif.code}]"
            @click="changeIng">
         <span>{{ $t('login_page.forgetMode.confirm') }}</span>
       </div>
@@ -66,13 +66,6 @@
                type="password"
                ref="forgetMode_newPassWord"
                class="farm-input"/>
-        <!--查看密码-->
-        <!--                <div class="swicthPWI">-->
-        <!--                  <img src="@/icons/openPW.png" alt="" v-show="forgetMode.passwordEye"-->
-        <!--                       @click="forgetMode.passwordEye = false">-->
-        <!--                  <img src="@/icons/shuPW.png" alt="" v-show="!forgetMode.passwordEye"-->
-        <!--                       @click="forgetMode.passwordEye = true">-->
-        <!--                </div>-->
         <span class="warnInfo" v-show="forgetVerif.newPassWord === false">{{ warnInfo.newPassWord }}</span>
         <img src="@/icons/login-success.png" class="i" v-show="forgetVerif.newPassWord === true">
         <img src="@/icons/login-error .png" class="i canClick" v-show="forgetVerif.newPassWord === false"
@@ -88,32 +81,25 @@
                type="password"
                ref="forgetMode_newPassWordAgain"
                class="farm-input"/>
-        <!--查看密码-->
-        <!--                <div class="swicthPWI">-->
-        <!--                  <img src="@/icons/openPW.png" alt="" v-show="forgetMode.passwordEyeAgain"-->
-        <!--                       @click="forgetMode.passwordEyeAgain = false">-->
-        <!--                  <img src="@/icons/shuPW.png" alt="" v-show="!forgetMode.passwordEyeAgain"-->
-        <!--                       @click="forgetMode.passwordEyeAgain = true">-->
-        <!--                </div>-->
         <span class="warnInfo" v-show="forgetVerif.newPassWordAgain === false">{{ warnInfo.newPassWordAgain }}</span>
         <img src="@/icons/login-success.png" class="i" v-show="forgetVerif.newPassWordAgain === true">
         <img src="@/icons/login-error .png" class="i canClick" v-show="forgetVerif.newPassWordAgain === false"
              @click="DeleteInputFun('newPassWordAgain', 'forgetVerif')">
       </div>
       <!--按钮-->
-      <div :class="[{'canBeClick': forgetVerif.newPassWord && forgetVerif.newPassWordAgain}, 'bigBtn']"
+      <div :class="[{'canClick': forgetVerif.newPassWord && forgetVerif.newPassWordAgain}, 'bigBtn']"
            @click="changePSNow">
         <span>{{ $t('login_page.forgetMode.btnAgain') }}</span>
       </div>
     </div>
     <div class="operateBtn">
       <!--返回登录-->
-      <div class="returnToLogin" @click="$emit('changeShowModule', 'login')">{{ $t('login_page.forgetMode.toLogin') }}
+      <div class="returnToLogin" @click="$emit('changeShowModule', 'login')">
+        {{ $t('login_page.forgetMode.toLogin') }}
       </div>
       <!--返回注册-->
-      <div class="returnToLogin" @click="$emit('changeShowModule', 'register')">{{
-        $t('login_page.forgetMode.toRegister')
-        }}
+      <div class="returnToLogin" @click="$emit('changeShowModule', 'register')">
+        {{ $t('login_page.forgetMode.toRegister') }}
       </div>
     </div>
   </div>
@@ -124,7 +110,7 @@
     mapState
   } from 'vuex'
   import {
-    getPhoneCode,                // 获取短信验证码
+    getPhoneVeriFG,
     verifPhoneCode,
     editPS                       // 修改密码
   } from '@/api/info-api'
@@ -199,10 +185,7 @@
         let {phone} = this.forgetMode,
           {warnInfo, forgetVerif} = this
         if (!forgetVerif.phone) return false
-        let data = await getPhoneCode({
-          phone,
-          position: 'login'
-        })
+        let data = await getPhoneVeriFG(phone)
         if (data.data.code == '4031') {
           warnInfo.phone = this.$t('login_page.message.phoneTypeErr_four')
           forgetVerif.phone = false
@@ -266,7 +249,7 @@
       },
       // 找回密码
       async changePSNow() {
-        let { forgetMode,forgetVerif } = this
+        let {forgetMode, forgetVerif} = this
         if (!forgetVerif.newPassWord || !forgetVerif.newPassWordAgain) return false
         let data = await editPS({
           phone: forgetMode.phone,

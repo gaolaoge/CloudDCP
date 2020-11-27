@@ -55,10 +55,9 @@
       </div>
     </div>
     <div class="bottomOperate">
-      <div class="back">
+      <div class="back" @click="$emit('selectByLocal')">
         <img src="@/icons/toUploadTab.png" class="icon">
-        <span class="text" v-show="screenType == 'internalScreen'">{{ backText.fromInterval }}</span>
-        <span class="text" v-show="screenType == 'theaterScreen'">{{ backText.fromTheater }}</span>
+        <span class="text">{{ backText.fromLocal }}</span>
       </div>
       <div class="dialog-btn-group rightOperate">
         <!--院线银幕-->
@@ -121,12 +120,11 @@
         checkAll_ing: false,       // 内部银幕 - 全选指令（加载并展开分组时是否需要全选动作）
         btn: '去选择',
         backText: {
-          fromInterval: '从我的电脑选择',
-          fromTheater: '从我的电脑选择'
+          fromLocal: '从我的电脑选择',
         },
         bottomOperate: {
           selectedText1: '已选择',
-          selectedText2: '个场景'
+          selectedText2: '个银幕'
         }
       }
     },

@@ -1,11 +1,9 @@
 <template>
   <div class="addScreen">
     <div class="dialog-header">
-      <span class="title">
-        {{ title }}
-      </span>
+      <span class="title">{{ title }}</span>
       <img src="@/icons/shutDialogIcon.png"
-           @click="$emit('shutMe')"
+           @click="shutDialog(false)"
            class="closeBtn">
     </div>
     <div class="dialog-body">
@@ -48,7 +46,7 @@
           <!--银幕证书-->
           <el-table-column
             label="银幕证书">
-            <template slot-scope="scope">{{ scope.row.certificate }}</template>
+            <template slot-scope="scope">{{ scope.row.localPath }}</template>
           </el-table-column>
         </el-table>
         <!--暂无数据-->
@@ -72,6 +70,14 @@
 </template>
 
 <script>
+  import {
+    mapState
+  } from 'vuex'
+  import {
+    addMineScreen
+  } from '@/api/screen-api'
+  import {messageFun} from "../../../assets/common";
+
   export default {
     name: 'addScreen',
     data() {
@@ -102,17 +108,91 @@
         selectionList: []
       }
     },
+    watch: {
+      'socket_plugin_msg': {
+        handler: function (e) {
+          let data = JSON.parse(e.data)
+          if (data.code == 210) {
+            if (data.result == 0) {
+              data.files.forEach(item => {
+                this.tableData.push({
+                  name: item.name,
+                  localPath: item.localPath
+                })
+              })
+            }
+          } else if (data.code == 211) {
+            if (data.result == 0) {
+              // 银幕添加成功
+              messageFun('success', '银幕添加成功')
+              this.shutDialog(true)
+            }
+          }
+        }
+      },
+    },
     methods: {
+      //
+      shutDialog(boolean) {
+        this.$emit('shutMe', boolean)
+      },
       // 操作
       operating(action) {
+        switch (action) {
+          case '添加':
+            this.addScreenFun()
+            break
+          case '删除':
+            this.deleteScreenFun()
+        }
+      },
+      // 添加银幕
+      addScreenFun() {
+        this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
+          code: 210,
+          type: ['pem']
+        })
+      },
+      //
+      deleteScreenFun() {
 
       },
       // 确定
-      saveF() {
+      async saveF() {
         if (!this.tableData.length) return false
+        let {tableData, user} = this,
+          {data} = await addMineScreen({
+            theatreUuid: null,
+            screenList: tableData.map(item => {
+              return {
+                screenName: item.name,
+                filePath: item.localPath
+              }
+            })
+          })
+        if (data.code == 201) this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
+          code: 211,
+          userID: user.id,
+          files: data.data.map((item, index) => {
+            return {
+              taskUuid: item['screenUuid'],
+              ID: item['screenId'],
+              localPath: tableData[index]['localPath'],
+              networkPath: {
+                front: item['pathPrefix'],
+                back: item['certificatePath']
+              }
+            }
+          })
+        })
       }
     },
-    computed: {}
+    mounted() {
+      if (!this.socket_plugin) this.$store.commit('WEBSOCKET_PLUGIN_INIT', true)
+    },
+    computed: {
+      ...mapState(['socket_plugin', 'socket_plugin_msg', 'user'])
+    }
   }
 </script>
 
@@ -120,8 +200,7 @@
   .addScreen {
     .dialog-body {
       position: relative;
-      height: 490px;
-      padding-top: 40px;
+      height: 470px;
 
       .table {
         width: calc(100% - 40px);
@@ -133,7 +212,9 @@
 
   .table-operate {
     position: absolute;
-    right: 0px;
+    right: 20px;
+    top: 20px;
+    z-index: 2;
   }
 
   .btnGroup {

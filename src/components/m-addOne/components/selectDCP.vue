@@ -34,7 +34,7 @@
           show-overflow-tooltip
           width="38">
           <template slot-scope="scope">
-            <el-radio v-model="radio" :label="scope.$index" />
+            <el-radio v-model="radio" :label="scope.$index"/>
           </template>
         </el-table-column>
 
@@ -50,7 +50,7 @@
         <el-table-column
           label="场景名"
           show-overflow-tooltip
-          min-width="180">
+          min-width="200">
           <template slot-scope="scope">
             <span v-show="scope.row.validPeriod == 0">(过期)</span>
             <span>{{ scope.row.taskName }}</span>
@@ -65,21 +65,18 @@
           :filters="statusList"
           width="120">
           <template slot-scope="scope">
-          <span v-if="String('37').includes(scope.row.taskStatus)"
-                style="color: rgba(255, 62, 77, 1)">
-            {{ scope.row.taskStatusText }}
-          </span>
-            <span v-if="String('8').includes(scope.row.taskStatus)" style="color: rgba(70, 203, 93, 1)">
-            {{ scope.row.taskStatusText }}
-          </span>
-            <span v-if="String('256').includes(scope.row.taskStatus)"
-                  style="color: rgba(255, 191, 0, 1)">
-            {{ scope.row.taskStatusText }}
-          </span>
-            <span
-              v-if="String('14').includes(scope.row.taskStatus)">
-            {{ scope.row.taskStatusText }}
-          </span>
+            <span v-if="[101, 201, 610, 620].some(item => item == scope.row.taskStatus)"
+                  style="color: rgba(22, 29, 37, 0.8)">{{ scope.row.taskStatusText }}
+            </span>
+            <span v-if="[301, 302, 630].some(item => item == scope.row.taskStatus)"
+                  style="color: rgba(255, 191, 0, 1)">{{ scope.row.taskStatusText }}
+            </span>
+            <span v-if="[400, 640].some(item => item == scope.row.taskStatus)"
+                  style="color: rgba(255, 62, 77, 1)">{{ scope.row.taskStatusText }}
+            </span>
+            <span v-if="[500, 650].some(item => item == scope.row.taskStatus)"
+                  style="color: rgba(70, 203, 93, 1)">{{ scope.row.taskStatusText }}
+            </span>
           </template>
         </el-table-column>
 
@@ -112,7 +109,7 @@
           label="打包时长"
           sortable
           show-overflow-tooltip
-          width="120"/>
+          width="160"/>
 
         <!--内容类型-->
         <el-table-column
@@ -121,7 +118,7 @@
           show-overflow-tooltip
           column-key="type"
           :filters="typeList"
-          width="140"/>
+          width="200"/>
 
         <!--宽高比-->
         <el-table-column
@@ -130,7 +127,7 @@
           show-overflow-tooltip
           column-key="ratio"
           :filters="ratioList"
-          width="100"/>
+          width="224"/>
 
         <!--2D/3D-->
         <el-table-column
@@ -204,6 +201,10 @@
              @click="$emit('closeDialogFun', 'selectDCODialog')">
           <span>{{ $t('public.cancel') }}</span>
         </div>
+        <div class="btnGroup-btn previous"
+             @click="$emit('didSelected', {})">
+          <span>临时跳转</span>
+        </div>
       </div>
     </div>
   </div>
@@ -216,7 +217,11 @@
   import {
     consum,
     createDateFun,
-    createTableIconList
+    createTableIconList,
+    messageFun,
+    movieTypeList,
+    proportionList,
+    DCPmainStatusList
   } from '@/assets/common'
   import {
     mapState
@@ -287,44 +292,44 @@
       async getList() {
         let {zoneUuid} = this,
           {data} = await getDCPTableList({
-          pageIndex: this.pageIndex,
-          pageSize: this.setting.pageSize,
-          keyword: this.keyword,
-          statusList: [],
-          projectUuidList: [],
-          aspectRatioList: [],     // 宽高比
-          filmTypeList: [],        // 2d/3d 1:2d, 2:3d
-          resolutionList: [],      // 分辨率 1:2k, 2:4k
-          isEncryptList: [],       // 是否加密 0不加密,1加密
-          sortBy: null,            // 排序字段
-          sortType: 0,             // 0降序,1升序
-          zoneUuid
-        })
+            pageIndex: this.pageIndex,
+            pageSize: this.setting.pageSize,
+            keyword: this.keyword,
+            statusList: [],
+            projectUuidList: [],
+            aspectRatioList: [],     // 宽高比
+            filmTypeList: [],        // 2d/3d 1:2d, 2:3d
+            resolutionList: [],      // 分辨率 1:2k, 2:4k
+            isEncryptList: [],       // 是否加密 0不加密,1加密
+            sortBy: null,            // 排序字段
+            sortType: 0,             // 0降序,1升序
+            zoneUuid
+          })
         this.total = data.total
         this.tableData = data.data.map(item => Object.assign(item, {
-          'taskStatusText': this.statusList[item.taskStatus - 1]['text'],
-          'film_category': this.typeList[item.film_category - 1]['text'],
+          'taskStatusText': DCPmainStatusList.find(curr => curr.code == item.taskStatus)['status'],
+          'film_category': movieTypeList.find(curr => curr.value == item.filmCategory)['label'],
           'useTime': consum(item.useTime),
-          'aspect_ratio': this.ratioList[item.aspect_ratio - 1]['text'],
-          'film_type': this.technologyList[item.film_type - 1]['text'],
-          'resolution': this.resolutionList[item.resolution - 1]['text'],
+          'aspect_ratio': proportionList.find(curr => curr.value == item.aspectRatio)['label'],
+          'film_type': this.technologyList[item.filmType - 1]['text'],
+          'resolution': this.resolutionList[item.resolution]['text'],
           'is_encrypt': item.is_encrypt ? '加密' : '未加密',
           'createTime': createDateFun(new Date(item.createTime)),
           'validPeriod': new Date().getTime() >= item.expireTime ? 0 : 1
         }))
       },
       // table 行样式
-      tableRowStyle({row, rowIndex}) {
-        row.index = rowIndex
-        switch (row.taskStatusText) {
-          case '暂停':
-          case '暂停（欠费）':
-          case '上传暂停':
+      tableRowStyle({row}) {
+        switch (row.taskStatus) {
+          case 301:
+          case 302:
+          case 630:
             return 'warning-row style-row'
-          case '上传失败':
-          case '失败':
+          case 400:
+          case 640:
             return 'error-row style-row'
-          case '已完成':
+          case 500:
+          case 650:
             return 'wait-row style-row'
         }
       },
@@ -332,7 +337,7 @@
       filterChangeF() {
 
       },
-      rowClick(row){
+      rowClick(row) {
         this.radio = row.index
       },
       selected() {
@@ -342,6 +347,11 @@
     mounted() {
       this.getList()
       this.$nextTick(() => createTableIconList())
+      Object.assign(this, {
+        movieTypeList,
+        proportionList,
+        DCPmainStatusList
+      })
     },
     computed: {
       ...mapState(['setting', 'zoneUuid'])
@@ -370,7 +380,7 @@
         height: calc(80vh - 28px - 20px - 28px - 35px - 47px - 14px - 32px - 40px);
       }
 
-      /deep/.el-radio__label {
+      /deep/ .el-radio__label {
         display: none;
       }
     }

@@ -142,7 +142,12 @@ export default {
     nextStop: '下一步',
     previous: '上一步',
     set: '设置',
-    browse: '浏览'
+    browse: '浏览',
+    consummation: '完成',
+    pause: '暂停',
+    error: '错误',
+    suggest: '建议',
+    back: '返回'
   },
   // 公共下拉框选项
   selectionList: {

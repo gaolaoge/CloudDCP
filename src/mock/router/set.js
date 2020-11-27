@@ -141,14 +141,14 @@ module.exports = [
     }
   },
   {   // 消息设置 - 获取既定参数
-    url: /\/professional\/notice\/setting\/updateNoticeSetting/,
+    url: /\/dcpProfessional\/notice\/setting\/updateNoticeSetting/,
     type: 'get',
     response: () => {
       return {code: 201}
     }
   },
   {   // 项目设置 - 获取列表
-    url: /\/professional\/project\/getAllCustomerProject\?/,
+    url: /\/dcpProfessional\/project\/getAllCustomerProject\?/,
     type: 'get',
     response: () => {
       return {
@@ -161,14 +161,14 @@ module.exports = [
             'createBy': '82152711-d7c2-4d03-9bc1-8894b150e687',
             'updateTime': 1600153363857,
             'updateBy': '82152711-d7c2-4d03-9bc1-8894b150e687',
-            'taskProjectUuid': '3468CD420CE4430C9A8E3F3AE74F12B8',
+            'taskProjectUuid': '346345420CE4430C9A8E3F3AE74F12B8',
             'dataStatus': 1,
             'projectName': '123',
             'projectOverview': null,
             'projectStatus': 1,
             'isDefault': 1,
             'thumbnail': null,
-            'customerUuid': '82152711-d7c2-4d03-9bc1-8894b150e687',
+            'customerUuid': '82152711-d7c2-4d03-9bc1-8894b145e687',
             'customerName': '大王'
           },
           {
@@ -177,7 +177,7 @@ module.exports = [
             'createBy': '82152711-d7c2-4d03-9bc1-8894b150e687',
             'updateTime': 1600152567188,
             'updateBy': '1',
-            'taskProjectUuid': 'db6bea12-2870-4f4a-b4c4-f7d958afdce8',
+            'taskProjectUuid': 'db6bea12-3450-4f4a-b4c4-f7d958afdce8',
             'dataStatus': 1,
             'projectName': '默认项目',
             'projectOverview': null,
@@ -185,7 +185,7 @@ module.exports = [
             'isDefault': 0,
             'thumbnail': null,
             'customerUuid': '82152711-d7c2-4d03-9bc1-8894b150e687',
-            'customerName': '大王'
+            'customerName': '大王2'
           },
           {
             'id': 9,
@@ -193,7 +193,7 @@ module.exports = [
             'createBy': '82152711-d7c2-4d03-9bc1-8894b150e687',
             'updateTime': 1600152567188,
             'updateBy': '1',
-            'taskProjectUuid': 'db6bea12-2870-4f4a-b4c4-f7d958afdce8',
+            'taskProjectUuid': 'db6bea12-2870-4345-b4c4-f7d958afdce8',
             'dataStatus': 1,
             'projectName': '默认项目',
             'projectOverview': null,
@@ -201,11 +201,26 @@ module.exports = [
             'isDefault': 0,
             'thumbnail': null,
             'customerUuid': '82152711-d7c2-4d03-9bc1-8894b150e687',
-            'customerName': '大王'
+            'customerName': '大王3'
           }, {
             'id': 9,
             'createTime': 1587611083498,
-            'createBy': '82152711-d7c2-4d03-9bc1-8894b150e687',
+            'createBy': '82152711-d7c2-4d03-9bc1-8894b1345687',
+            'updateTime': 1600152567188,
+            'updateBy': '1',
+            'taskProjectUuid': 'db6bea12-2870-4f4a-b4c4-f7d958afdce8',
+            'dataStatus': 1,
+            'projectName': '默认项目',
+            'projectOverview': null,
+            'projectStatus': 1,
+            'isDefault': 0,
+            'thumbnail': null,
+            'customerUuid': '82152711-d7c2-4d03-9345-8894b150e687',
+            'customerName': '大王4'
+          }, {
+            'id': 9,
+            'createTime': 1587611083498,
+            'createBy': '82152711-d7c2-4d03-9bc1-88345150e687',
             'updateTime': 1600152567188,
             'updateBy': '1',
             'taskProjectUuid': 'db6bea12-2870-4f4a-b4c4-f7d958afdce8',
@@ -216,11 +231,11 @@ module.exports = [
             'isDefault': 0,
             'thumbnail': null,
             'customerUuid': '82152711-d7c2-4d03-9bc1-8894b150e687',
-            'customerName': '大王'
+            'customerName': '大王5'
           }, {
             'id': 9,
             'createTime': 1587611083498,
-            'createBy': '82152711-d7c2-4d03-9bc1-8894b150e687',
+            'createBy': '82152711-d2c2-4d03-9345-8894b150e687',
             'updateTime': 1600152567188,
             'updateBy': '1',
             'taskProjectUuid': 'db6bea12-2870-4f4a-b4c4-f7d958afdce8',
@@ -231,11 +246,11 @@ module.exports = [
             'isDefault': 0,
             'thumbnail': null,
             'customerUuid': '82152711-d7c2-4d03-9bc1-8894b150e687',
-            'customerName': '大王'
+            'customerName': '大王6'
           }, {
             'id': 9,
             'createTime': 1587611083498,
-            'createBy': '82152711-d7c2-4d03-9bc1-8894b150e687',
+            'createBy': '82134511-d7c2-4d03-9bc1-8894b150e687',
             'updateTime': 1600152567188,
             'updateBy': '1',
             'taskProjectUuid': 'db6bea12-2870-4f4a-b4c4-f7d958afdce8',
@@ -246,14 +261,14 @@ module.exports = [
             'isDefault': 0,
             'thumbnail': null,
             'customerUuid': '82152711-d7c2-4d03-9bc1-8894b150e687',
-            'customerName': '大王'
+            'customerName': '大王7'
           }, {
             'id': 9,
             'createTime': 1587611083498,
             'createBy': '82152711-d7c2-4d03-9bc1-8894b150e687',
             'updateTime': 1600152567188,
             'updateBy': '1',
-            'taskProjectUuid': 'db6bea12-2870-4f4a-b4c4-f7d958afdce8',
+            'taskProjectUuid': '345bea12-2870-4f4a-b4c4-f7d958afdce8',
             'dataStatus': 1,
             'projectName': '默认项目',
             'projectOverview': null,
@@ -261,14 +276,14 @@ module.exports = [
             'isDefault': 0,
             'thumbnail': null,
             'customerUuid': '82152711-d7c2-4d03-9bc1-8894b150e687',
-            'customerName': '大王'
+            'customerName': '大王8'
           }, {
             'id': 9,
             'createTime': 1587611083498,
             'createBy': '82152711-d7c2-4d03-9bc1-8894b150e687',
             'updateTime': 1600152567188,
             'updateBy': '1',
-            'taskProjectUuid': 'db6bea12-2870-4f4a-b4c4-f7d958afdce8',
+            'taskProjectUuid': 'db456a12-2870-4f4a-b4c4-f7d958afdce8',
             'dataStatus': 1,
             'projectName': '默认项目',
             'projectOverview': null,
@@ -276,14 +291,14 @@ module.exports = [
             'isDefault': 0,
             'thumbnail': null,
             'customerUuid': '82152711-d7c2-4d03-9bc1-8894b150e687',
-            'customerName': '大王'
+            'customerName': '大王9'
           }, {
             'id': 9,
             'createTime': 1587611083498,
             'createBy': '82152711-d7c2-4d03-9bc1-8894b150e687',
             'updateTime': 1600152567188,
             'updateBy': '1',
-            'taskProjectUuid': 'db6bea12-2870-4f4a-b4c4-f7d958afdce8',
+            'taskProjectUuid': 'db6be456-2870-4f4a-b4c4-f7d958afdce8',
             'dataStatus': 1,
             'projectName': '默认项目',
             'projectOverview': null,
@@ -291,22 +306,7 @@ module.exports = [
             'isDefault': 0,
             'thumbnail': null,
             'customerUuid': '82152711-d7c2-4d03-9bc1-8894b150e687',
-            'customerName': '大王'
-          }, {
-            'id': 9,
-            'createTime': 1587611083498,
-            'createBy': '82152711-d7c2-4d03-9bc1-8894b150e687',
-            'updateTime': 1600152567188,
-            'updateBy': '1',
-            'taskProjectUuid': 'db6bea12-2870-4f4a-b4c4-f7d958afdce8',
-            'dataStatus': 1,
-            'projectName': '默认项目',
-            'projectOverview': null,
-            'projectStatus': 1,
-            'isDefault': 0,
-            'thumbnail': null,
-            'customerUuid': '82152711-d7c2-4d03-9bc1-8894b150e687',
-            'customerName': '大王'
+            'customerName': '大王10'
           }
 
         ],

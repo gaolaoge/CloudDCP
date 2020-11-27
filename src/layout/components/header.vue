@@ -126,7 +126,7 @@
                 </span>
                 </li>
                 <!--基本信息-->
-                <li class="operateLi Pinfo" @click="$router.push('/Pinfo')">
+                <li class="operateLi Pinfo" @click="$router.push('/info')">
                 <span class="con">
                   <span class="t">
                      <span class="sb">

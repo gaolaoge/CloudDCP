@@ -33,11 +33,11 @@ http.interceptors.response.use(
     // }
   },
   error => {
-    if (vue.$route.path === '/m-login') return false
+    if (vue.$route.path === '/login') return false
     if (error.response.status === 401) {
       createEM()
       // sessionStorage.setItem('token','')
-      vue.$router.push('/m-login')
+      vue.$router.push('/login')
     }
   })
 

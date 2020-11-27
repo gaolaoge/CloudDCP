@@ -13,8 +13,8 @@
         type="selection"
         align="right"
         show-overflow-tooltip
-        min-width="58"
-        width="58"/>
+        min-width="48"
+        width="48"/>
 
       <!--银幕ID-->
       <el-table-column
@@ -110,7 +110,7 @@
                    disabled
                    :class="[{'errorVal': null}, 'form-item-input', 'file-input']"
                    v-model="editSDialog.certificateV">
-            <div class="file-btn">
+            <div class="file-btn" @click="selectLocalScreen">
               <span>{{ $t('public.preview') }}</span>
             </div>
           </div>
@@ -128,7 +128,7 @@
             <span>{{ $t('public.cancel') }}</span>
           </div>
           <div :class="[{'cannotBeGo': !editSDialog.nameV.trim()}, 'dialog-btn', 'save']"
-               @click="editScreen">
+               @click="realEditScreen">
             <span>{{ $t('public.save') }}</span>
           </div>
         </div>
@@ -139,13 +139,16 @@
 
 <script>
   import {
-    getScreenList
+    getScreenList,
+    getMineScreenTabList,
+    deleteScreen,
+    editScreen
   } from '@/api/screen-api'
   import {
     // consum,
-    createDateFun,
-    createTableIconList
-    // messageFun
+    createDateFun
+    ,createTableIconList
+    ,messageFun
   } from '@/assets/common'
   import {
     mapState
@@ -163,7 +166,8 @@
           certificateL: '银幕证书',
           certificateV: '/',
           statusL: '银幕状态',
-          statusV: '1'
+          statusV: '1',
+          screenUuid: null
         },
         selectionList: [],     // 多选结果
         tableData: [
@@ -177,7 +181,8 @@
         ],
         projectList: [],
         total: 0,
-        pageIndex: 0
+        pageIndex: 0,
+        tableFilerCondition: null      // tab筛选条件 用于刷新
       }
     },
     props: {
@@ -188,40 +193,98 @@
     },
     methods: {
       // 页码跳转
-      handleCurrentChange() {
+      handleCurrentChange(pageIndex) {
+        Object.assign(this, pageIndex)
+        this.getList(this.tableFilerCondition)
       },
       // 获取表格数据
       async getList(obj) {
-        // if (obj.theatreUuid)
-        let {data} = await getScreenList({
-          pageIndex: this.pageIndex,
-          pageSize: this.setting.pageSize,
-          screenStatusList: [],    // 银幕状态
-          cinemaUuid: '',          // 院线uuid
-          theatreUuid: '',         // 影院uuid
-          sortBy: null,            // 排序字段
-          sortType: 0,             // 0降序,1升序
-          keyword: this.keyword
+        this.tableFilerCondition = obj
+        new Promise(resolve => {
+          obj.type == 'mineScreen' ? resolve(this.getMineTab(obj)) : resolve(this.getTab(obj))
+        }).then(({data}) => {
+          this.total = data.total
+          this.tableData = data.data.map(item => Object.assign(item, {
+            'updateTime': createDateFun(new Date(item.updateTime)),
+            'screenStatus': item.screenStatus == 0 ? '停用' : '启用'
+          }))
         })
-        this.total = data.total
-        this.tableData = data.data.map(item => Object.assign(item, {
-          'updateTime': createDateFun(new Date(item.updateTime)),
-          'screenStatus': item.screenStatus == 0 ? '停用' : '启用'
-        }))
+      },
+      // 获取内部银幕Tab
+      getMineTab({data}) {
+        let {keyword, pageIndex, setting} = this
+        return getMineScreenTabList({
+          pageIndex,
+          pageSize: setting.pageSize,
+          screenStatusList: [],             // 银幕状态
+          theatreUuid: data.theatreUuid,    // 影院uuid
+          sortBy: null,                     // 排序字段
+          sortType: 0,                      // 0降序,1升序
+          keyword
+        })
+      },
+      // 获取院线银幕Tab
+      getTab({data}) {
+        let {keyword, pageIndex, setting} = this
+          return getScreenList({
+            pageIndex,
+            pageSize: setting.pageSize,
+            screenStatusList: [],    // 银幕状态
+            cinemaUuid: '',          // 院线uuid
+            theatreUuid: '',         // 影院uuid
+            sortBy: null,            // 排序字段
+            sortType: 0,             // 0降序,1升序
+            keyword
+          })
+      },
+      // 操作 - 编辑 - 预览
+      selectLocalScreen() {
+        if(true) this.$store.dispatch('WEBSOCKET_PLUGIN_INIT', true)
+        else this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
+          code: 210,
+          type: ['pem']
+        })
+      },
+      // 操作 - 确认编辑
+      async realEditScreen() {
+        let {nameV: screenName, certificateV : localPath, statusV: screenStatus, screenUuid} = this.editSDialog,
+          {data} = await editScreen({
+          screenUuid,
+          screenName,
+          screenStatus,
+          localPath
+        })
+
+        // this.getList(this.tableFilerCondition)
       },
       // 操作 - 编辑
       editScreen() {
-
+        this.editSDialog.visible = true
+        let {screenName, certificateName, screenStatus} = this.selectionList[0]
+        Object.assign(this.editSDialog, {
+          'nameV': screenName,
+          'certificateV': certificateName,
+          'statusV': screenStatus == '启用' ? '1' : '0'
+        })
       },
       // 操作 - 删除
       deleteFun() {
-        let text = this.selectionList.length == 1 ? `银幕删除后将无法找回，确认删除“${this.selectionList[0]['screenName']}”吗？` : `银幕删除后将无法找回，确认删除这${this.selectionList.length}个银幕吗？`
-
+        let text = this.selectionList.length == 1 ? `银幕删除后将无法找回，确认删除“${this.selectionList[0]['screenName']}”吗？` : `银幕删除后将无法找回，确认删除这${this.selectionList.length}个银幕吗？`,
+          screenUuidList = this.selectionList.map(item => item.screenUuid)
         this.$confirm(text, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消'
         })
-          .then(() => null)
+          .then(
+            () => Promise.resolve(deleteScreen(screenUuidList)),
+            () => null
+          )
+          .then(({data}) => {
+            if(data.code == 204) {
+              messageFun('success', '删除成功')
+              this.getList(this.tableFilerCondition)
+            }
+          })
           .catch(() => null)
       },
       // 操作 - 下载
@@ -244,14 +307,29 @@
     },
     mounted() {
       this.$nextTick(() => createTableIconList())
+      this.getList({
+        type: 'mineScreen',
+        data: {
+          theatreUuid: ''
+        }
+      })
     },
     computed: {
-      ...mapState(['setting', 'zoneUuid'])
+      ...mapState(['setting', 'zoneUuid', 'socket_plugin_msg'])
     },
     watch: {
       'selectionList': {
         handler: function (list) {
 
+        }
+      },
+      'socket_plugin_msg': {
+        handler: function (e) {
+          if (!e) return false
+          let data = JSON.parse(e.data)
+          if (data.code == 210) {
+            if (data.result == 0) this.editSDialog.certificateV = data.files[0]['localPath']
+          }
         }
       }
     }

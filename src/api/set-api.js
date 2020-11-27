@@ -22,7 +22,7 @@ export function setMessageData(data) {
 // 项目设置 - 获取列表
 export function getObjectList(data) {
   return http({
-    url: `/professional/project/getAllCustomerProject?${data}`,
+    url: `/dcpProfessional/project/getAllCustomerProject?${data}`,
     method: 'GET'
   })
 }

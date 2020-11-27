@@ -9,7 +9,6 @@
             {'cannotDownload': !downloadBtn},
             {'cannotAgain': !againBtn},
             {'cannotCopy': !copyBtn},
-            {'cannotCreate': !createBtn}
            ]">
         <div :class="[item.class, 'btn']"
              @click="operating(item['action'])"

@@ -5,7 +5,7 @@ import {
 // 验证手机号是否已被注册
 export function verifPhoneIsRegister(data) {
   return http({
-    url: `/auth/checkPhone/${data}`,
+    url: `/dcpAuth/checkPhone/${data}`,
     method: 'GET'
   })
 }
@@ -13,7 +13,15 @@ export function verifPhoneIsRegister(data) {
 // 验证帐号是否已被注册
 export function verifAccountIsRegister(data) {
   return http({
-    url: `/auth/checkAccount/${data}`,
+    url: `/dcpAuth/checkAccount/${data}`,
+    method: 'GET'
+  })
+}
+
+// 短信登录 获取code
+export function phoneVerifFun(phone){
+  return http({
+    url: `/dcpAuth/sendPhoneCode4Login/${phone}`,
     method: 'GET'
   })
 }
@@ -21,7 +29,7 @@ export function verifAccountIsRegister(data) {
 // 短信登录
 export function phoneLogin(data) {
   return http({
-    url: `/auth/codeLogin`,
+    url: `/dcpAuth/codeLogin`,
     method: 'POST',
     data
   })
@@ -30,7 +38,7 @@ export function phoneLogin(data) {
 // 账号登录
 export function accountLogin(data) {
   return http({
-    url: `/auth/accountLogin`,
+    url: `/dcpAuth/accountLogin`,
     method: 'POST',
     data
   })
@@ -45,11 +53,20 @@ export function getProtocal() {
   })
 }
 
-// 用户服务协议
+// 注册
 export function registerAccount(data) {
   return http({
-    url: '/auth/signUp',
+    url: '/dcpAuth/signUp',
     method: 'POST',
     data
   })
 }
+
+// 注册 获取手机验证码
+export function registerGetphoneCode(phone){
+  return http({
+    url: `/dcpAuth/sendPhoneCode4CheckOwn/${phone}`,
+    method: 'GET'
+  })
+}
+

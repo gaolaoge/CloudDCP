@@ -19,7 +19,6 @@ export default new Router({
     {
       path: '/',
       name: 'platform',
-      alias: '/dcp',
       component: () => import('@/layout/index.vue'),
       children: [
         {
@@ -56,6 +55,11 @@ export default new Router({
           path: 'invoice',     // 开发票
           name: 'invoice',
           component: () => import('@/components/m-bill/components/invoice-page.vue')
+        },
+        {
+          path: 'info',
+          name: 'info',
+          component: () => import('@/components/m-info/index.vue')
         }
       ]
     }

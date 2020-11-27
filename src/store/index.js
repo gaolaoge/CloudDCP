@@ -314,16 +314,17 @@ export default new Vuex.Store({
     // 获取项目列表 忽略缩略图
     async getProjectList(context) {
       let {data} = await getObjectList(`keyword=&pageIndex=1&pageSize=999`)
-      context.state.projectList = data.data.map(object => {
-        return {
-          'taskProjectUuid': object.taskProjectUuid,
-          'createTime': createDateFun(new Date(object.createTime)),
-          'projectName': object.projectName,
-          'customerName': object.customerName,
-          'isDefault': object.isDefault == 0 ? '否' : '是',
-          'projectStatus': object.projectStatus == 0 ? '停用' : '启用',
-        }
-      })
+      context.state.projectList = data.data
+        // .map(object => {
+        // return {
+        //   'taskProjectUuid': object.taskProjectUuid,
+        //   'createTime': createDateFun(new Date(object.createTime)),
+        //   'projectName': object.projectName,
+        //   'customerName': object.customerName,
+        //   'isDefault': object.isDefault == 0 ? '否' : '是',
+        //   'projectStatus': object.projectStatus == 0 ? '停用' : '启用',
+        // }
+      // })
     },
   }
 })

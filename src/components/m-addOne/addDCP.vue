@@ -92,7 +92,8 @@
               <el-checkbox v-model="setUnpackBase.form.isEncrypt"
                            :checked="true"
                            true-label=1
-                           false-label=0>{{ setUnpackBase.encryptionL }}</el-checkbox>
+                           false-label=0>{{ setUnpackBase.encryptionL }}
+              </el-checkbox>
             </div>
             <!--DCP文件名-->
             <div class="fileItem item">
@@ -375,7 +376,7 @@
       @close="closesetFileNameDialog"
       append-to-body>
       <setName @shutMe="shutSetNameDialog"
-               :codingRule="dialogAdd['normList'][selectUnpackBase.renderTList[selectUnpackBase.renderTListActive]['codingRule']]['label']"/>
+               :codingRule="selectUnpackBase.renderTList.length ? dialogAdd['normList'][selectUnpackBase.renderTList[selectUnpackBase.renderTListActive]['codingRule']]['label'] : null"/>
     </el-dialog>
     <!--新建项目-->
     <el-dialog
@@ -440,13 +441,13 @@
           '设置打包参数',
           '选择文件目录'
         ],
-        stepBtnActive: 1,           // 当前所在步骤 1.选择打包模板 2.设置打包参数 3.选择文件目录
+        stepBtnActive: 1,            // 当前所在步骤 1.选择打包模板 2.设置打包参数 3.选择文件目录
         // 选择打包模板
         selectUnpackBase: {
           addMoreText: '添加模板',
-          renderTListActive: null,   // 渲染模板默认选中项索引
+          renderTListActive: 0,      // 渲染模板默认选中项索引
           renderTList: [],           // 设置渲染模板 已存在记录
-          checked: false            // 下次不再提示
+          checked: false             // 下次不再提示
         },
         // 设置打包参数
         setUnpackBase: {
@@ -519,24 +520,21 @@
               tag: 'image',
               localPath: null,    // 文件本地路径
               key: 'TX003',
-              type: ['tif', 'tiff', 'dpx', 'openEXR'],
-              networkPath: null   // 文件网盘路径
+              type: ['tif', 'tiff', 'dpx', 'openEXR']
             },
             {
               label: '导入图像(左)',
               tag: 'leftImage',
               localPath: null,
               key: 'TX001',
-              type: ['tif', 'tiff', 'dpx', 'openEXR'],
-              networkPath: null
+              type: ['tif', 'tiff', 'dpx', 'openEXR']
             },
             {
               label: '导入图像(右)',
               tag: 'rightImage',
               localPath: null,
               key: 'TX002',
-              type: ['tif', 'tiff', 'dpx', 'openEXR'],
-              networkPath: null
+              type: ['tif', 'tiff', 'dpx', 'openEXR']
             }
           ],
           mp3FileList: [
@@ -545,64 +543,56 @@
               tag: 'leftSound',
               localPath: null,
               key: 'SY001',
-              type: ['wav', 'pcm'],
-              networkPath: null
+              type: ['wav', 'pcm']
             },
             {
               label: '右声道',
               tag: 'rightSound',
               localPath: null,
               key: 'SY002',
-              type: ['wav', 'pcm'],
-              networkPath: null
+              type: ['wav', 'pcm']
             },
             {
               label: '中置声道',
               tag: 'centerSound',
               localPath: null,
               key: 'SY003',
-              type: ['wav', 'pcm'],
-              networkPath: null
+              type: ['wav', 'pcm']
             },
             {
               label: '左环绕',
               tag: 'leftRoundSound',
               localPath: null,
               key: 'SY004',
-              type: ['wav', 'pcm'],
-              networkPath: null
+              type: ['wav', 'pcm']
             },
             {
               label: '右环绕',
               tag: 'rightRoundSound',
               localPath: null,
               key: 'SY005',
-              type: ['wav', 'pcm'],
-              networkPath: null
+              type: ['wav', 'pcm']
             },
             {
               label: '左后环绕',
               tag: 'leftBackRoundSound',
               localPath: null,
               key: 'SY006',
-              type: ['wav', 'pcm'],
-              networkPath: null
+              type: ['wav', 'pcm']
             },
             {
               label: '右后环绕',
               tag: 'rightBackRoundSound',
               localPath: null,
               key: 'SY007',
-              type: ['wav', 'pcm'],
-              networkPath: null
+              type: ['wav', 'pcm']
             },
             {
               label: '低音炮',
               tag: 'subWoofer',
               localPath: null,
               key: 'SY008',
-              type: ['wav', 'pcm'],
-              networkPath: null
+              type: ['wav', 'pcm']
             }
           ],
           subtitleFileList: [
@@ -611,8 +601,7 @@
               tag: 'subtitle',
               localPath: null,
               key: 'ZM001',
-              type: ['png', 'txt'],
-              networkPath: null
+              type: ['png', 'txt']
             }
           ]
         },
@@ -693,20 +682,20 @@
         let {movieName, filmCategory, filmVersion, packageDate, aspectRatio, soundLanguage, region, resolution, presenter, productor, filmType, packageType, soundtrack} = this.setUnpackBase.form
           , {dialogAdd, movieTypeList, proportionList, mp3LanguageList, areaList, resolutionList, modeList, DCPTypeList, channelTypeList} = this
           , {renderTList, renderTListActive} = this.selectUnpackBase
-        , name = [
-          movieName
-          , movieTypeList ? movieTypeList[filmCategory]['tag'] + '-' + filmVersion : null
-          , proportionList ? proportionList[aspectRatio]['tag'] : null
-          , mp3LanguageList ? mp3LanguageList.find(curr => curr.val == soundLanguage)['label'].split(' ')[1] + '-' + '字幕语言-AP' : null
-          , areaList ? areaList.find(curr => curr.val == region)['label'].split(' ')[1] : null
-          , channelTypeList ? channelTypeList[soundtrack]['tag'] : null
-          , resolutionList[resolution]['tag']
-          , presenter ? presenter : 'NULL'
-          , packageDate.toLocaleDateString().split('/').join('')
-          , productor ? productor : 'NULL'
-          , dialogAdd.normList.find(curr => curr.val == renderTList[renderTListActive]['codingRule'])['label'] + modeList ? modeList[filmType]['label'] : ''
-          , DCPTypeList ? DCPTypeList[packageType]['tag'] : ''
-        ]
+          , name = [
+              movieName
+            , movieTypeList ? movieTypeList[filmCategory]['tag'] + '-' + filmVersion : null
+            , proportionList ? proportionList[aspectRatio]['tag'] : null
+            , mp3LanguageList ? mp3LanguageList.find(curr => curr.val == soundLanguage)['label'].split(' ')[1] + '-' + '字幕语言-AP' : null
+            , areaList ? areaList.find(curr => curr.val == region)['label'].split(' ')[1] : null
+            , channelTypeList ? channelTypeList[soundtrack]['tag'] : null
+            , resolutionList[resolution]['tag']
+            , presenter ? presenter : 'NULL'
+            , packageDate.toLocaleDateString().split('/').join('')
+            , productor ? productor : 'NULL'
+            , renderTList.length ? (dialogAdd.normList.find(curr => curr.val == renderTList[renderTListActive]['codingRule'])['label'] + modeList ? modeList[filmType]['label'] : '') : null
+            , DCPTypeList ? DCPTypeList[packageType]['tag'] : ''
+          ]
         return name.join('_')
       },
       ...mapState(['zone', 'zoneUuid', 'user', 'socket_backS', 'socket_backS_msg', 'socket_plugin', 'socket_plugin_msg', 'projectList']),
@@ -744,18 +733,23 @@
       },
       'dialogAdd.visible': function (boolean) {
         if (!boolean) this.resetdialogAdd()
+      },
+      'stepBtnActive': function (step) {
+        if (step == 3 && !this.socket_plugin)
+          this.$store.commit('WEBSOCKET_PLUGIN_INIT', true)
+
       }
     },
     methods: {
       // 3.选择文件目录 - 显示上传文件选项
       showSoundInput(index) {
         let {soundtrack} = this.setUnpackBase.form
-        switch(soundtrack) {
+        switch (soundtrack) {
           case 0:
-            if(index == 0 || index == 1 || index == 7) return true
+            if (index == 0 || index == 1 || index == 7) return true
             else return false
           case 1:
-            if(index == 0 || index == 1 || index == 2 || index == 3 || index == 4 || index == 7) return true
+            if (index == 0 || index == 1 || index == 2 || index == 3 || index == 4 || index == 7) return true
             else return false
           case 2:
             return true
@@ -839,7 +833,7 @@
         let {data} = await getTemplateList(this.zoneUuid),
           {selectUnpackBase} = this
         selectUnpackBase.renderTList = data.data
-        selectUnpackBase.renderTListActive = data.data.findIndex(curr => curr.isDefault == 1)
+        if (data.data.length) selectUnpackBase.renderTListActive = data.data.findIndex(curr => curr.isDefault == 1)
       },
       // 1.选择打包模板 - 新建/编辑 - 打开【新建模板】
       async addOrEditTemplate(type, index) {
@@ -908,7 +902,7 @@
         let {isEncrypt, patternUuid, captionType, packageDate, productor, presenter, packageType, region, soundtrack, captionLanguage, soundLanguage, sourceColor, taskName, projectUuid, fileName, filmCategory, filmVersion, aspectRatio, resolution, filmType} = this.setUnpackBase.form
           , {renderTList, renderTListActive, checked} = this.selectUnpackBase
           , {imgFileList, mp3FileList, subtitleFileList} = this.selectFileBase
-          , {zoneUuid, packageName} = this
+          , {zoneUuid, user, packageName} = this
           , {data} = await createNewDCP({
           checked,                   // 记住模板选项
           taskName,                  // 任务名
@@ -950,48 +944,31 @@
             'subtitle': subtitleFileList[0]['localPath']            // 字幕文件
           }    // 上传文件本地路径
         })
-        if(data.code != 200) {
+        if (data.code != 200) {
           throwInfoFun('新建DCP失败（信息传递到JAVA报错）', 'm-addOne/addDCP-953', data.data)
           return false
         }
-        let {pathPrefix} = data.data
+        let {pathPrefix} = data.data,
+          list = [
+            ...imgFileList.filter(item => item.localPath),
+            ...mp3FileList.filter(item => item.localPath),
+            ...subtitleFileList.filter(item => item.localPath)
+          ]
         this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
           code: 202,
-          userID: '1',
+          userID: user.id,
           TaskUUid: data.data.packageTaskUuid,
           ID: 1,
-          files: [
-            ...imgFileList.map(item => {
-              return {
-                'localPath': item.localPath,
-                'networkPath': {
-                  'front': data.data[item.tag] ? pathPrefix : null,
-                  'back': data.data[item.tag]
-                },
-                'type': item.type
-              }
-            }),
-            ...mp3FileList.map(item => {
-              return {
-                'localPath': item.localPath,
-                'networkPath': {
-                  'front': data.data[item.tag] ? pathPrefix : null,
-                  'back': data.data[item.tag]
-                },
-                'type': item.type
-              }
-            }),
-            ...subtitleFileList.map(item => {
-              return {
-                'localPath': item.localPath,
-                'networkPath': {
-                  'front': data.data[item.tag] ? pathPrefix : null,
-                  'back': data.data[item.tag]
-                },
-                'type': item.type
-              }
-            })
-          ]
+          files: list.map(item => {
+            return {
+              'localPath': item.localPath,
+              'networkPath': {
+                'front': data.data[item.tag] ? pathPrefix : null,
+                'back': data.data[item.tag]
+              },
+              'type': item.type
+            }
+          })
         })
       },
       // 3.选择文件
@@ -1022,7 +999,6 @@
         areaList
       })
       this.getList()  // 1.选择打包模板 - 获取渲染模板列表
-      this.$store.commit('WEBSOCKET_PLUGIN_INIT', true)
     },
     components: {
       addProject,

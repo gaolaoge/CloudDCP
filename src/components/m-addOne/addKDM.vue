@@ -27,9 +27,15 @@
         <!--选择播放银幕-->
         <div class="stepBody-item" v-show="stepBtnActive == 1">
           <!--从银幕管理选择-->
-          <selectScreenFromAdmin @selectedAndNext="nextFun"/>
+          <selectScreenFromAdmin
+            @selectedAndNext="nextFun"
+            @selectByLocal="selectBy = 'local'"
+            v-show="selectBy == 'netdisc'"/>
           <!--从我的电脑选择-->
-          <selectScreenFromLocal/>
+          <selectScreenFromLocal
+            @selectedAndNext="nextFun"
+            @selectByNetdisc="selectBy = 'netdisc'"
+            v-show="selectBy == 'local'"/>
         </div>
         <!--设置KDM参数-->
         <div class="stepBody-item" v-show="stepBtnActive == 2">
@@ -54,13 +60,13 @@
             <!--所属项目-->
             <div class="fileItem item">
               <label class="farm-label">{{ setParameters.label.project }}：</label>
-              <el-select v-model="setParameters.form.project"
+              <el-select v-model="setParameters.form.projectUuid"
                          class="farm-input farm-select">
                 <el-option
-                  v-for="(item,index) in setParameters.projectList"
+                  v-for="(item,index) in projectList"
                   :key="index"
-                  :label="item.label"
-                  :value="item.val">
+                  :label="item.customerName"
+                  :value="item.customerUuid">
                 </el-option>
               </el-select>
               <div class="btn" @click="addProjectDialog.visible = true"><span>{{ setParameters.createObject }}</span>
@@ -71,15 +77,15 @@
               <label>{{ setParameters.label.taskName }}：</label>
               <input type="text"
                      :placeholder="setParameters.pl.taskName"
-                     v-model="setParameters.form.taskName">
+                     v-model="setParameters.form.kdmTaskName">
             </div>
             <!--影院时区-->
             <div class="fileItem item">
               <label class="farm-label">{{ setParameters.label.timeZone }}：</label>
-              <el-select v-model="setParameters.form.proportion"
+              <el-select v-model="setParameters.form.theatreTimeZone"
                          class="farm-input farm-select">
                 <el-option
-                  v-for="(item,index) in setParameters.timeZoneList"
+                  v-for="(item,index) in timeZone"
                   :key="index"
                   :label="item.label"
                   :value="item.val">
@@ -115,7 +121,7 @@
           </div>
           <div class="dialog-btn-group">
             <!--上一步-->
-            <div :class="[{'cannotBeGo': false}, 'dialog-btn']"
+            <div class="dialog-btn cancel"
                  @click="stepBtnActive = 1">
               <span>{{ $t('public.previous') }}</span>
             </div>
@@ -128,7 +134,7 @@
         </div>
       </div>
     </section>
-    <!--设置KDM参数-->
+    <!--设置KDM名-->
     <el-dialog
       width="860px"
       top="8vh"
@@ -147,7 +153,8 @@
   import setName from './components/setKDMFileName'
   import {mapState} from 'vuex'
   import {
-    messageFun
+    messageFun,
+    timeZone
   } from '@/assets/common.js'
   import {
     createNewKDM
@@ -162,7 +169,8 @@
           '选择播放银幕',
           '设置KDM参数'
         ],
-        stepBtnActive: 1,
+        stepBtnActive: 2,
+        selectBy: 'netdisc',
         selectScreen: {
           theatreUuidList: [],     // 全选集合
           screenUuidList: [],      // 单选集合
@@ -174,13 +182,15 @@
           },
           createObject: '新建项目',
           form: {
-            project: '',
-            taskName: '',
-            timeZone: '',
+            projectUuid: '',
+            kdmTaskName: '',
+            theatreTimeZone: 0,
             fileName: '',
             movieName: '',
-            startTime: [],
-            endTime: []
+            startTime: [new Date(), new Date()],
+            endTime: [new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000), new Date()],
+            kdmCreateDate: new Date(),          // kdm制作时间
+            kdmFilenameTemplateUuid: null,      // kdm文件名格式uuid
           },
           label: {
             project: '所属项目',
@@ -191,8 +201,6 @@
             startTime: '播放起始时间',
             endTime: '播放结束时间'
           },
-          projectList: [],
-          timeZoneList: [],
           dateText: '（日期）',
           timeText: '（时间）'
         },
@@ -201,7 +209,8 @@
         },
         addProjectDialog: {
           visible: false
-        }
+        },
+        timeZone: []
       }
     },
     props: {
@@ -220,23 +229,23 @@
       closesetFileNameDialog() {
 
       },
-      //
+      // 3.创建KDM
       async createKDMF() {
         let {theatreUuidList, screenUuidList, certificateSource} = this.selectScreen,
-          {zoneUuid, packageTaskUuid} = this,
+          {projectUuid, kdmTaskName, theatreTimeZone, kdmFilenameTemplateUuid, kdmCreateDate} = this.setParameters.form,
+          {zoneUuid, packageTaskUuid, movieStartTime, movieEndTime} = this,
           {data} = await createNewKDM({
-            'kdmFilenameTemplateUuid': '',      // kdm模板uuid
-            'kdmCreateDate': '',                // kdm制作时间
+            kdmFilenameTemplateUuid,            // kdm文件名格式uuid
+            kdmCreateDate,                      // kdm制作时间
             packageTaskUuid,                    // 选中DCP文件的Uuid
-            'projectUuid': '',                  // 项目uuid
-            'kdmTaskName': '',                  // 任务名
-            'theatreTimeZone': '',              // 影院时区
-            'movieStartTime': '',               // 播放起始时间
-            'movieEndTime': '',                 // 播放结束时间
+            projectUuid,                        // 项目uuid
+            kdmTaskName,                        // 任务名
+            theatreTimeZone,                    // 影院时区
+            movieStartTime,                     // 播放起始时间
+            movieEndTime,                       // 播放结束时间
             screenUuidList,                     // 单选银幕Uuid列表
             theatreUuidList,                    // 全选银幕Uuid列表
             'cinemaUuidList': [],               // 院线uuid列表(只有下面的影院全选是才传)
-            'keyword': '',                      // 查询关键字
             zoneUuid,                           // 分区uuid
             'operateSource': 1,                 // 操作来源, 1,网页端 2客户端
             certificateSource                   // 证书来源 1我的电脑, 2银幕列表-院线银幕, 3银幕列表-内部银幕
@@ -244,7 +253,17 @@
       }
     },
     mounted() {
-
+      if (!this.projectList.length) this.$store.dispatch('getProjectList')
+      this.$nextTick(() => Object.assign(this, {
+        timeZone
+      }))
+    },
+    watch: {
+      'projectList': function (list) {
+        if (!list.length) return false
+        console.log(list)
+        this.setParameters.form.projectUuid = list.find(item => item.isDefault == 1)['customerUuid']
+      }
     },
     components: {
       selectScreenFromAdmin,
@@ -252,7 +271,15 @@
       setName
     },
     computed: {
-      ...mapState(['zoneUuid'])
+      ...mapState(['zoneUuid', 'projectList']),
+      movieStartTime() {
+        let [d, t] = this.setParameters.form.startTime
+        return new Date(d.toDateString()).getTime() + (t.getTime() - new Date(t.toDateString()).getTime())
+      },
+      movieEndTime() {
+        let [d, t] = this.setParameters.form.endTime
+        return new Date(d.toDateString()).getTime() + (t.getTime() - new Date(t.toDateString()).getTime())
+      }
     }
   }
 </script>

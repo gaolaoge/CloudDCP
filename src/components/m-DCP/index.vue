@@ -1,15 +1,15 @@
 <template>
   <div class="dcp-wrapper panel">
     <div class="table-operate">
-      <div class="btnGroup"
-           :class="[
+      <div :class="[
             {'cannotStart': !startBtn},
             {'cannotPause': !pauseBtn},
             {'cannotDelete': !deleteBtn},
             {'cannotDownload': !downloadBtn},
             {'cannotAgain': !againBtn},
             {'cannotCopy': !copyBtn},
-            {'cannotCreate': !createBtn}
+            {'cannotCreate': !createBtn},
+            'btnGroup'
            ]">
         <div :class="[item.class, 'btn']"
              @click="operating(item['action'])"
@@ -42,7 +42,7 @@
              @tableSelectionF="result => selectionList = result"/>
     </div>
     <!--详情窗口-->
-    <Win :class="['win', {showMe: showWin}]"/>
+    <Win ref="win" :class="['win', {showMe: showWin}]" @shutMe="showWin = false"/>
   </div>
 </template>
 
@@ -51,7 +51,7 @@
     mapState
   } from 'vuex'
   import Table from './table.vue'
-  import Win from './detailsWin'
+  import Win from './components/detailsWin'
 
   export default {
     name: 'dcp',
@@ -114,10 +114,10 @@
       }
     },
     methods: {
-      //
+      // 打开详情窗口
       showDetails(data) {
-        console.log(data)
         this.showWin = true
+        this.$refs.win.getData(data.taskUuid)
       },
       // 操作
       operating(action) {
@@ -154,10 +154,9 @@
       }
     },
     mounted() {
-      this.$refs.dcptable.getList()
     },
     computed: {
-      ...mapState(['user', 'zone']),
+      ...mapState(['user', 'zone', 'zoneUuid']),
       startBtn() {
         if (!this.selectionList.length) return false
         else if (this.selectionList.some(item => item.validPeriod == 0)) return false
@@ -244,12 +243,13 @@
 
   .win {
     position: absolute;
-    bottom: 0px;
-    right: -904px;
+    bottom: -20px;
+    right: -924px;
     transition: all 0.2s;
+    border-radius: 8px;
 
     &.showMe {
-      right: 0px;
+      right: -20px;
     }
   }
 </style>

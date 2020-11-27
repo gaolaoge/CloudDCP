@@ -14,19 +14,23 @@ const getUserInfoF = function () {
 
 // 读取时间戳
 const createCalendar = function (date) {
-  let year = date.getFullYear(),
-    month = date.getMonth() > 8 ? date.getMonth() + 1 : '0' + (date.getMonth() + 1),
-    day = date.getDate() > 9 ? date.getDate() : '0' + date.getDate(),
-    hour = date.getHours() > 9 ? date.getHours() : '0' + date.getHours(),
-    minutes = date.getMinutes() > 9 ? date.getMinutes() : '0' + date.getMinutes(),
-    seconds = date.getSeconds() > 9 ? date.getSeconds() : '0' + date.getSeconds()
+  let val
+  date instanceof Date ? val = date : val = new Date(date)
+  let year = val.getFullYear(),
+    month = val.getMonth() > 8 ? val.getMonth() + 1 : '0' + (val.getMonth() + 1),
+    day = val.getDate() > 9 ? val.getDate() : '0' + val.getDate(),
+    hour = val.getHours() > 9 ? val.getHours() : '0' + val.getHours(),
+    minutes = val.getMinutes() > 9 ? val.getMinutes() : '0' + val.getMinutes(),
+    seconds = val.getSeconds() > 9 ? val.getSeconds() : '0' + val.getSeconds()
   return {year, month, day, hour, minutes, seconds}
 }
 
 // 获得日期时间
 const createDateFun = function (date, mini, inADay, miniInDay) {
-  if ((date.getFullYear() === '1970' && !inADay)) return '-'
-  let {year, month, day, hour, minutes, seconds} = createCalendar(date)
+  let val
+  date instanceof Date ? val = date : val = new Date(date)
+  if ((val.getFullYear() === '1970' && !inADay)) return '-'
+  let {year, month, day, hour, minutes, seconds} = createCalendar(val)
   if (mini) return `${year}-${month}-${day}`
   else if (inADay) return `${hour}:${minutes}:${seconds}`
   else if (miniInDay) return `${hour}:${minutes}`
@@ -234,7 +238,7 @@ const setInfo = function (data) {
   store.commit('changeBirthday', data.birthday)                                                  // 生日
   store.commit('changeEmail', data.email)                                                        // email
   store.commit('changeSex', data.sex)                                                            // 性别
-  store.commit('changeZoneId', data.zoneUuid)                                                    // 所在区ID
+  store.commit('changeZoneId', data.zoneUuid || 'zone001')                                                    // 所在区ID
   store.commit('changeUserBalance', data.goldBalance.toFixed(3))                      // 金币余额
 }
 
@@ -968,6 +972,170 @@ const areaList = [
   }
 ]
 
+const DCPmainStatusList = [
+  {
+    code: 610,
+    class: '上传',
+    status: '等待上传'
+  },
+  {
+    code: 620,
+    class: '上传',
+    status: '上传中'
+  },
+  {
+    code: 630,
+    class: '上传',
+    status: '上传暂停'
+  },
+  {
+    code: 640,
+    class: '上传',
+    status: '上传失败'
+  },
+  {
+    code: 650,
+    class: '上传',
+    status: '上传成功'
+  },
+  {
+    code: 101,
+    class: '等待',
+    status: '等待打包'
+  },
+  {
+    code: 201,
+    class: '进行中',
+    status: '进行打包'
+  },
+  {
+    code: 900,
+    class: '进行中',
+    status: '进行打包'
+  },
+  {
+    code: 301,
+    class: '暂停',
+    status: '手动暂停'
+  },
+  {
+    code: 302,
+    class: '暂停',
+    status: '欠费暂停'
+  },
+  {
+    code: 400,
+    class: '失败',
+    status: '打包失败'
+  },
+  {
+    code: 500,
+    class: '成功',
+    status: '打包成功'
+  }
+]
+
+// 时区
+const timeZone = [
+  {
+    label: 'UTC-12',
+    val: 0
+  },
+  {
+    label: 'UTC-11',
+    val: 1
+  },
+  {
+    label: 'UTC-10',
+    val: 2
+  },
+  {
+    label: 'UTC-9',
+    val: 3
+  },
+  {
+    label: 'UTC-8',
+    val: 4
+  },
+  {
+    label: 'UTC-7',
+    val: 5
+  },
+  {
+    label: 'UTC-6',
+    val: 6
+  },
+  {
+    label: 'UTC-5',
+    val: 7
+  },
+  {
+    label: 'UTC-4',
+    val: 8
+  },
+  {
+    label: 'UTC-3',
+    val: 9
+  },
+  {
+    label: 'UTC-2',
+    val: 10
+  },
+  {
+    label: 'UTC-1',
+    val: 11
+  },
+  {
+    label: 'UTC',
+    val: 12
+  },
+  {
+    label: 'UTC+1',
+    val: 13
+  },
+  {
+    label: 'UTC+2',
+    val: 14
+  },
+  {
+    label: 'UTC+3',
+    val: 15
+  },
+  {
+    label: 'UTC+4',
+    val: 16
+  },
+  {
+    label: 'UTC+5',
+    val: 17
+  },
+  {
+    label: 'UTC+6',
+    val: 18
+  },
+  {
+    label: 'UTC+7',
+    val: 19
+  },
+  {
+    label: 'UTC+8',
+    val: 20
+  },
+  {
+    label: 'UTC+9',
+    val: 21
+  },
+  {
+    label: 'UTC+10',
+    val: 22
+  },
+  {
+    label: 'UTC+11',
+    val: 23
+  },
+
+]
+
 export {
   movieTypeList,
   proportionList,
@@ -982,6 +1150,8 @@ export {
   mp3LanguageList,
   textLanguageList,
   areaList,
+  DCPmainStatusList,
+  timeZone,
   createCalendar,
   createDateFun,
   getDate,

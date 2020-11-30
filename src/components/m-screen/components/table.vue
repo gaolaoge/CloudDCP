@@ -200,9 +200,8 @@
       // 获取表格数据
       async getList(obj) {
         this.tableFilerCondition = obj
-        new Promise(resolve => {
-          obj.type == 'mineScreen' ? resolve(this.getMineTab(obj)) : resolve(this.getTab(obj))
-        }).then(({data}) => {
+        new Promise(resolve => obj.type == 'mineScreen' ? resolve(this.getMineTab(obj)) : resolve(this.getTab(obj)))
+          .then(({data}) => {
           this.total = data.total
           this.tableData = data.data.map(item => Object.assign(item, {
             'updateTime': createDateFun(new Date(item.updateTime)),
@@ -225,15 +224,16 @@
       },
       // 获取院线银幕Tab
       getTab({data}) {
-        let {keyword, pageIndex, setting} = this
+        let {keyword, pageIndex, setting} = this,
+          {cinemaUuid, theatreUuid} = data
           return getScreenList({
             pageIndex,
-            pageSize: setting.pageSize,
-            screenStatusList: [],    // 银幕状态
-            cinemaUuid: '',          // 院线uuid
-            theatreUuid: '',         // 影院uuid
-            sortBy: null,            // 排序字段
-            sortType: 0,             // 0降序,1升序
+            'pageSize': setting.pageSize,
+            'screenStatusList': [],    // 银幕状态
+            cinemaUuid,              // 院线uuid
+            theatreUuid,             // 影院uuid
+            'sortBy': null,            // 排序字段
+            'sortType': 0,             // 0降序,1升序
             keyword
           })
       },

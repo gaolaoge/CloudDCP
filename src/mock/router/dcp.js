@@ -39,5 +39,5 @@ let getTaskList = {   // 获取dcp列表
 }
 
 module.exports = [
-  getTaskList
+  // getTaskList
 ]

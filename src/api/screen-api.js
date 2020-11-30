@@ -28,7 +28,23 @@ export function getMineScreenList(keyword) {
   })
 }
 
-// 添加【院线银幕】分组
+// 获取【院线】分组
+export function getCinemaGList() {
+  return http({
+    url: `/dcpProfessional/screen/getCinemaList`,
+    method: 'GET'
+  })
+}
+
+// 获取【影院】分组
+export function getTheatreList(cinemaUuid) {
+  return http({
+    url: `/dcpProfessional/screen/getTheatreList/${cinemaUuid}`,
+    method: 'GET'
+  })
+}
+
+// 添加【银幕】分组
 export function addNewScreenGroup(groupName) {
   return http({
     url: `/dcpProfessional/screen/addInnerGroup?groupName=${groupName}`,

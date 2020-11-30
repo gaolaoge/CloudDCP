@@ -215,7 +215,7 @@
     createCalendar,
     exportDownloadFun,
     messageFun
-  } from '@/assets/common.js'
+  } from '@/assets/common'
   import {
     getRechargeCentreList,
     exportUpTopTable,
@@ -343,7 +343,7 @@
       // 获取table数据
       async getList() {
         let f = this.filter,
-          t = `paymentStatus=${f.tradingtatusVal}&paymentTitle=${f.paymentMethodVal}&invoice=${f.markVal}&productOrderUuid=${f.singleNumberVal}&beginTime=${f.date ? f.date[0].getTime() : 0}&endTime=${f.date ? f.date[1].getTime() : new Date().getTime()}&sortColumn=1&sortBy=0&pageIndex=${this.table.currentPage}&pageSize=${Number(this.table.pageSize)}`,
+          t = `paymentStatus=${f.tradingtatusVal}&paymentTitle=${f.paymentMethodVal}&invoice=${f.markVal}&productOrderUuid=${f.singleNumberVal}&beginTime=${f.date ? f.date[0].getTime() : 0}&endTime=${f.date ? f.date[1].getTime() : new Date().getTime()}&sortColumn=1&sortBy=0&pageIndex=${this.table.currentPage}&pageSize=${Number(this.table.pageSize)}&platform=2`,
           {data} = await getRechargeCentreList(t),
           {table} = this
         table.total = data.total
@@ -351,11 +351,11 @@
           let {year, month, day, hour, minutes, seconds} = createCalendar(new Date(curr.updateTime))
           return Object.assign(curr, {
             state: this.statusList[curr.paymentStatus - 1],                         // 交易状态
-            paymentMethod: curr.paymentTitle == '1' ? '支付宝' : '-',                      // 充值方式
-            date: `${year}-${month}-${day} ${hour}:${minutes}:${seconds}`,                // 交易时间
+            paymentMethod: curr.paymentTitle == '1' ? '支付宝' : '-',                // 充值方式
+            date: `${year}-${month}-${day} ${hour}:${minutes}:${seconds}`,          // 交易时间
             dateDefault: curr.updateTime,
-            invoice: this.invoiceList[curr.invoice],                              // 开票标识
-            operate: this.operateList[curr.paymentStatus - 1]                // 操作
+            invoice: this.invoiceList[curr.invoice],                                // 开票标识
+            operate: this.operateList[curr.paymentStatus - 1]                       // 操作
           })
         })
       },

@@ -70,7 +70,7 @@
           label="操作">
           <template slot-scope="scope">
             <span class="operateBtn" @click="editItem(scope.$index)">{{ tableOperateBtn[0] }}</span>
-            <span class="operateBtn" @click="setItem(scope.row.taskProjectUuid)">{{ tableOperateBtn[1] }}</span>
+            <span class="operateBtn" @click="setItem(scope.row.screenUuid)">{{ tableOperateBtn[1] }}</span>
           </template>
         </el-table-column>
 
@@ -230,7 +230,7 @@
           statusL: '项目状态',
           statusV: null,
           thumbnail: null,
-          taskProjectUuid: null,
+          screenUuid: null,
           options: [
             {
               value: 1,
@@ -281,38 +281,43 @@
       },
       // 获得list
       async getList(keyword, pageIndex, pageSize) {
-        let data = await getObjectList(`keyword=${keyword}&pageIndex=${pageIndex}&pageSize=${pageSize}`)
-        if (data.data.code != 200) {
-          messageFun('error', '获取数据失败')
-          return false
-        }
-        this.page.total = data.data.total
-        this.tableData = data.data.data.map(curr => {
-          // {
-          //   createBy: "1"
-          //   createTime: 1586999761039
-          //   customerUuid: "1"
-          //   dataStatus: 1
-          //   id: 1
-          //   isDefault: 0
-          //   projectName: "项目一"
-          //   projectOverview: "这是一个测试项目"
-          //   projectStatus: 1
-          //   taskProjectUuid: "1"
-          //   thumbnail: null
-          //   updateBy: "1"
-          //   updateTime: 1591689369051
-          // }
-          return {
-            'taskProjectUuid': curr.taskProjectUuid,
-            'createTime': createDateFun(new Date(curr.createTime)),
-            'projectName': curr.projectName,
-            'customerName': curr.customerName,
-            'isDefault': curr.isDefault == 0 ? '否' : '是',
-            'projectStatus': curr.projectStatus == 0 ? '停用' : '启用',
-            'thumbnail': curr.thumbnail     // 缩略图
-          }
+        let {data} = await getObjectList({
+          keyword,
+          pageIndex,
+          pageSize,
+          projectStatusList: [],
+          sortBy: null,
+          sortType: 0
         })
+        if (data.code == 200) {
+          this.page.total = data.total
+          this.tableData = data.data.map(curr => {
+            // {
+            //   createBy: "1"
+            //   createTime: 1586999761039
+            //   customerUuid: "1"
+            //   dataStatus: 1
+            //   id: 1
+            //   isDefault: 0
+            //   projectName: "项目一"
+            //   projectOverview: "这是一个测试项目"
+            //   projectStatus: 1
+            //   screenUuid: "1"
+            //   thumbnail: null
+            //   updateBy: "1"
+            //   updateTime: 1591689369051
+            // }
+            return Object(curr, {
+              'screenUuid': curr.screenUuid,
+              'createTime': createDateFun(new Date(curr.updateTime)),
+              'projectName': curr.projectName,
+              'customerName': curr.customerName,
+              'isDefault': curr.isDefault == 0 ? '否' : '是',
+              'projectStatus': curr.projectStatus == 0 ? '停用' : '启用',
+              'thumbnail': curr.thumbnail     // 缩略图
+            })
+          })
+        } else messageFun('error', '获取数据失败')
       },
       // 新建项目 - 关闭
       createCancelBtnFun() {
@@ -348,19 +353,19 @@
       },
       // 编辑项目 - 保存
       async editSaveBtnFun() {
-        let c = this.editProject
+        let {nameV, statusV, screenUuid, thumbnail} = this.editProject
         if (this.editVerif) return false
-        let data = await editTask({
-          'projectName': c.nameV,
-          'projectStatus': c.statusV,
-          'taskProjectUuid': c.taskProjectUuid,
-          'thumbnail': c.thumbnail
+        let {data} = await editTask({
+          'projectName': nameV,
+          'projectStatus': statusV,
+          'screenUuid': screenUuid,
+          'thumbnail': thumbnail
         })
-        if (data.data.code == 201) {
+        if (data.code == 201) {
           messageFun('success', '编辑成功')
           this.editBaseShow = false
           this.getList('', 1, this.page.size)
-        } else if (data.data.code == 101) messageFun('info', '项目名已存在')
+        } else if (data.code == 101) messageFun('info', '项目名已存在')
       },
       // 操作按钮
       uploadOperating(name) {
@@ -380,20 +385,20 @@
       // 项目 - 编辑
       editItem(index) {
         this.editBaseShow = true
-        let data = this.tableData[index]
+        let {screenUuid, thumbnail, projectName, projectStatus} = this.tableData[index]
         Object.assign(this.editProject, {
-          nameV: data.projectName,
-          statusV: data.projectStatus == '禁用' ? 0 : 1,
-          thumbnail: data.thumbnail,
-          taskProjectUuid: data.taskProjectUuid
+          nameV: projectName,
+          statusV: projectStatus == '禁用' ? 0 : 1,
+          thumbnail,
+          screenUuid
         })
       },
       // 项目 - 设为当前项目
       async setItem(id) {
-        let data = await setDefault({
-          'taskProjectUuid': id
+        let {data} = await setDefault({
+          'screenUuid': id
         })
-        if (data.data.code == 201) {
+        if (data.code == 201) {
           messageFun('success', '设置成功')
           this.getList('', 1, this.page.size)
         }
@@ -406,12 +411,12 @@
           type: 'warning'
         })
           .then(async () => {
-            let data = await deleteTask({'projectList': this.selectionList.map(curr => curr.taskProjectUuid)})
-            if (data.data.code == 201) {
+            let {data} = await deleteTask(this.selectionList.map(curr => curr.screenUuid))
+            if (data.code == 201) {
               messageFun('success', '操作成功')
               this.getList(this.searchInputVal, this.page.index, this.page.size)
-            } else if (data.data.code == 1000) messageFun('error', '操作失败')
-            else if (data.data.code == 10001) messageFun('error', '参数无效')
+            } else if (data.code == 1000) messageFun('error', '操作失败')
+            else if (data.code == 10001) messageFun('error', '参数无效')
           })
       },
       // 跳页

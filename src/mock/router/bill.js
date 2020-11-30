@@ -45,23 +45,22 @@ let invoicingData = Array(56).fill(undefined).map(item => {
     })
   })
 
-module.exports = [
-  {   // 开票记录 获取table数据
-    url: /\/billing\/invoice\/getInvoicePage\?/,
-    type: 'get',
-    response: config => {
-      let {query} = config,
-        {pageIndex, pageSize} = query
+let getInvoicePage = {
+  url: /\/billing\/invoice\/getInvoicePage\?/,
+  type: 'get',
+  response: config => {
+    let {query} = config,
+      {pageIndex, pageSize} = query
 
-      return {
-        code: 200,
-        msg: '',
-        data: invoicingData.slice((pageIndex - 1) * pageSize, pageIndex * pageSize),
-        total: 56
-      }
+    return {
+      code: 200,
+      msg: '',
+      data: invoicingData.slice((pageIndex - 1) * pageSize, pageIndex * pageSize),
+      total: 56
     }
-  },
-  {   // 充值记录 获取table数据
+  }
+},
+  getRechargeList = {
     url: /\/billing\/recharge\/getRechargeList\?/,
     type: 'get',
     response: config => {
@@ -76,7 +75,7 @@ module.exports = [
       }
     }
   },
-  {   // 消费记录 获取table数据
+  getSpendingList = {
     url: /\/billing\/spending\/getSpendingList\?/,
     type: 'get',
     response: config => {
@@ -91,7 +90,7 @@ module.exports = [
       }
     }
   },
-  {   // 获取所属项目List
+  getCustomerProjectList = {
     url: /\/professional\/project\/getCustomerProjectList/,
     type: 'get',
     response: () => {
@@ -116,7 +115,7 @@ module.exports = [
       }
     }
   },
-  {   // 获取所属项目List
+  getInvoiceTitleList = {
     url: /\/billing\/invoice\/getInvoiceTitleList/,
     type: 'get',
     response: () => {
@@ -141,7 +140,7 @@ module.exports = [
       }
     }
   },
-  {   // 获取可开票的充值记录
+  getRechargeList4Invoice =  {
     url: /\/billing\/invoice\/getRechargeList4Invoice/,
     type: 'get',
     response: () => {
@@ -153,7 +152,7 @@ module.exports = [
       }
     }
   },
-  {   // 获取可开票的充值记录
+  getInvoiceSettingList = {
     url: /\/billing\/invoice\/getInvoiceSettingList/,
     type: 'get',
     response: () => {
@@ -165,4 +164,14 @@ module.exports = [
       }
     }
   }
+
+module.exports = [
+  getInvoicePage,          // 开票记录 获取table数据
+  // getRechargeList,         // 充值记录 获取table数据
+  getSpendingList,         // 消费记录 获取table数据
+  getCustomerProjectList,  // 获取所属项目List
+  getInvoiceTitleList,     // 获取所属项目List
+  getRechargeList4Invoice, // 获取可开票的充值记录
+  getInvoiceSettingList    // 获取可开票的充值记录
+
 ]

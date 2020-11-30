@@ -64,36 +64,55 @@ let getCustomerTemplateList = {
     })
   }
 }  // KDM 获取内部银幕分组列表
+  , addKdmTask = {
+    url: /\/dcpProfessional\/kdm\/addKdmTask/,
+    type: 'POST',
+    response: () => {
+      return {}
+    }
+  }              // KDM 新建KDM任务
+  , getTheatreList = {
+    url: /\/dcpProfessional\/kdm\/getTheatreList\?keyword=/,
+    type: 'get',
+    response: () => {
+      return {
+        code: 200,
+        total: 3,
+        data: Array(3).fill(undefined).map(item => {
+          return Mock.mock({
+            'theatreUuid': '@id()',
+            'theatreName': '@cname()',
+            'theatreNo': 1,
+            'screenCount': 3
+          })
+        })
+      }
+    }
+  }           // KDM 获取影院列表
   , getScreenList = {
   url: /\/dcpProfessional\/kdm\/getScreenList\?theatreUuid=/,
   type: 'get',
   response: () => {
-    return Mock.mock({
-      'code': 200,
-      'data|3': [
-        {
+    return {
+      code: 200,
+      total: 3,
+      data: Array(3).fill(undefined).map(item => {
+        return Mock.mock({
           'screenUuid': '@id()',
-          'screenId': /\d{12}/,
-          'screenName': /\d{5}_[\u4e00-\u9fa5]{2}\d/,
-          'certificateName': /Barco-ICMP\.\d{10}_cert\.pem/
-        }
-      ],
-      total: 3
-    })
+          'screenId': 1,
+          'screenName': '@cname()',
+          'certificateName': 'Barco-ICMP.9730429747_cert.pem'
+        })
+      })
+    }
   }
-}            // KDM 获取分组内银幕列表
-  , addKdmTask = {
-  url: /\/dcpProfessional\/kdm\/addKdmTask/,
-  type: 'POST',
-  response: () => {
-    return {}
-  }
-}              // KDM 新建KDM任务
+}           // KDM 获取影院列表
 module.exports = [
   // getCustomerTemplateList
   // , checkPackageTemplateName
   // , getSoftList
   // , getInnerScreenGroupList
-  // , getScreenList
   // , addKdmTask
+  getTheatreList,
+  getScreenList
 ]

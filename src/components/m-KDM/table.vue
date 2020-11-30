@@ -44,21 +44,7 @@
         :filters="statusList"
         width="120">
         <template slot-scope="scope">
-          <span v-if="String('37').includes(scope.row.taskStatus)"
-                style="color: rgba(255, 62, 77, 1)">
-            {{ scope.row.taskStatusText }}
-          </span>
-          <span v-if="String('89').includes(scope.row.taskStatus)" style="color: rgba(70, 203, 93, 1)">
-            {{ scope.row.taskStatusText }}
-          </span>
-          <span v-if="String('256').includes(scope.row.taskStatus)"
-                style="color: rgba(255, 191, 0, 1)">
-            {{ scope.row.taskStatusText }}
-          </span>
-          <span
-            v-if="String('14').includes(scope.row.taskStatus)">
-            {{ scope.row.taskStatusText }}
-          </span>
+          {{scope.row.taskStatusText}}
         </template>
       </el-table-column>
 
@@ -136,6 +122,7 @@
     getKDMTableList
   } from '@/api/kdm-api'
   import {
+    KDMmainStatusList,
     createDateFun,
     createTableIconList,
     messageFun
@@ -196,7 +183,7 @@
         })
         this.total = data.total
         this.tableData = data.data.map(item => Object.assign(item, {
-          'taskStatusText': this.statusList[item.taskStatus - 1]['text'],
+          'taskStatusText': KDMmainStatusList.find(statusI => statusI.code == item.taskStatus)['status'],
           'movieStartTime': createDateFun(new Date(item.movieStartTime)),
           'movieEndTime': createDateFun(new Date(item.movieEndTime)),
           'validPeriod': new Date().getTime() >= item.expireTime ? 0 : 1
@@ -242,8 +229,8 @@
 
       },
       //
-      showDetails() {
-
+      showDetails(row) {
+        this.$emit('tableRowClick', row)
       },
       // table 行样式
       tableRowStyle({row}) {
@@ -267,7 +254,12 @@
       }
     },
     mounted() {
-      this.$nextTick(() => createTableIconList())
+      this.$nextTick(() => {
+        createTableIconList()
+        Object.assign(this, {
+          KDMmainStatusList
+        })
+      })
     },
     computed: {
       ...mapState(['setting', 'zoneUuid'])

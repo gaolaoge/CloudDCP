@@ -169,7 +169,7 @@
           '选择播放银幕',
           '设置KDM参数'
         ],
-        stepBtnActive: 2,
+        stepBtnActive: 1,
         selectBy: 'netdisc',
         selectScreen: {
           theatreUuidList: [],     // 全选集合

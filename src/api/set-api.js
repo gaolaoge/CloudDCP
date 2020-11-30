@@ -22,42 +22,42 @@ export function setMessageData(data) {
 // 项目设置 - 获取列表
 export function getObjectList(data) {
   return http({
-    url: `/dcpProfessional/project/getAllCustomerProject?${data}`,
-    method: 'GET'
-  })
-}
-
-// 项目设置 - 删除任务
-export function deleteTask(data) {
-  return http({
-    url: `/professional/project/deleteCustomerProject`,
-    method: 'DELETE',
+    url: `/dcpProfessional/project/getProjectList`,
+    method: 'POST',
     data
   })
 }
 
-// 项目设置 - 编辑任务
+// 项目设置 - 删除项目
+export function deleteTask(projectUuid) {
+  return http({
+    url: `/dcpProfessional/project/setDefaultProject/${projectUuid}`,
+    method: 'DELETE'
+  })
+}
+
+// 项目设置 - 设为当前项
 export function setDefault(data) {
   return http({
-    url: `/professional/project/updateDefaultProject`,
+    url: `/dcpProfessional/project/updateDefaultProject`,
     method: 'POST',
     data
   })
 }
 
-// 项目设置 - 编辑任务
+// 项目设置 - 编辑项目
 export function editTask(data) {
   return http({
-    url: `/professional/project/updateCustomerProject`,
+    url: `/dcpProfessional/project/updateProject`,
     method: 'POST',
     data
   })
 }
 
-// 项目设置 - 新建任务
+// 项目设置 - 新建项目
 export function createTask(data) {
   return http({
-    url: `/dcpProfessional/project/addCustomerProject`,
+    url: `/dcpProfessional/project/addProject`,
     method: 'POST',
     data
   })

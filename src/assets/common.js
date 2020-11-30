@@ -1035,6 +1035,69 @@ const DCPmainStatusList = [
   }
 ]
 
+const KDMmainStatusList = [
+  {
+    code: 610,
+    class: '上传',
+    status: '等待上传'
+  },
+  {
+    code: 620,
+    class: '上传',
+    status: '上传中'
+  },
+  {
+    code: 630,
+    class: '上传',
+    status: '上传暂停'
+  },
+  {
+    code: 640,
+    class: '上传',
+    status: '上传失败'
+  },
+  {
+    code: 650,
+    class: '上传',
+    status: '上传成功'
+  },
+  {
+    code: 101,
+    class: '等待',
+    status: '等待制作'
+  },
+  {
+    code: 103,
+    class: '等待',
+    status: '等待DCP打包完成'
+  },
+  {
+    code: 201,
+    class: '进行中',
+    status: '进行制作'
+  },
+  {
+    code: 301,
+    class: '暂停',
+    status: '手动暂停'
+  },
+  {
+    code: 302,
+    class: '暂停',
+    status: '欠费暂停'
+  },
+  {
+    code: 400,
+    class: '失败',
+    status: '制作失败'
+  },
+  {
+    code: 500,
+    class: '成功',
+    status: '制作成功'
+  }
+]
+
 // 时区
 const timeZone = [
   {
@@ -1151,6 +1214,7 @@ export {
   textLanguageList,
   areaList,
   DCPmainStatusList,
+  KDMmainStatusList,
   timeZone,
   createCalendar,
   createDateFun,

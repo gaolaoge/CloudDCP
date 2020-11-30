@@ -52,7 +52,7 @@ const getInfoF = {
   }   // 获取分区列表
 
 module.exports = [
-  getInfoF,
+  // getInfoF,
   getNews,
   getPartition
 ]

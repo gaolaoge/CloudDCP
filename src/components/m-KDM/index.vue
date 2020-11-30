@@ -37,8 +37,11 @@
     <div class="kdm-table">
       <Table ref="kdmtable"
              :keyword="searchInput"
+             @tableRowClick="showDetails"
              @tableSelectionF="result => selectionList = result"/>
     </div>
+    <!--详情窗口-->
+    <Win ref="win" :class="['win', {showMe: showWin}]" @shutMe="showWin = false"/>
   </div>
 </template>
 
@@ -47,11 +50,13 @@
     mapState
   } from 'vuex'
   import Table from './table.vue'
+  import Win from './components/detailsWin'
 
   export default {
     name: 'kdm',
     data() {
       return {
+        showWin: false,
         btnGroup: [
           {
             action: '开始',
@@ -101,6 +106,11 @@
       }
     },
     methods: {
+      // 打开详情窗口
+      showDetails(data) {
+        this.showWin = true
+        this.$refs.win.getData(data.taskUuid)
+      },
       // 操作
       operating(action) {
         switch (action) {
@@ -173,7 +183,8 @@
       }
     },
     components: {
-      Table
+      Table,
+      Win
     }
   }
 </script>
@@ -208,6 +219,18 @@
 
     &.panel {
       height: calc(100vh - 80px - 20px);
+    }
+  }
+
+  .win {
+    position: absolute;
+    bottom: -20px;
+    right: -924px;
+    transition: all 0.2s;
+    border-radius: 8px;
+
+    &.showMe {
+      right: -20px;
     }
   }
 </style>

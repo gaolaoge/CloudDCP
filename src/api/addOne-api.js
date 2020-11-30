@@ -61,7 +61,23 @@ export function getInternalScrGroup() {
   })
 }
 
-// KDM 获取分组内银幕列表
+// KDM 获取院线列表
+export function getCinemaList(keyword) {
+  return http({
+    url: `/dcpProfessional/kdm/getCinemaList?keyword=${keyword}`,
+    method: 'GET'
+  })
+}
+
+// KDM 获取影院列表
+export function getTheatreList(keyword, cinemaUuid) {
+  return http({
+    url: `/dcpProfessional/kdm/getTheatreList?keyword=${keyword}&cinemaUuid=${cinemaUuid}`,
+    method: 'GET'
+  })
+}
+
+// KDM 获取银幕列表
 export function getInternalScrList(theatreUuid) {
   return http({
     url: `/dcpProfessional/kdm/getScreenList?theatreUuid=${theatreUuid}`,

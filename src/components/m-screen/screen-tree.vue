@@ -1,8 +1,7 @@
 <template>
   <div class="screen-tree">
     <el-tabs v-model="activeName" @tab-click="handleClick" :stretch="true">
-      <el-tab-pane v-for="(item, index) in card" :key="index"
-                   :label="item"/>
+      <el-tab-pane v-for="(item, index) in card" :key="index" :label="item"/>
     </el-tabs>
     <!--内部银幕-->
     <div class="screenW internal" v-show="activeName == 0">
@@ -56,15 +55,66 @@
       </el-tree>
     </div>
     <!--院线银幕-->
-    <div class="screenW" v-show="activeName == 1">
+    <div class="screenW cinema" v-show="activeName == 1">
+      <!--操作-->
+      <div class="search">
+        <!--搜索框-->
+        <input type="text" class="input"
+               :placeholder="screenPlaceholder"
+               v-model="screenKeyword"
+               @keyup.enter="getScreenListNode">
+        <img src="@/icons/search.png" class="icon search" @click="getScreenListNode">
+        <!--添加-->
+        <div class="addBase" @click="addNewInnerTreeG">
+          <img src="@/icons/add.png" class="icon add default">
+          <el-tooltip content="添加分组"
+                      popper-class="default"
+                      effect="dark"
+                      placement="top">
+            <img src="@/icons/add-hover.png" class="icon add hover">
+          </el-tooltip>
+        </div>
+      </div>
       <el-tree
-        :props="props"
-        :load="loadNode"
-        draggable
-        lazy>
-        <span class="custom-tree-node" slot-scope="{ node, data }">
-          <img src="@/icons/filer.png">
-          <span class="tree-node-span">{{ data.theatreName }}</span>
+        :props="props2"
+        :load="getScreenListNode"
+        :allow-drop="allowDrop"
+        @node-click="getThreateTab"
+        lazy
+        draggable>
+        <span class="custom-tree-node" :key="node.id" slot-scope="{ node, data }">
+          <!--院线-->
+          <div class="l" v-if="node.level == 1">
+            <img src="@/icons/filer.png" class="filer default">
+            <img src="@/icons/filer-hover.png" class="filer hover">
+            <span class="tree-node-span">{{ data.cinemaName }}</span>
+          </div>
+          <!--影院-->
+          <div class="l theatre" v-if="node.level == 2">
+            <img src="@/icons/movie-icon-black.png" class="filer default">
+            <img src="@/icons/movie-icon-white.png" class="filer hover">
+            <span class="tree-node-span">{{ data.theatreName }}</span>
+          </div>
+          <el-popover
+            placement="right-start"
+            width="72"
+            trigger="hover"
+            :visible-arrow="false">
+            <!--院线-->
+            <ul class="tree-node-operate-brnG" v-if="node.level == 1">
+              <li @click="deleteInnerTreeG(data.cinemaUuid)"><span>{{ $t('public.delete') }}</span></li>
+              <li @click="showRenameInnerTreeG(data)"><span>{{ $t('public.rename') }}</span></li>
+            </ul>
+            <!--影院-->
+            <ul class="tree-node-operate-brnG" v-if="node.level == 2">
+              <li @click="deleteInnerTreeG(data.cinemaUuid)"><span>{{ $t('public.delete') }}</span></li>
+              <li @click="showRenameInnerTreeG(data)"><span>{{ $t('public.rename') }}</span></li>
+            </ul>
+            <div class="r" slot="reference">
+              <span v-if="node.level == 2" class="total">{{ data.screenCount }}</span>
+              <img src="@/icons/operate-icon-white.png" class="operate-icon hover">
+            </div>
+          </el-popover>
         </span>
       </el-tree>
     </div>
@@ -120,7 +170,9 @@
     getMineScreenList,
     addNewScreenGroup,
     deleteMineScreenG,
-    renameMineScreenG
+    renameMineScreenG,
+    getCinemaGList,
+    getTheatreList
   } from '@/api/screen-api'
   import {messageFun} from '../../assets/common'
 
@@ -140,9 +192,15 @@
           warnInfo: ''
         },
         mineScreenListNode: [],
+        // screenListNode: [],
         mineScreenPlaceholder: '输入分组名称',
         mineScreenKeyword: '',
+        screenPlaceholder: '输入院线/影院名称',
+        screenKeyword: '',
         props: {
+          label: 'theatreName'
+        },
+        props2: {
           label: 'theatreName',
           children: 'zones',
           isLeaf: 'leaf'
@@ -160,28 +218,34 @@
       handleClick() {
 
       },
+      //
+      getThreateTab(data, node) {
+        this.$emit('selectMineScreen', {
+          'type': 'threateScreen', 'data': {
+            'cinemaUuid': node.data.cinemaUuid,
+            'theatreUuid': node.data.theatreUuid || null
+          }
+        })
+      },
+      // 获取【院线银幕】结构
+      async getScreenListNode(node, resolve) {
+        if (node.level == 0) {
+          let {data} = await getCinemaGList()
+          if (data.code == 200) resolve(data.data)
+          else resolve([])
+        } else if (node.level == 1) {
+          let {data} = await getTheatreList(node.data.cinemaUuid)
+          if (data.code == 200) resolve(data.data.map(item => Object.assign(item, {
+            'leaf': true
+          })))
+          else resolve([])
+        }
+      },
       // 获取【内部银幕】结构
       async getMineScreenListNode() {
         let {data} = await getMineScreenList(this.mineScreenKeyword)
         if (data.code == 200) this.mineScreenListNode = data.data
         else this.mineScreenListNode = []
-      },
-      // 获取【院线银幕】结构
-      loadNode(node, resolve) {
-        if (node.level === 0) return resolve([{theatreName: 'region'}])
-        else if (node.level > 1) return resolve([])
-        else setTimeout(() => {
-            const data = [
-              {
-                theatreName: 'leaf',
-                leaf: true
-              },
-              {
-                theatreName: 'zone'
-              }
-            ]
-            resolve(data)
-          }, 500)
       },
       // 验证【添加分组】name 格式
       async verifAddMineScreenName(ing) {
@@ -245,7 +309,10 @@
       }
     },
     mounted() {
-      this.$nextTick(() => this.getMineScreenListNode())
+      this.$nextTick(() => {
+        this.getMineScreenListNode()
+        this.getScreenListNode()
+      })
     }
   }
 </script>
@@ -318,6 +385,7 @@
         .r {
           display: inline-flex;
           align-items: center;
+          height: 46px;
 
           & > span {
             display: inline-flex;
@@ -338,8 +406,13 @@
         }
 
         .l {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+
           .filer {
             margin-right: 8px;
+            width: 12px;
           }
         }
 
@@ -347,7 +420,31 @@
           display: none;
         }
 
-        &:hover {
+        /*&:hover {*/
+        /*  background-color: rgba(27, 83, 244, 0.8);*/
+
+        /*  .total,*/
+        /*  .tree-node-span {*/
+        /*    color: rgba(255, 255, 255, 1);*/
+        /*  }*/
+
+        /*  .default {*/
+        /*    display: none;*/
+        /*  }*/
+
+        /*  .hover {*/
+        /*    display: inline-block;*/
+        /*  }*/
+        /*}*/
+      }
+
+      &.internal,
+      &.cinema {
+        /deep/ .is-leaf {
+          display: none;
+        }
+
+        /deep/ .el-tree-node__content:hover {
           background-color: rgba(27, 83, 244, 0.8);
 
           .total,
@@ -365,9 +462,13 @@
         }
       }
 
-      &.internal {
-        /deep/ .is-leaf {
-          display: none;
+      &.cinema {
+        .custom-tree-node {
+          padding-left: 0px;
+        }
+
+        .theatre {
+          padding-left: 14px;
         }
       }
     }
@@ -409,7 +510,7 @@
     }
   }
 
-  /deep/.el-tabs__item {
+  /deep/ .el-tabs__item {
     line-height: 50px;
     height: 50px;
   }

@@ -49,7 +49,7 @@
 
       <!--更新人-->
       <el-table-column
-        prop="updateName"
+        prop="updateBy"
         label="更新人"
         sortable
         show-overflow-tooltip
@@ -57,8 +57,8 @@
 
       <!--创建时间-->
       <el-table-column
-        prop="updateTime"
-        label="创建时间"
+        prop="longUpdateTime"
+        label="更新时间"
         sortable
         show-overflow-tooltip
         width="180"/>
@@ -142,7 +142,8 @@
     getScreenList,
     getMineScreenTabList,
     deleteScreen,
-    editScreen
+    editScreen,
+    downloadScreen
   } from '@/api/screen-api'
   import {
     // consum,
@@ -204,7 +205,7 @@
           .then(({data}) => {
           this.total = data.total
           this.tableData = data.data.map(item => Object.assign(item, {
-            'updateTime': createDateFun(new Date(item.updateTime)),
+            'longUpdateTime': createDateFun(new Date(item.longUpdateTime)),
             'screenStatus': item.screenStatus == 0 ? '停用' : '启用'
           }))
         })
@@ -230,8 +231,8 @@
             pageIndex,
             'pageSize': setting.pageSize,
             'screenStatusList': [],    // 银幕状态
-            cinemaUuid,              // 院线uuid
-            theatreUuid,             // 影院uuid
+            cinemaUuid,                // 院线uuid
+            theatreUuid,               // 影院uuid
             'sortBy': null,            // 排序字段
             'sortType': 0,             // 0降序,1升序
             keyword
@@ -254,17 +255,21 @@
           screenStatus,
           localPath
         })
-
-        // this.getList(this.tableFilerCondition)
+        if(data.code == 201) {
+          messageFun('success', '操作成功')
+          this.getList(this.tableFilerCondition)
+          this.editSDialog.visible = false
+        }
       },
       // 操作 - 编辑
       editScreen() {
         this.editSDialog.visible = true
-        let {screenName, certificateName, screenStatus} = this.selectionList[0]
+        let {screenName, certificateName, screenStatus, screenUuid} = this.selectionList[0]
         Object.assign(this.editSDialog, {
           'nameV': screenName,
           'certificateV': certificateName,
-          'statusV': screenStatus == '启用' ? '1' : '0'
+          'statusV': screenStatus == '启用' ? '1' : '0',
+          screenUuid
         })
       },
       // 操作 - 删除
@@ -288,8 +293,17 @@
           .catch(() => null)
       },
       // 操作 - 下载
-      downloadFun() {
-
+      async downloadFun() {
+        // console.log(this.selectionList)
+        // let {data} = await downloadScreen()
+        this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
+          code: 302,
+          userID: this.user.id,
+          ID: '',
+          path: [
+            {}
+            ]
+        })
       },
       //
       filterChangeF() {
@@ -315,7 +329,7 @@
       })
     },
     computed: {
-      ...mapState(['setting', 'zoneUuid', 'socket_plugin_msg'])
+      ...mapState(['setting', 'zoneUuid', 'socket_plugin_msg', 'user'])
     },
     watch: {
       'selectionList': {

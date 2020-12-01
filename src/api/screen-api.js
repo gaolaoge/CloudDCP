@@ -106,3 +106,11 @@ export function editScreen(data) {
   })
 }
 
+// 银幕操作 - 编辑
+export function downloadScreen(data) {
+  return http({
+    url: `/dcpProfessional/screen/updateScreenInfo`,
+    method: 'PUT',
+    data
+  })
+}

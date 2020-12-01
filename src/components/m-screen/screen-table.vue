@@ -113,7 +113,7 @@
             break
           case '下载':
             // 单选，需在有效期内，状态在「进行中、暂停、暂停（欠费）、失败、已完成」内
-            if (this.copyBtn) this.$refs.screenTableReal.downloadFun()
+            if (this.downloadBtn) this.$refs.screenTableReal.downloadFun()
             break
         }
       },

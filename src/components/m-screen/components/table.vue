@@ -148,8 +148,8 @@
   import {
     // consum,
     createDateFun
-    ,createTableIconList
-    ,messageFun
+    , createTableIconList
+    , messageFun
   } from '@/assets/common'
   import {
     mapState
@@ -203,12 +203,12 @@
         this.tableFilerCondition = obj
         new Promise(resolve => obj.type == 'mineScreen' ? resolve(this.getMineTab(obj)) : resolve(this.getTab(obj)))
           .then(({data}) => {
-          this.total = data.total
-          this.tableData = data.data.map(item => Object.assign(item, {
-            'longUpdateTime': createDateFun(new Date(item.longUpdateTime)),
-            'screenStatus': item.screenStatus == 0 ? '停用' : '启用'
-          }))
-        })
+            this.total = data.total
+            this.tableData = data.data.map(item => Object.assign(item, {
+              'longUpdateTime': createDateFun(new Date(item.longUpdateTime)),
+              'screenStatus': item.screenStatus == 0 ? '停用' : '启用'
+            }))
+          })
       },
       // 获取内部银幕Tab
       getMineTab({data}) {
@@ -227,20 +227,20 @@
       getTab({data}) {
         let {keyword, pageIndex, setting} = this,
           {cinemaUuid, theatreUuid} = data
-          return getScreenList({
-            pageIndex,
-            'pageSize': setting.pageSize,
-            'screenStatusList': [],    // 银幕状态
-            cinemaUuid,                // 院线uuid
-            theatreUuid,               // 影院uuid
-            'sortBy': null,            // 排序字段
-            'sortType': 0,             // 0降序,1升序
-            keyword
-          })
+        return getScreenList({
+          pageIndex,
+          'pageSize': setting.pageSize,
+          'screenStatusList': [],    // 银幕状态
+          cinemaUuid,                // 院线uuid
+          theatreUuid,               // 影院uuid
+          'sortBy': null,            // 排序字段
+          'sortType': 0,             // 0降序,1升序
+          keyword
+        })
       },
       // 操作 - 编辑 - 预览
       selectLocalScreen() {
-        if(true) this.$store.dispatch('WEBSOCKET_PLUGIN_INIT', true)
+        if (true) this.$store.dispatch('WEBSOCKET_PLUGIN_INIT', true)
         else this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
           code: 210,
           type: ['pem']
@@ -248,14 +248,14 @@
       },
       // 操作 - 确认编辑
       async realEditScreen() {
-        let {nameV: screenName, certificateV : localPath, statusV: screenStatus, screenUuid} = this.editSDialog,
+        let {nameV: screenName, certificateV: localPath, statusV: screenStatus, screenUuid} = this.editSDialog,
           {data} = await editScreen({
-          screenUuid,
-          screenName,
-          screenStatus,
-          localPath
-        })
-        if(data.code == 201) {
+            screenUuid,
+            screenName,
+            screenStatus,
+            localPath
+          })
+        if (data.code == 201) {
           messageFun('success', '操作成功')
           this.getList(this.tableFilerCondition)
           this.editSDialog.visible = false
@@ -285,7 +285,7 @@
             () => null
           )
           .then(({data}) => {
-            if(data.code == 204) {
+            if (data.code == 204) {
               messageFun('success', '删除成功')
               this.getList(this.tableFilerCondition)
             }
@@ -293,17 +293,21 @@
           .catch(() => null)
       },
       // 操作 - 下载
-      async downloadFun() {
-        // console.log(this.selectionList)
-        // let {data} = await downloadScreen()
-        this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
-          code: 302,
-          userID: this.user.id,
-          ID: '',
-          path: [
-            {}
-            ]
-        })
+      downloadFun() {
+        let cb = function () {
+          this.selectionList.forEach(async item => {
+            let {data} = await downloadScreen(item.screenUuid)
+            this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
+              code: 302,
+              userID: this.user.id,
+              ID: data.data.screenId,
+              path: [{'front': '', 'back': ''}]
+            })
+          })
+        }
+        if (this.socket_plugin) cb()
+        else this.$store.dispatch('WEBSOCKET_PLUGIN_INIT', true).then(() => cb())
+
       },
       //
       filterChangeF() {
@@ -329,7 +333,7 @@
       })
     },
     computed: {
-      ...mapState(['setting', 'zoneUuid', 'socket_plugin_msg', 'user'])
+      ...mapState(['setting', 'zoneUuid', 'socket_plugin', 'socket_plugin_msg', 'user'])
     },
     watch: {
       'selectionList': {

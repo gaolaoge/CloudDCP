@@ -166,12 +166,12 @@ let getInvoicePage = {
   }
 
 module.exports = [
-  getInvoicePage,          // 开票记录 获取table数据
+  // getInvoicePage,          // 开票记录 获取table数据
   // getRechargeList,         // 充值记录 获取table数据
-  getSpendingList,         // 消费记录 获取table数据
-  getCustomerProjectList,  // 获取所属项目List
-  getInvoiceTitleList,     // 获取所属项目List
-  getRechargeList4Invoice, // 获取可开票的充值记录
-  getInvoiceSettingList    // 获取可开票的充值记录
+  // getSpendingList,         // 消费记录 获取table数据
+  // getCustomerProjectList,  // 获取所属项目List
+  // getInvoiceTitleList,     // 获取所属项目List
+  // getRechargeList4Invoice, // 获取可开票的充值记录
+  // getInvoiceSettingList    // 获取可开票的充值记录
 
 ]

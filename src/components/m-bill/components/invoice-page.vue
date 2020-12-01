@@ -180,12 +180,12 @@
         <div class="dialog-btn-group">
           <div class="dialog-btn cancel" @click="closeDialog"><span>取消</span></div>
           <div
-            :class="[{'cannotBeGo': !dialogData.list[0]['status'] || !dialogData.list[1]['status'] || !dialogData.list[2]['status'] || !dialogData.list[4]['status']}, 'dialog-btn', 'save']"
+            :class="[{'cannotBeGo': !dialogData.list[0]['status'] || !dialogData.list[1]['status'] || !dialogData.list[2]['status'] || dialogData.list[4]['status'] === false}, 'dialog-btn', 'save']"
             @click="addHeader" v-show="!editHeader">
             <span>确定</span>
           </div>
           <div
-            :class="[{'cannotBeGo': !dialogData.list[0]['status'] || !dialogData.list[1]['status'] || !dialogData.list[2]['status'] || !dialogData.list[4]['status']}, 'dialog-btn', 'save']"
+            :class="[{'cannotBeGo': !dialogData.list[0]['status'] || !dialogData.list[1]['status'] || !dialogData.list[2]['status'] || dialogData.list[4]['status'] === false}, 'dialog-btn', 'save']"
             @click="editHeaderF" v-show="editHeader">
             <span>确定</span>
           </div>
@@ -414,34 +414,27 @@
       // 添加发票抬头
       async addHeader() {
         let list = this.dialogData.list
-        if (!list[0]['Val']) {
-          messageFun('info', '【发票抬头】为必填项')
-          return false
-        } else if (!list[1]['Val']) {
-          messageFun('info', '【纳税人识别号】为必填项')
-          return false
-        } else if (!list[2]['Val']) {
-          messageFun('info', '【邮箱】为必填项')
-          return false
-        } else if (list[0]['status'] || list[1]['status'] || list[2]['status'] || list[4]['status']) {
-          messageFun('info', '已填项存在错误')
-          return false
-        }
-        let data = await addInvoiceHeader({
-          invoiceTitle: list[0]['Val'],                 // 发票抬头
-          taxpayerId: list[1]['Val'],                   // 纳税人识别号
-          email: list[2]['Val'],                        // 邮箱
-          companyAddress: list[3]['Val'],               // 公司地址
-          companyTelephone: list[4]['Val'],             // 公司电话
-          companyBank: list[5]['Val'],                  // 公司开户行地址
-          bankAccount: list[6]['Val'],                  // 公司开户行账号
-          isDefault: this.dialogData.isDefault          // 0:非默认 1:默认
-        })
-        if (data.data.code == 200) {
-          messageFun('success', '操作成功')
-          this.getInvoiceHeaderList()
-          this.dialogData.visible = false
-          this.reset()
+        if (!list[0]['Val']) messageFun('info', '【发票抬头】为必填项')
+        else if (!list[1]['Val']) messageFun('info', '【纳税人识别号】为必填项')
+        else if (!list[2]['Val']) messageFun('info', '【邮箱】为必填项')
+        else if (!list[0]['status'] || !list[1]['status'] || !list[2]['status'] || list[4]['status'] === false) messageFun('info', '已填项存在错误')
+        else {
+          let data = await addInvoiceHeader({
+            invoiceTitle: list[0]['Val'],                 // 发票抬头
+            taxpayerId: list[1]['Val'],                   // 纳税人识别号
+            email: list[2]['Val'],                        // 邮箱
+            companyAddress: list[3]['Val'],               // 公司地址
+            companyTelephone: list[4]['Val'],             // 公司电话
+            companyBank: list[5]['Val'],                  // 公司开户行地址
+            bankAccount: list[6]['Val'],                  // 公司开户行账号
+            isDefault: this.dialogData.isDefault          // 0:非默认 1:默认
+          })
+          if (data.data.code == 200) {
+            messageFun('success', '操作成功')
+            this.getInvoiceHeaderList()
+            this.dialogData.visible = false
+            this.reset()
+          }
         }
       },
       // 发票抬头 - 编辑 - 打开
@@ -459,6 +452,9 @@
         list[6]['Val'] = item['bankAccount']
         this.Uuid = item['invoiceSettingUuid']
         this.dialogData.isDefault = item['isDefault']
+        this.VerifType('email', false)
+        this.VerifType('header', false)
+        this.VerifType('number', false)
       },
       // 发票抬头 - 编辑 - 发送
       async editHeaderF() {

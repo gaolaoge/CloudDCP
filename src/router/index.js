@@ -60,6 +60,11 @@ export default new Router({
           path: 'info',
           name: 'info',
           component: () => import('@/components/m-info/index.vue')
+        },
+        {
+          path: '/rechargepage',
+          name: 'rechargePage',
+          component: () => import('@/components/m-bill/components/recharge-moudle/rechargePage.vue')
         }
       ]
     }

@@ -5,7 +5,7 @@ import {
 // 充值记录 获取table数据
 export function getRechargeCentreList(data) {
   return http({
-    url: `/billing/recharge/getRechargeList?${data}`,
+    url: `/common/billing/recharge/getRechargeList?${data}`,
     method: 'GET'
   })
 }
@@ -42,8 +42,9 @@ export function peddingPayment(id) {
 // 消费记录 获取table数据
 export function getConsumptionTable(data) {
   return http({
-    url: `/billing/spending/getSpendingList?${data}`,
-    method: 'GET'
+    url: `/common/billing/spending/getSpendingList`,
+    method: 'POST',
+    data
   })
 }
 
@@ -58,7 +59,7 @@ export function getConsumptionSelectList() {
 // 消费记录 导出记录
 export function exportConsumptionTable(data) {
   return http({
-    url: `/billing/spending/getSpendingExcel?${data}`,
+    url: `/common/billing/spending/getSpendingExcel?${data}`,
     method: 'GET',
     responseType: 'blob',
     headers: {
@@ -86,7 +87,7 @@ export function upTopSeeMore(data) {
 // 开票记录 - 获取列表
 export function getInvoiceList(data) {
   return http({
-    url: `/billing/invoice/getInvoicePage?${data}`,
+    url: `/common/billing/invoice/getInvoicePage?${data}`,
     method: 'GET'
   })
 }
@@ -94,7 +95,7 @@ export function getInvoiceList(data) {
 // 开票记录 - 获取发票抬头列表
 export function getHeadersList() {
   return http({
-    url: `/billing/invoice/getInvoiceTitleList`,
+    url: `/common/billing/invoice/getInvoiceTitleList`,
     method: 'GET'
   })
 }
@@ -102,7 +103,7 @@ export function getHeadersList() {
 // 开票记录 - 导出记录
 export function exportInvoiceTable(data) {
   return http({
-    url: `/billing/invoice/getInvoiceExcel?${data}`,
+    url: `/common/billing/invoice/getInvoiceExcel?${data}`,
     method: 'GET',
     responseType: 'blob',
     headers: {
@@ -114,7 +115,7 @@ export function exportInvoiceTable(data) {
 // 账单 - 充值 - 计算金币
 export function computeGold(data) {
   return http({
-    url: `/recharge/balance/getArrivalAmountByPayment/${data}`,
+    url: `/common/recharge/balance/getArrivalAmountByPayment/${data}`,
     method: 'GET'
   })
 }
@@ -122,7 +123,7 @@ export function computeGold(data) {
 // 账单 - 充值 - 立即充值 - 支付宝
 export function ALiPay(data) {
   return http({
-    url: `/recharge/alipay/toAlipay?payment=${data}`,
+    url: `/common/recharge/alipay/toAlipay?payment=${data}`,
     method: 'GET'
   })
 }
@@ -138,7 +139,7 @@ export function upTopDefault(data) {
 // 立即开票 - 获取可开票的充值记录
 export function getRechargeListF() {
   return http({
-    url: `/billing/invoice/getRechargeList4Invoice`,
+    url: `/common/billing/invoice/getRechargeList4Invoice`,
     method: 'GET'
   })
 }
@@ -146,7 +147,7 @@ export function getRechargeListF() {
 // 立即开票 - 获取户开票抬头信息
 export function getInvoiceHeaderListF() {
   return http({
-    url: `/billing/invoice/getInvoiceSettingList`,
+    url: `/common/billing/invoice/getInvoiceSettingList`,
     method: 'GET'
   })
 }
@@ -154,7 +155,7 @@ export function getInvoiceHeaderListF() {
 // 立即开票 - 添加开票抬头
 export function addInvoiceHeader(data) {
   return http({
-    url: `/billing/invoice/addInvoiceSetting`,
+    url: `/common/billing/invoice/addInvoiceSetting`,
     method: 'POST',
     data
   })
@@ -163,7 +164,7 @@ export function addInvoiceHeader(data) {
 // 立即开票 - 发票抬头 - 设为默认
 export function setItemDefault(id) {
   return http({
-    url: `/billing/invoice/setInvoiceSettingDefault/${id}`,
+    url: `/common/billing/invoice/setInvoiceSettingDefault/${id}`,
     method: 'PUT'
   })
 }
@@ -171,7 +172,7 @@ export function setItemDefault(id) {
 // 立即开票 - 发票抬头 - 删除
 export function deleteItemIn(id) {
   return http({
-    url: `/billing/invoice/deleteInvoiceSetting/${id}`,
+    url: `/common/billing/invoice/deleteInvoiceSetting/${id}`,
     method: 'DELETE'
   })
 }
@@ -179,7 +180,7 @@ export function deleteItemIn(id) {
 // 立即开票 - 发票抬头 - 编辑
 export function editItemIn(data) {
   return http({
-    url: `/billing/invoice/updateInvoiceSetting`,
+    url: `/common/billing/invoice/updateInvoiceSetting`,
     method: 'PUT',
     data
   })
@@ -188,7 +189,7 @@ export function editItemIn(data) {
 // 立即开票 - 立即开票
 export function invoicing(data) {
   return http({
-    url: `/billing/invoice/addInvoice`,
+    url: `/common/billing/invoice/addInvoice`,
     method: 'POST',
     data
   })

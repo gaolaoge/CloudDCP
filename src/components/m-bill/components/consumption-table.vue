@@ -15,7 +15,7 @@
                  @keyup.enter="getList"
                  v-model="filter.taskIdVal">
         </div>
-        <!--场景名-->
+        <!--任务名称-->
         <div class="filter-item">
           <span class="filter-item-label">
             {{ filter.scenesLabel }}：
@@ -42,7 +42,33 @@
             </el-option>
           </el-select>
         </div>
-        <!--查询时间-->
+        <!--影片名称-->
+        <div class="filter-item">
+          <span class="filter-item-label">
+            {{ filter.fileNameLabel }}：
+          </span>
+          <input type="text"
+                 class="filter-item-i t"
+                 @keyup.enter="getList"
+                 v-model="filter.fileNameVal">
+        </div>
+        <!--消费类型-->
+        <div class="filter-item">
+          <span class="filter-item-label">
+            {{ filter.projectLabel }}：
+          </span>
+          <el-select v-model="filter.patternOfConsumption"
+                     placeholder="-"
+                     class="filter-item-i filter-item-select">
+            <el-option
+              v-for="item in filter.patternOfConsumptionList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+        </div>
+        <!--创建时间-->
         <div class="filter-item f">
           <span class="filter-item-label">{{ filter.inquireLabel }}：</span>
           <el-date-picker
@@ -90,10 +116,10 @@
           label="任务ID"
           show-overflow-tooltip
           width="160"/>
-        <!--场景名-->
+        <!--任务名称-->
         <el-table-column
           prop="scenesName"
-          label="场景名"
+          label="任务名称"
           show-overflow-tooltip
           min-width="200"/>
         <!--状态-->
@@ -108,18 +134,18 @@
           label="所属项目"
           show-overflow-tooltip
           width="146"/>
-        <!--渲染时长 -->
-        <!--<el-table-column-->
-        <!--prop="time"-->
-        <!--label="渲染时长"-->
-        <!--show-overflow-tooltip-->
-        <!--width="160" />-->
-        <!--总帧数-->
+        <!--影片名 -->
         <el-table-column
-          prop="total"
-          label="总帧数"
-          show-overflow-tooltip
-          width="100"/>
+        prop="filmName"
+        label="影片名"
+        show-overflow-tooltip
+        width="160" />
+        <!--总帧数-->
+<!--        <el-table-column-->
+<!--          prop="total"-->
+<!--          label="总帧数"-->
+<!--          show-overflow-tooltip-->
+<!--          width="100"/>-->
         <!--消费类型-->
         <el-table-column
           prop="type"
@@ -144,23 +170,23 @@
           label="创建人"
           show-overflow-tooltip
           width="100"/>
-        <!--更新时间-->
+        <!--创建时间-->
         <el-table-column
           prop="upDate"
-          label="更新时间"
+          label="创建时间"
           show-overflow-tooltip
           width="200"/>
-        <!--查看-->
-        <el-table-column
-          label="操作"
-          show-overflow-tooltip
-          width="100">
-          <template slot-scope="scope">
-            <div class="operateBtn" @click="seeMore(scope.row)">
-              查看
-            </div>
-          </template>
-        </el-table-column>
+        <!--操作-->
+<!--        <el-table-column-->
+<!--          label="操作"-->
+<!--          show-overflow-tooltip-->
+<!--          width="100">-->
+<!--          <template slot-scope="scope">-->
+<!--            <div class="operateBtn" @click="seeMore(scope.row)">-->
+<!--              查看-->
+<!--            </div>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
       </el-table>
     </div>
     <!--分页-->
@@ -233,13 +259,30 @@
         },
         filter: {
           taskIdLabel: '查询ID',
-          taskIdVal: '',
-          scenesLabel: '场景名',
-          scenesVal: '',
+          taskIdVal: null,
+          scenesLabel: '任务名称',
+          scenesVal: null,
+          fileNameLabel: '影片名称',
+          fileNameVal: null,
           projectLabel: '所属项目',
-          projectVal: '-1',
+          projectVal: null,
           projectList: [],
-          inquireLabel: '查询时间',
+          patternOfConsumptionList: [
+            {
+              'value': 1,
+              'label': 'DCP'
+            },
+            {
+              'value': 2,
+              'label': 'KDM'
+            },
+            {
+              'value': -1,
+              'label': '全部'
+            }
+          ],
+          inquireLabel: '创建时间',
+          patternOfConsumption: -1,
           // inquireValS: 0,
           // inquireValV: new Date(),
           date: null,
@@ -308,10 +351,26 @@
       },
       // 获取 table 数据
       async getList() {
-        let f = this.filter,
-          t = `pageSize=${this.table.pageSize}&pageIndex=${this.table.currentPage}&layerNo=${f.taskIdVal}&fileName=${f.scenesVal}&projectUuid=${f.projectVal}&beginTime=${f.date ? f.date[0].getTime() : 0}&endTime=${f.date ? f.date[1].getTime() : new Date().getTime()}`
-        let data = await getConsumptionTable(t)
-        this.table.rechargeData = data.data.data.map(curr => {
+        let {patternOfConsumption, taskIdVal, scenesVal, projectVal, fileNameVal, date} = this.filter,
+          {pageSize, currentPage} = this.table,
+          {data} = await getConsumptionTable({
+          pageSize,
+          'pageIndex': currentPage,
+          // 'layerNo': taskIdVal,
+          // 'fileName': scenesVal,
+          // 'projectUuid': projectVal,
+          'beginTime': date ? date[0].getTime() : 0,
+          'endTime': date ? date[1].getTime() : new Date().getTime(),
+            'taskNo': taskIdVal,
+            // 'taskNoSort': '',
+            'taskName': scenesVal,
+            'projectName': projectVal,
+            'filmName': fileNameVal,
+            patternOfConsumption,
+            // 'actualPaymentSort': '',
+            // 'timeSort': ''
+        })
+        this.table.rechargeData = data.data.map(curr => {
           let tableType = ''
           switch (curr.patternOfConsumption) {
             case 1:
@@ -340,7 +399,7 @@
             layerTaskUuid: curr.layerTaskUuid
           }
         })
-        this.table.outPutTableTotal = data.data.total
+        this.table.outPutTableTotal = data.total
       },
       // 重置
       reset() {
@@ -392,5 +451,9 @@
     /deep/ .el-dialog__body {
       padding: 0px;
     }
+  }
+
+  .filter-item-i {
+    width: 134px!important;
   }
 </style>

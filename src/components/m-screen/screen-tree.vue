@@ -120,6 +120,7 @@
     </div>
     <!--添加分组-->
     <el-dialog
+      :append-to-body="true"
       :visible.sync="addMineScreen.visible"
       :destroy-on-close="true"
       top="30vh"
@@ -131,8 +132,8 @@
              @click="addMineScreen.visible = false"
              class="closeBtn">
       </div>
-      <div class="dialog-body form">
-        <div class="item">
+      <div class="dialog-body form" style="box-sizing: border-box; padding: 20px 20px">
+        <div class="item" style="padding-bottom: 40px">
           <input type="text"
                  class="farm-input addMineScreenInput"
                  :placeholder="addMineScreen.placeholder"
@@ -169,6 +170,7 @@
   import {
     getMineScreenList,
     addNewScreenGroup,
+    addNewCScreenGroup,
     deleteMineScreenG,
     renameMineScreenG,
     getCinemaGList,
@@ -260,15 +262,18 @@
       },
       // 【内部银幕】【添加分组】 - 确定
       async addMineScreenGroupFun() {
-        let {status} = this.addMineScreen
-        if (!status) return false
-        let {data} = await addNewScreenGroup(this.addMineScreen.input)
+        if (!this.addMineScreen.status) return false
+        let {activeName} = this,
+          {data} = activeName == 0 ? await addNewScreenGroup(this.addMineScreen.input) : await addNewCScreenGroup({
+            'cinemaUuid': '',
+            'theatreName': this.addMineScreen.input
+          })
         if (data.code == 201) {
           messageFun('success', '操作成功！')
           this.addMineScreen.visible = false
           this.mineScreenKeyword = ''
           this.addMineScreen.input = ''
-          this.getMineScreenListNode()
+          activeName == 0 ? this.getMineScreenListNode() : this.getScreenListNode()
         }
       },
       // 【内部银幕】删除分组

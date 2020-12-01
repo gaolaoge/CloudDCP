@@ -67,7 +67,8 @@ export default new Vuex.Store({
     setting: {
       pageSize: 10
     },
-    projectList: []         // 项目列表
+    projectList: [],        // 项目列表
+    openCDCPW: false
   },
   getter: {},
   mutations: {
@@ -167,6 +168,10 @@ export default new Vuex.Store({
         sex: null,
         id: null
       })
+    },
+    // 自【渲染农场】跳转，打开新建DCP窗口
+    openCtreatDCPWin(state, boolean) {
+      state.openCDCPW = boolean
     },
     // 站内信选中项目
     setTaskState(state, obj) {

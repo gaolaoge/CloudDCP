@@ -186,9 +186,9 @@
     watch: {
       'ChineseYuan': function (val) {
         let reg = /^\d+$/,
-          num = this.ChineseYuan
-        if (!num) this.ChineseYuanVerif = null
-        else this.ChineseYuanVerif = reg.test(num)
+          {ChineseYuan, ChineseYuanVerif} = this
+        if (!ChineseYuan) ChineseYuanVerif = null
+        else this.ChineseYuanVerif = reg.test(ChineseYuan)
         if (val == 100) this.realVal = '160.000'
         else if (val == 500) this.realVal = '900.000'
         else if (val == 2000) this.realVal = '3800.000'
@@ -199,10 +199,10 @@
     methods: {
       // 计算金币
       async computeFun() {
-        if (!this.form.ChineseYuan) this.form.realVal = '0.000'
+        if (!this.ChineseYuan) this.form.realVal = '0.000'
         else {
-          let data = await computeGold(this.form.ChineseYuan)
-          this.form.realVal = data.data.data.toFixed(3)
+          let {data} = await computeGold(this.ChineseYuan)
+          this.realVal = data.data.toFixed(3)
         }
       },
       // 立即充值
@@ -215,8 +215,8 @@
       },
       // 支付宝充值
       async aLiPayFun() {
-        let data = await ALiPay(this.ChineseYuan)
-        sessionStorage.setItem('aliPay', data.data.data)
+        let {data} = await ALiPay(this.ChineseYuan)
+        sessionStorage.setItem('aliPay', data.data)
         let routerData = this.$router.resolve({name: 'rechargePage'})
         window.open(routerData.href, '_blank')
       },

@@ -60,6 +60,7 @@
         if (data.code == 201) {
           messageFun('success', '创建成功')
           this.$emit('cancelAdd', true)
+          this.$store.dispatch('getProjectList')
         } else if (data.data.code == 101) {
           this.warnInfo = '项目已存在，请重新输入'
           this.verif = false

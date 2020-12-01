@@ -166,8 +166,8 @@
           gotten: false      // 已获取验证码
         },
         accountFrom: {
-          account: null,
-          password: null,
+          account: 'gaoge1834',
+          password: '22334455.',
           passwordEye: false,
           isAutoLogin: false
         },

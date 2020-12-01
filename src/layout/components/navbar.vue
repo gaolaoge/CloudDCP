@@ -60,6 +60,8 @@
 </template>
 
 <script>
+  import {mapState} from 'vuex'
+
   export default {
     name: 'navBar',
     data() {
@@ -152,7 +154,16 @@
           }
         },
         immediate: true
+      },
+      'openCDCPW': {
+        handler: function(boolean) {
+          if(boolean) this.createFun('createDCP')
+        },
+        immediate: true
       }
+    },
+    computed: {
+      ...mapState(['openCDCPW'])
     }
   }
 </script>

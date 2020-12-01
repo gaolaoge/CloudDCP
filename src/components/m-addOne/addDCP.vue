@@ -111,8 +111,8 @@
                 <el-option
                   v-for="(item,index) in projectList"
                   :key="index"
-                  :label="item.label"
-                  :value="item.val">
+                  :label="item.projectName"
+                  :value="item.projectUuid">
                 </el-option>
               </el-select>
               <div class="btn" @click="addProjectDialog.visible = true"><span>{{ setUnpackBase.createObject }}</span>
@@ -683,19 +683,19 @@
           , {dialogAdd, movieTypeList, proportionList, mp3LanguageList, areaList, resolutionList, modeList, DCPTypeList, channelTypeList} = this
           , {renderTList, renderTListActive} = this.selectUnpackBase
           , name = [
-              movieName
-            , movieTypeList ? movieTypeList[filmCategory]['tag'] + '-' + filmVersion : null
-            , proportionList ? proportionList[aspectRatio]['tag'] : null
-            , mp3LanguageList ? mp3LanguageList.find(curr => curr.val == soundLanguage)['label'].split(' ')[1] + '-' + '字幕语言-AP' : null
-            , areaList ? areaList.find(curr => curr.val == region)['label'].split(' ')[1] : null
-            , channelTypeList ? channelTypeList[soundtrack]['tag'] : null
-            , resolutionList[resolution]['tag']
-            , presenter ? presenter : 'NULL'
-            , packageDate.toLocaleDateString().split('/').join('')
-            , productor ? productor : 'NULL'
-            , renderTList.length ? (dialogAdd.normList.find(curr => curr.val == renderTList[renderTListActive]['codingRule'])['label'] + modeList ? modeList[filmType]['label'] : '') : null
-            , DCPTypeList ? DCPTypeList[packageType]['tag'] : ''
-          ]
+          movieName
+          , movieTypeList ? movieTypeList[filmCategory]['tag'] + '-' + filmVersion : null
+          , proportionList ? proportionList[aspectRatio]['tag'] : null
+          , mp3LanguageList ? mp3LanguageList.find(curr => curr.val == soundLanguage)['label'].split(' ')[1] + '-' + '字幕语言-AP' : null
+          , areaList ? areaList.find(curr => curr.val == region)['label'].split(' ')[1] : null
+          , channelTypeList ? channelTypeList[soundtrack]['tag'] : null
+          , resolutionList[resolution]['tag']
+          , presenter ? presenter : 'NULL'
+          , packageDate.toLocaleDateString().split('/').join('')
+          , productor ? productor : 'NULL'
+          , renderTList.length ? (dialogAdd.normList.find(curr => curr.val == renderTList[renderTListActive]['codingRule'])['label'] + modeList ? modeList[filmType]['label'] : '') : null
+          , DCPTypeList ? DCPTypeList[packageType]['tag'] : ''
+        ]
         return name.join('_')
       },
       ...mapState(['zone', 'zoneUuid', 'user', 'socket_backS', 'socket_backS_msg', 'socket_plugin', 'socket_plugin_msg', 'projectList']),
@@ -738,6 +738,13 @@
         if (step == 3 && !this.socket_plugin)
           this.$store.commit('WEBSOCKET_PLUGIN_INIT', true)
 
+      },
+      'projectList': {
+        handler: function (list) {
+          if (!list.length) this.$store.dispatch('getProjectList')
+          else this.setUnpackBase.form.projectUuid = list.find(item => item['isDefault'] == 1)['projectUuid']
+        },
+        immediate: true
       }
     },
     methods: {

@@ -4,6 +4,8 @@ import {
   messageFun
 } from '../assets/common'
 
+import store from '@/store'
+
 let lock = true
 
 // 业务服务
@@ -35,9 +37,17 @@ http.interceptors.response.use(
   error => {
     if (vue.$route.path === '/login') return false
     if (error.response.status === 401) {
-      createEM()
-      // sessionStorage.setItem('token','')
-      vue.$router.push('/login')
+      if (window.location.search.split('=')[0] === '?token') {
+        let token = window.location.search.split('=')[1]
+        sessionStorage.setItem('token', token)
+        localStorage.setItem('loginPageIndex', this.activeIndex)
+        store.commit('openCtreatDCPWin', true)
+        vue.$router.push({'name': 'dcp'})
+      } else {
+        createEM()
+        // sessionStorage.setItem('token','')
+        vue.$router.push({'name': 'login'})
+      }
     }
   })
 

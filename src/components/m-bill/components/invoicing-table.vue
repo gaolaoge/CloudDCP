@@ -273,8 +273,8 @@
         let {data} = await getHeadersList()
         if (data.code == 200) this.filter.tradingtatusList = data.data.map(curr => {
           return {
-            value: curr.value,
-            label: curr.label
+            value: curr,
+            label: curr
           }
         })
       }

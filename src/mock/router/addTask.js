@@ -113,6 +113,6 @@ module.exports = [
   // , getSoftList
   // , getInnerScreenGroupList
   // , addKdmTask
-  getTheatreList,
+  // getTheatreList,
   getScreenList
 ]

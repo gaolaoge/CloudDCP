@@ -5,7 +5,7 @@ let data = Array(23).fill(undefined).map(item => {
       'kdmTaskUuid': '@id',
       'kdmTaskId|+1': 20000,
       'kdmTaskName': '@cword(5, 15)',
-      'taskStatus|1-9': 0,
+      'taskStatus|': 650,
       'projectName|1': ['项目1', '项目2', '项目3', '项目4'],
       'filmName': '@cword(5, 8)',
       'cost|45-999': 0,
@@ -19,7 +19,7 @@ let data = Array(23).fill(undefined).map(item => {
 
 module.exports = [
   {   // 获取kdm列表
-    url: /\/professional\/kdm\/getKdmTaskList/,
+    url: /\/dcpProfessional\/kdm\/getKdmTaskList/,
     type: 'post',
     response: config => {
       let {body} = config,

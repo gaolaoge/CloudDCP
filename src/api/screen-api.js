@@ -88,6 +88,23 @@ export function addMineScreen(data) {
   })
 }
 
+// 添加院线
+export function addNewCinema(data) {
+  return http({
+    url: `/dcpProfessional/screen/addCinema`,
+    method: 'POST',
+    data
+  })
+}
+
+// 添加院线 - 校验新院线名是否存在
+export function verifNewCinema(data) {
+  return http({
+    url: `/dcpProfessional/screen/checkCinemaName?${data}`,
+    method: 'GET'
+  })
+}
+
 // 银幕操作 - 删除
 export function deleteScreen(data) {
   return http({

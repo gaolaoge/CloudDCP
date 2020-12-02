@@ -25,9 +25,9 @@
         show-overflow-tooltip
         width="100"/>
 
-      <!--场景名-->
+      <!--任务名-->
       <el-table-column
-        label="场景名"
+        label="任务名"
         show-overflow-tooltip
         min-width="200">
         <template slot-scope="scope">

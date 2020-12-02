@@ -693,7 +693,7 @@
           , presenter ? presenter : 'NULL'
           , packageDate.toLocaleDateString().split('/').join('')
           , productor ? productor : 'NULL'
-          , renderTList.length ? (dialogAdd.normList.find(curr => curr.val == renderTList[renderTListActive]['codingRule'])['label'] + modeList ? modeList[filmType]['label'] : '') : null
+          , renderTList.length && renderTListActive != -1 ? (dialogAdd.normList.find(curr => curr.val == renderTList[renderTListActive]['codingRule'])['label'] + modeList ? modeList[filmType]['label'] : '') : null
           , DCPTypeList ? DCPTypeList[packageType]['tag'] : ''
         ]
         return name.join('_')

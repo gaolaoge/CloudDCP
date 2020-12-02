@@ -294,19 +294,20 @@
       },
       // 操作 - 下载
       downloadFun() {
-        let cb = function () {
+        let cb =  () => {
           this.selectionList.forEach(async item => {
             let {data} = await downloadScreen(item.screenUuid)
             this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
               code: 302,
               userID: this.user.id,
               ID: data.data.screenId,
-              path: [{'front': '', 'back': ''}]
+              path: [{'front': data.data.pathPrefix, 'back': data.data.certificatePath}]
             })
           })
         }
         if (this.socket_plugin) cb()
         else this.$store.dispatch('WEBSOCKET_PLUGIN_INIT', true).then(() => cb())
+        // cb()
 
       },
       //

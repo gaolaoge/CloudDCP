@@ -7,8 +7,17 @@ import {
   getUserInfo
 } from '@/api/info-api'
 
+// get请求转换参数为字符串
+const transformParameterT = function (obj) {
+  if(!obj instanceof Object) return false
+  let default_ = []
+  Object.keys(obj).forEach(key => default_.push(`${key}=${obj.key}`))
+  return default_.join('&')
+}
+
 // 获取个人信息
-const getUserInfoF = function () {
+const
+getUserInfoF = function () {
   getUserInfo().then(data => setInfo(data.data.data))
 }
 
@@ -171,7 +180,7 @@ const messageFun = function (type, message) {
 }
 
 // 报错信息
-const throwInfoFun = function(info, site, data) {
+const throwInfoFun = function (info, site, data) {
   messageFun('error', info)
   console.log('╔══════════════════════════════════════╗')
   console.log(`║ ${info}， 位置 ${site}`)
@@ -1234,5 +1243,6 @@ export {
   sortF,
   sortDateF,
   openPlugin,
-  getUserInfoF
+  getUserInfoF,
+  transformParameterT
 }

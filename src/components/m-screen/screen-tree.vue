@@ -65,15 +65,24 @@
                @keyup.enter="getScreenListNode">
         <img src="@/icons/search.png" class="icon search" @click="getScreenListNode">
         <!--添加-->
-        <div class="addBase" @click="addNewInnerTreeG">
-          <img src="@/icons/add.png" class="icon add default">
-          <el-tooltip content="添加分组"
-                      popper-class="default"
-                      effect="dark"
-                      placement="top">
-            <img src="@/icons/add-hover.png" class="icon add hover">
-          </el-tooltip>
-        </div>
+        <el-popover
+          placement="right-end"
+          width="120"
+          trigger="hover"
+          :visible-arrow="false">
+          <!--院线-->
+          <ul class="tree-node-operate-brnG">
+            <li class="z" @click="addNewCinema.visible = true"><span>{{ addMineScreen.addCinema }}</span></li>
+            <li class="z" @click="addNewTheatre.visible = true"><span>{{ addMineScreen.addTheatre }}</span></li>
+            <li class="z" @click="addFromTem.visible = true"><span>{{ addMineScreen.selectFromTem }}</span></li>
+          </ul>
+          <div slot="reference">
+            <div class="addBase">
+              <img src="@/icons/add.png" class="icon add default">
+              <img src="@/icons/add-hover.png" class="icon add hover">
+            </div>
+          </div>
+        </el-popover>
       </div>
       <el-tree
         :props="props2"
@@ -163,6 +172,120 @@
         </div>
       </div>
     </el-dialog>
+    <!--添加院线-->
+    <el-dialog
+      :append-to-body="true"
+      :visible.sync="addNewCinema.visible"
+      :destroy-on-close="true"
+      top="30vh"
+      width="380px">
+      <div class="dialog-header">
+        <span class="title">{{ addNewCinema.title }}</span>
+        <img src="@/icons/shutDialogIcon.png"
+             @click="addNewCinema.visible = false"
+             class="closeBtn">
+      </div>
+      <div class="dialog-body form" style="box-sizing: border-box; padding: 20px 20px">
+        <div class="item" style="padding-bottom: 40px">
+          <input type="text"
+                 class="farm-input addMineScreenInput"
+                 :placeholder="addNewCinema.placeholder"
+                 v-model="addNewCinema.input"
+                 @keyup.enter="addMineScreenGroupFun"
+                 @input="verifAddMineScreenName(true)"
+                 @blur="verifAddMineScreenName(false)"
+                 @focus="addNewCinema.status = null">
+          <span class="warnInfo" v-show="addNewCinema.status === false">
+            {{ addNewCinema.warnInfo }}
+          </span>
+        </div>
+        <div class="dialog-btn-group">
+          <div class="dialog-btn cancel" @click="addNewCinema.visible = false">
+            <span>{{ $t('public.cancel') }}</span>
+          </div>
+          <div :class="[{'cannotBeGo': !addNewCinema.status}, 'dialog-btn', 'save']"
+               @click="renameInnerTreeG">
+            <span>{{ $t('public.save') }}</span>
+          </div>
+        </div>
+      </div>
+    </el-dialog>
+    <!--添加影院-->
+    <el-dialog
+      :append-to-body="true"
+      :visible.sync="addNewTheatre.visible"
+      :destroy-on-close="true"
+      top="30vh"
+      width="380px">
+      <div class="dialog-header">
+        <span class="title">{{ addNewTheatre.title }}</span>
+        <img src="@/icons/shutDialogIcon.png"
+             @click="addNewTheatre.visible = false"
+             class="closeBtn">
+      </div>
+      <div class="dialog-body form" style="box-sizing: border-box; padding: 20px 20px">
+        <div class="item" style="padding-bottom: 40px">
+          <input type="text"
+                 class="farm-input addMineScreenInput"
+                 :placeholder="addNewTheatre.placeholder"
+                 v-model="addNewTheatre.input"
+                 @keyup.enter="addMineScreenGroupFun"
+                 @input="verifAddMineScreenName(true)"
+                 @blur="verifAddMineScreenName(false)"
+                 @focus="addNewTheatre.status = null">
+          <span class="warnInfo" v-show="addNewTheatre.status === false">
+            {{ addNewTheatre.warnInfo }}
+          </span>
+        </div>
+        <div class="dialog-btn-group">
+          <div class="dialog-btn cancel" @click="addNewTheatre.visible = false">
+            <span>{{ $t('public.cancel') }}</span>
+          </div>
+          <div :class="[{'cannotBeGo': !addNewTheatre.status}, 'dialog-btn', 'save']"
+               @click="renameInnerTreeG">
+            <span>{{ $t('public.save') }}</span>
+          </div>
+        </div>
+      </div>
+    </el-dialog>
+    <!--从模板中选择-->
+    <el-dialog
+      :append-to-body="true"
+      :visible.sync="addFromTem.visible"
+      :destroy-on-close="true"
+      top="30vh"
+      width="380px">
+      <div class="dialog-header">
+        <span class="title">{{ addFromTem.title }}</span>
+        <img src="@/icons/shutDialogIcon.png"
+             @click="addFromTem.visible = false"
+             class="closeBtn">
+      </div>
+      <div class="dialog-body form" style="box-sizing: border-box; padding: 20px 20px">
+        <div class="item" style="padding-bottom: 40px">
+          <input type="text"
+                 class="farm-input addMineScreenInput"
+                 :placeholder="addFromTem.placeholder"
+                 v-model="addFromTem.input"
+                 @keyup.enter="addMineScreenGroupFun"
+                 @input="verifAddMineScreenName(true)"
+                 @blur="verifAddMineScreenName(false)"
+                 @focus="addFromTem.status = null">
+          <span class="warnInfo" v-show="addFromTem.status === false">
+            {{ addFromTem.warnInfo }}
+          </span>
+        </div>
+        <div class="dialog-btn-group">
+          <div class="dialog-btn cancel" @click="addFromTem.visible = false">
+            <span>{{ $t('public.cancel') }}</span>
+          </div>
+          <div :class="[{'cannotBeGo': !addFromTem.status}, 'dialog-btn', 'save']"
+               @click="renameInnerTreeG">
+            <span>{{ $t('public.save') }}</span>
+          </div>
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -171,12 +294,16 @@
     getMineScreenList,
     addNewScreenGroup,
     addNewCScreenGroup,
+    addNewCinema,
     deleteMineScreenG,
     renameMineScreenG,
     getCinemaGList,
     getTheatreList
   } from '@/api/screen-api'
-  import {messageFun} from '../../assets/common'
+  import {
+    messageFun,
+    transformParameterT
+  } from '../../assets/common'
 
   export default {
     name: 'screenTree',
@@ -187,10 +314,37 @@
           visible: false,
           titleA: '添加分组',
           titleE: '重命名分组',
+          addCinema: '添加院线',
+          addTheatre: '添加影院',
+          selectFromTem: '从模板库中选择',
           placeholder: '请输入分组名称',
           theatreUuid: null,
           input: '',
           status: null,
+          warnInfo: ''
+        },
+        addNewCinema: {
+          visible: false,
+          title: '添加院线',
+          placeholder: '',
+          input: '',
+          status: null,
+          warnInfo: ''
+        },
+        addNewTheatre: {
+          visible: false,
+          title: '添加影院',
+          placeholder: '',
+          input: '',
+          status: '',
+          warnInfo: ''
+        },
+        addFromTem: {
+          visible: false,
+          title: '从模板库中选择',
+          placeholder: '',
+          input: '',
+          status: '',
           warnInfo: ''
         },
         mineScreenListNode: [],
@@ -220,7 +374,23 @@
       handleClick() {
 
       },
-      //
+      // 校验新院线名是否存在
+      async verifNewCinemaName() {
+        let {addNewCinema} = this
+        if (!addNewCinema.input.trim()) return false
+        let {data} = await verifNewCinema(transformParameterT({'cinemaName': addNewCinema.input}))
+
+      },
+      // 【院线银幕】添加院线
+      async addNewCinemaFun() {
+        let {status, input} = this.addMineScreen
+        if (!status) return false
+        // transformParameterT
+        let {data} = await addNewCinema({
+          'cinemaName': input
+        })
+      },
+      // 【内部银幕】获取银幕tab
       getThreateTab(data, node) {
         this.$emit('selectMineScreen', {
           'type': 'threateScreen', 'data': {
@@ -229,7 +399,7 @@
           }
         })
       },
-      // 获取【院线银幕】结构
+      // 【院线银幕】获取结构
       async getScreenListNode(node, resolve) {
         if (node.level == 0) {
           let {data} = await getCinemaGList()
@@ -243,13 +413,13 @@
           else resolve([])
         }
       },
-      // 获取【内部银幕】结构
+      // 【内部银幕】获取结构
       async getMineScreenListNode() {
         let {data} = await getMineScreenList(this.mineScreenKeyword)
         if (data.code == 200) this.mineScreenListNode = data.data
         else this.mineScreenListNode = []
       },
-      // 验证【添加分组】name 格式
+      // 【内部银幕】验证【添加分组】name 格式
       async verifAddMineScreenName(ing) {
         let {input} = this.addMineScreen,
           {addMineScreen} = this
@@ -301,7 +471,7 @@
         addMineScreen.theatreUuid = data.theatreUuid
         addMineScreen.status = true
       },
-      //【内部银幕】- 重命名分组
+      // 【内部银幕】- 重命名分组
       async renameInnerTreeG() {
         let {theatreUuid, input} = this.addMineScreen
         let {data} = await renameMineScreenG(theatreUuid, input)
@@ -386,6 +556,7 @@
         justify-content: space-between;
         border-radius: 4px;
         padding: 0px 16px;
+        height: 40px;
 
         .r {
           display: inline-flex;
@@ -499,8 +670,9 @@
   }
 
   .tree-node-operate-brnG {
-    width: 72px;
+    width: 100%;
     padding: 10px 0px;
+    overflow: hidden;
 
     li {
       list-style: none;
@@ -508,6 +680,10 @@
       line-height: 33px;
       cursor: pointer;
       padding: 0px 10px;
+
+      &.z {
+        width: 100%;
+      }
 
       &:hover {
         background-color: rgba(241, 244, 249, 1);

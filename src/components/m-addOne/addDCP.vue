@@ -376,7 +376,7 @@
       @close="closesetFileNameDialog"
       append-to-body>
       <setName @shutMe="shutSetNameDialog"
-               :codingRule="selectUnpackBase.renderTList.length ? dialogAdd['normList'][selectUnpackBase.renderTList[selectUnpackBase.renderTListActive]['codingRule']]['label'] : null"/>
+               :codingRule="selectUnpackBase.renderTList.length && selectUnpackBase.renderTListActive != -1 ? dialogAdd['normList'][selectUnpackBase.renderTList[selectUnpackBase.renderTListActive]['codingRule']]['label'] : null"/>
     </el-dialog>
     <!--新建项目-->
     <el-dialog

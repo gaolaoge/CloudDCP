@@ -192,8 +192,7 @@
                  :placeholder="addNewCinema.placeholder"
                  v-model="addNewCinema.input"
                  @keyup.enter="addMineScreenGroupFun"
-                 @input="verifAddMineScreenName(true)"
-                 @blur="verifAddMineScreenName(false)"
+                 @input="verifNewCinemaName(true)"
                  @focus="addNewCinema.status = null">
           <span class="warnInfo" v-show="addNewCinema.status === false">
             {{ addNewCinema.warnInfo }}
@@ -378,7 +377,9 @@
       async verifNewCinemaName() {
         let {addNewCinema} = this
         if (!addNewCinema.input.trim()) return false
-        let {data} = await verifNewCinema(transformParameterT({'cinemaName': addNewCinema.input}))
+        let {data} = await verifNewCinema(transformParameterT({
+          'cinemaName': addNewCinema.input
+        }))
 
       },
       // 【院线银幕】添加院线

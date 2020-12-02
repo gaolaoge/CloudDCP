@@ -11,7 +11,7 @@ import {
 const transformParameterT = function (obj) {
   if(!obj instanceof Object) return false
   let default_ = []
-  Object.keys(obj).forEach(key => default_.push(`${key}=${obj.key}`))
+  Object.keys(obj).forEach(key => default_.push(`${key}=${obj[key]}`))
   return default_.join('&')
 }
 

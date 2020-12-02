@@ -193,6 +193,7 @@
                  v-model="addNewCinema.input"
                  @keyup.enter="addMineScreenGroupFun"
                  @input="verifNewCinemaName(true)"
+                 @blur="verifNewCinemaName(false)"
                  @focus="addNewCinema.status = null">
           <span class="warnInfo" v-show="addNewCinema.status === false">
             {{ addNewCinema.warnInfo }}
@@ -203,7 +204,7 @@
             <span>{{ $t('public.cancel') }}</span>
           </div>
           <div :class="[{'cannotBeGo': !addNewCinema.status}, 'dialog-btn', 'save']"
-               @click="renameInnerTreeG">
+               @click="addNewCinemaFun">
             <span>{{ $t('public.save') }}</span>
           </div>
         </div>
@@ -294,6 +295,7 @@
     addNewScreenGroup,
     addNewCScreenGroup,
     addNewCinema,
+    verifNewCinema,
     deleteMineScreenG,
     renameMineScreenG,
     getCinemaGList,
@@ -374,19 +376,29 @@
 
       },
       // 校验新院线名是否存在
-      async verifNewCinemaName() {
+      async verifNewCinemaName(ing) {
         let {addNewCinema} = this
         if (!addNewCinema.input.trim()) return false
+        if(!addNewCinema.input.trim().length > 50) {
+          addNewCinema.status = false
+          addNewCinema.warnInfo = '最多输入50个字符'
+          return false
+        }
         let {data} = await verifNewCinema(transformParameterT({
           'cinemaName': addNewCinema.input
         }))
-
+        if(data.code == 200) addNewCinema.status = true
+        else if(ing) addNewCinema.status = null
+        else {
+          addNewCinema.status = false
+          addNewCinema.warnInfo = '院线已存在，请重新输入'
+        }
       },
       // 【院线银幕】添加院线
       async addNewCinemaFun() {
-        let {status, input} = this.addMineScreen
+        console.log('d')
+        let {status, input} = this.addNewCinema
         if (!status) return false
-        // transformParameterT
         let {data} = await addNewCinema({
           'cinemaName': input
         })

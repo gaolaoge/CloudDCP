@@ -906,6 +906,7 @@
       },
       // 3.保存
       async confirmFun() {
+        console.log(this.selectUnpackBase)
         let {isEncrypt, patternUuid, captionType, packageDate, productor, presenter, packageType, region, soundtrack, captionLanguage, soundLanguage, sourceColor, taskName, projectUuid, fileName, filmCategory, filmVersion, aspectRatio, resolution, filmType} = this.setUnpackBase.form
           , {renderTList, renderTListActive, checked} = this.selectUnpackBase
           , {imgFileList, mp3FileList, subtitleFileList} = this.selectFileBase
@@ -932,7 +933,7 @@
           productor,                 // 制作方
           'packageDate': packageDate.getTime(),               // 打包日期
           patternUuid,               // 打包模式uuid  【任务模式】
-          'packageTemplateUuid': renderTList[renderTListActive]['packageTemplateUuid'],  // 模板uuid
+          'packageTemplateUuid': renderTList[renderTListActive]['templateUuid'],  // 模板uuid
           zoneUuid,                  // 分区uuid
           'operateSource': 1,        // 网页端: 1,客户端: 2
           isEncrypt,                 // 是否加密 0不加密, 1加密

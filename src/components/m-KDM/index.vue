@@ -109,7 +109,7 @@
       // 打开详情窗口
       showDetails(data) {
         this.showWin = true
-        this.$refs.win.getData(data.taskUuid)
+        this.$refs.win.getData(data.kdmTaskUuid)
       },
       // 操作
       operating(action) {

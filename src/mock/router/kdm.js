@@ -17,20 +17,21 @@ let data = Array(23).fill(undefined).map(item => {
   }
 )
 
-module.exports = [
-  {   // 获取kdm列表
-    url: /\/dcpProfessional\/kdm\/getKdmTaskList/,
-    type: 'post',
-    response: config => {
-      let {body} = config,
-        {pageIndex, pageSize} = body
-
-      return {
-        code: 200,
-        msg: '',
-        data: data.slice((pageIndex - 1) * pageSize, pageIndex * pageSize),
-        total: 23
-      }
+let getKdmTaskList = {
+  url: /\/dcpProfessional\/kdm\/getKdmTaskList/,
+  type: 'post',
+  response: config => {
+    let {body} = config,
+      {pageIndex, pageSize} = body
+    return {
+      code: 200,
+      msg: '',
+      data: data.slice((pageIndex - 1) * pageSize, pageIndex * pageSize),
+      total: 23
     }
   }
+}
+
+module.exports = [
+  // getKdmTaskList            // 获取kdm列表
 ]

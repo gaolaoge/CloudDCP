@@ -39,9 +39,8 @@ export function deleteTask(projectUuid) {
 // 项目设置 - 设为当前项
 export function setDefault(data) {
   return http({
-    url: `/dcpProfessional/project/updateDefaultProject`,
-    method: 'POST',
-    data
+    url: `/dcpProfessional/project/setDefaultProject/${data}`,
+    method: 'PUT'
   })
 }
 

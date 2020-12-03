@@ -6,16 +6,14 @@
 
 <script>
   export default {
-    naem: 'rechargepage',
-    data(){
-      return {
-
-      }
+    name: 'rechargepage',
+    data() {
+      return {}
     },
-    mounted(){
+    mounted() {
       setTimeout(() => {
         document.write(sessionStorage.getItem('aliPay'))
-      },0)
+      }, 0)
     }
   }
 </script>

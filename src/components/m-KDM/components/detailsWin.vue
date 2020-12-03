@@ -12,7 +12,10 @@
       <!--table-->
       <div class="tableList">
         <!--KDM制作结果-->
-        <make-default ref="makeDefault" :DCPUuid="DCPUuid" v-show="activeIndex == 0"/>
+        <make-default ref="makeDefault"
+                      :DCPUuid="DCPUuid"
+                      :topWinInfo="defaultWinTop"
+                      v-show="activeIndex == 0"/>
         <!--KDM文件信息-->
         <file-information v-show="activeIndex == 1" :infoData="infoData"/>
       </div>
@@ -34,7 +37,11 @@
         infoData: null,
         navList: ['KDM制作结果', 'KDM文件信息'],
         activeIndex: 0,
-        DCPUuid: ''
+        DCPUuid: '',
+        defaultWinTop: {
+          packageName: '',
+          taskStatus: 101
+        }
       }
     },
     methods: {
@@ -52,7 +59,13 @@
         this.DCPUuid = taskUuid
         this.$refs.makeDefault.getTabList(taskUuid)
         let {data} = await getKDMInfo(taskUuid)
-        if(data.code == 200) this.infoData = data.data
+        if (data.code == 200) {
+          this.infoData = data.data
+          this.defaultWinTop = {
+            packageName: data.data.packageName,
+            taskStatus: data.data.taskStatus
+          }
+        }
       }
     },
     components: {
@@ -91,6 +104,7 @@
     .tableGroup {
       height: 100%;
     }
+
     .tableList {
       height: calc(100% - 42px);
     }

@@ -1,8 +1,11 @@
 <template>
   <div class="screenM panel">
-    <ScreenTree class="screen-tree" @selectMineScreen="selectMineScreen" />
+    <ScreenTree class="screen-tree"
+                ref="screenTree"
+                @selectMineScreen="selectMineScreen" />
     <ScreenTable ref="screenTable"
-                 class="screen-table" />
+                 class="screen-table"
+                 @addScreenSuc="addScreenSuc" />
   </div>
 </template>
 
@@ -19,6 +22,11 @@
       // screen-tree 转 screen-table 银幕分组选中事件
       selectMineScreen(data) {
         this.$refs.screenTable.$refs.screenTableReal.getList(data)
+        this.$refs.screenTable.nowSite = data
+      },
+      // 添加银幕成功 刷新tree
+      addScreenSuc(type) {
+        this.$refs.screenTree.refreshTree(type)
       }
     },
     components: {

@@ -187,6 +187,7 @@
       </div>
       <div class="dialog-body form" style="box-sizing: border-box; padding: 20px 20px">
         <div class="item" style="padding-bottom: 40px">
+          <span class="item-title">{{ addNewCinema.label }}：</span>
           <input type="text"
                  class="farm-input addMineScreenInput"
                  :placeholder="addNewCinema.placeholder"
@@ -223,8 +224,20 @@
              @click="addNewTheatre.visible = false"
              class="closeBtn">
       </div>
-      <div class="dialog-body form" style="box-sizing: border-box; padding: 20px 20px">
+      <div class="dialog-body form z" style="box-sizing: border-box; padding: 20px 20px">
+        <div class="item">
+          <span class="item-title">{{ addNewTheatre.label1 }}：</span>
+          <el-select v-model="selectCinemaUuid" placeholder="请选择">
+            <el-option
+              v-for="item in this.cinemaList"
+              :key="item.value"
+              :label="item.cinemaName"
+              :value="item.cinemaUuid">
+            </el-option>
+          </el-select>
+        </div>
         <div class="item" style="padding-bottom: 40px">
+          <span class="item-title">{{ addNewTheatre.label2 }}：</span>
           <input type="text"
                  class="farm-input addMineScreenInput"
                  :placeholder="addNewTheatre.placeholder"
@@ -327,6 +340,7 @@
         addNewCinema: {
           visible: false,
           title: '添加院线',
+          label: '院线名称',
           placeholder: '',
           input: '',
           status: null,
@@ -335,9 +349,11 @@
         addNewTheatre: {
           visible: false,
           title: '添加影院',
+          label1: '院线名称',
+          label2: '影院名称',
           placeholder: '',
           input: '',
-          status: '',
+          status: null,
           warnInfo: ''
         },
         addFromTem: {
@@ -345,7 +361,7 @@
           title: '从模板库中选择',
           placeholder: '',
           input: '',
-          status: '',
+          status: null,
           warnInfo: ''
         },
         mineScreenListNode: [],
@@ -363,10 +379,16 @@
           isLeaf: 'leaf'
         },
         card: ['内部银幕', '院线银幕'],
-        activeName: '0'
+        activeName: '0',
+        cinemaList: [],
+        selectCinemaUuid: ''
       }
     },
     methods: {
+      // 添加银幕成功 刷新tree
+      refreshTree(type) {
+        setTimeout(() => type == 'mineScreen' ? this.getMineScreenListNode() : this.getScreenListNode(), 1000)
+      },
       // 拖拽事件预判
       allowDrop(draggingNode, dropNode, type) {
         return type !== 'inner'
@@ -379,7 +401,7 @@
       async verifNewCinemaName(ing) {
         let {addNewCinema} = this
         if (!addNewCinema.input.trim()) return false
-        if(!addNewCinema.input.trim().length > 50) {
+        if (!addNewCinema.input.trim().length > 50) {
           addNewCinema.status = false
           addNewCinema.warnInfo = '最多输入50个字符'
           return false
@@ -387,8 +409,8 @@
         let {data} = await verifNewCinema(transformParameterT({
           'cinemaName': addNewCinema.input
         }))
-        if(data.code == 200) addNewCinema.status = true
-        else if(ing) addNewCinema.status = null
+        if (data.code == 200) addNewCinema.status = true
+        else if (ing) addNewCinema.status = null
         else {
           addNewCinema.status = false
           addNewCinema.warnInfo = '院线已存在，请重新输入'
@@ -396,14 +418,13 @@
       },
       // 【院线银幕】添加院线
       async addNewCinemaFun() {
-        console.log('d')
         let {status, input} = this.addNewCinema
         if (!status) return false
         let {data} = await addNewCinema({
           'cinemaName': input
         })
       },
-      // 【内部银幕】获取银幕tab
+      // 【院线银幕】获取银幕tab
       getThreateTab(data, node) {
         this.$emit('selectMineScreen', {
           'type': 'threateScreen', 'data': {
@@ -414,10 +435,13 @@
       },
       // 【院线银幕】获取结构
       async getScreenListNode(node, resolve) {
-        if (node.level == 0) {
+        if (!node) return false
+        else if (node.level == 0) {
           let {data} = await getCinemaGList()
-          if (data.code == 200) resolve(data.data)
-          else resolve([])
+          if (data.code == 200) {
+            this.cinemaList = data.data
+            resolve(data.data)
+          } else resolve([])
         } else if (node.level == 1) {
           let {data} = await getTheatreList(node.data.cinemaUuid)
           if (data.code == 200) resolve(data.data.map(item => Object.assign(item, {
@@ -501,6 +525,20 @@
         this.getMineScreenListNode()
         this.getScreenListNode()
       })
+    },
+    watch: {
+      'activeName': {
+        handler: function(num) {
+          if(num == 0) this.$emit('mineScreen', {
+            'type': 'threateScreen',
+            'data': {'theatreUuid': null}
+          })
+          else this.$emit('selectMineScreen', {
+            'type': 'threateScreen',
+            'data': {'theatreUuid': null}
+          })
+        }
+      }
     }
   }
 </script>
@@ -708,4 +746,30 @@
     line-height: 50px;
     height: 50px;
   }
+
+  .form .item .warnInfo {
+    bottom: initial;
+    top: 44px;
+  }
+
+  .item-title {
+    font-size: 14px;
+    color: rgba(22, 29, 37, 0.8);
+    width: 100px;
+  }
+
+  /deep/ .el-select {
+    width: 100%;
+    height: 40px;
+    border: 1px solid rgba(22, 29, 37, 0.2);
+    border-radius: 6px;
+    outline: none;
+
+    .el-input,
+    .el-input__inner {
+      height: 100%;
+      outline: none;
+    }
+  }
+
 </style>

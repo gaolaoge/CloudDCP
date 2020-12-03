@@ -74,7 +74,8 @@
     mapState
   } from 'vuex'
   import {
-    addMineScreen
+    addMineScreen,
+    addCinemaScreen
   } from '@/api/screen-api'
   import {messageFun} from "../../../assets/common";
 
@@ -131,6 +132,9 @@
         }
       },
     },
+    props: {
+      'nowSite': Object
+    },
     methods: {
       //
       shutDialog(boolean) {
@@ -159,10 +163,19 @@
       },
       // 确定
       async saveF() {
+        let {type, data: site} = this.nowSite
         if (!this.tableData.length) return false
         let {tableData, user} = this,
-          {data} = await addMineScreen({
-            theatreUuid: null,
+          {data} = type == 'mineScreen' ? await addMineScreen({
+            theatreUuid: site.theatreUuid,
+            screenList: tableData.map(item => {
+              return {
+                screenName: item.name,
+                filePath: item.localPath
+              }
+            })
+          }) : await addCinemaScreen({
+            theatreUuid: site.theatreUuid,
             screenList: tableData.map(item => {
               return {
                 screenName: item.name,
@@ -170,25 +183,28 @@
               }
             })
           })
-        if (data.code == 201) this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
-          code: 211,
-          userID: user.id,
-          files: data.data.map((item, index) => {
-            return {
-              taskUuid: item['screenUuid'],
-              ID: item['screenId'],
-              localPath: tableData[index]['localPath'],
-              networkPath: {
-                front: item['pathPrefix'],
-                back: item['certificatePath']
+        if (data.code == 201) {
+          this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
+            code: 211,
+            userID: user.id,
+            files: data.data.map((item, index) => {
+              return {
+                taskUuid: item['screenUuid'],
+                ID: item['screenId'],
+                localPath: tableData[index]['localPath'],
+                networkPath: {
+                  front: item['pathPrefix'],
+                  back: item['certificatePath']
+                }
               }
-            }
+            })
           })
-        })
+          this.$emit('addSuc', type)
+        }
       }
     },
     mounted() {
-      if (!this.socket_plugin) this.$store.commit('WEBSOCKET_PLUGIN_INIT', true)
+
     },
     computed: {
       ...mapState(['socket_plugin', 'socket_plugin_msg', 'user'])

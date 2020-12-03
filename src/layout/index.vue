@@ -83,7 +83,7 @@
                top="8vh"
                width="862px">
       <addKDM @closeDialogFun="closeDialogFun"
-              :packageTaskUuid="selectedDCPUuid"/>
+              :selectedDCPUTask="selectedDCPUTask"/>
     </el-dialog>
     <!--新建KDM前选择DCP-->
     <el-dialog :visible.sync="selectDCODialog"
@@ -149,7 +149,11 @@
         createDCPDialog: false,
         createKDMDialog: false,
         selectDCODialog: false,
-        selectedDCPUuid: null
+        selectedDCPUTask: {
+          'packageTaskUuid': null,
+          'packageName': null,
+          'projectUuid': null
+        }
       }
     },
     components: {
@@ -172,9 +176,9 @@
     },
     methods: {
       // 已选择DCP文件，打开新建KDM窗口
-      didSelected(Uuid) {
+      didSelected(obj) {
         this.closeDialogFun('selectDCODialog')
-        this.selectedDCPUuid = Uuid
+        this.selectedDCPUTask = obj
         this.createKDMDialog = true
       },
       // 关闭新建项目窗口

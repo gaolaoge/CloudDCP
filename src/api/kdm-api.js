@@ -23,7 +23,7 @@ export function getKDMSonTableList(data) {
 // 获取KDM 子项 info
 export function getKDMInfo(kdmTaskUuid) {
   return http({
-    url: `/professional/kdm/getKdmTaskInfo/${kdmTaskUuid}`,
+    url: `/dcpProfessional/kdm/getKdmTaskInfo/${kdmTaskUuid}`,
     method: 'GET'
   })
 }

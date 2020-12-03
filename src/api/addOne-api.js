@@ -93,3 +93,11 @@ export function createNewKDM(data) {
     data
   })
 }
+
+// KDM 获取文件名格式列表
+export function getTypeList() {
+  return http({
+    url: `/dcpProfessional/kdm/getFilenameTemplateList `,
+    method: 'GET'
+  })
+}

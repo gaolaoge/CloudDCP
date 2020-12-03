@@ -64,7 +64,7 @@
         prop="projectName"
         label="所属项目"
         show-overflow-tooltip
-        :filters="projectList"
+        :filters="tabProjectList"
         width="200"/>
 
       <!--电影名称-->
@@ -241,7 +241,6 @@
           {text: '加密', value: '加密'},
           {text: '未加密', value: '未加密'}
         ],
-        projectList: [],
         total: 0,
         pageIndex: 0
       }
@@ -275,7 +274,7 @@
             isEncryptList: [],       // 是否加密 0不加密,1加密
             sortBy: null,            // 排序字段
             sortType: 0,             // 0降序,1升序
-            zoneUuid: 'zone001'
+            'zoneUuid': 'zone001'
           })
         this.total = data.total
         this.tableData = data.data.map(item => Object.assign(item, {
@@ -362,13 +361,27 @@
       })
     },
     computed: {
-      ...mapState(['setting', 'zoneUuid'])
+      ...mapState(['setting', 'zoneUuid', 'projectList']),
+      'tabProjectList': function () {
+        return this.projectList.map(project => {
+          return {
+            text: project.projectName,
+            value: project.projectUuid
+          }
+        })
+      }
     },
     watch: {
       'selectionList': {
         handler: function (list) {
 
         }
+      },
+      'projectList': {
+        handler: function (list) {
+          if (!list.length) this.$store.dispatch('getProjectList')
+        },
+        immediate: true
       }
     }
   }

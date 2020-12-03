@@ -88,6 +88,15 @@ export function addMineScreen(data) {
   })
 }
 
+// 添加【院线银幕】
+export function addCinemaScreen(data) {
+  return http({
+    url: `/dcpProfessional/screen/addScreenList`,
+    method: 'POST',
+    data
+  })
+}
+
 // 添加院线
 export function addNewCinema(data) {
   return http({

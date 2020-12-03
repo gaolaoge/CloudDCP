@@ -24,7 +24,8 @@
       </div>
       <div class="showPicCompress"
            @click="showWin = 'compression'"
-           v-show="String('34567').includes(baleStatus)">{{ showPicCompress }}</div>
+           v-show="String('34567').includes(baleStatus)">{{ showPicCompress }}
+      </div>
       <div class="wrapper-border setScollBarStyle">
         <div class="form">
           <!--DCP文件名-->
@@ -74,7 +75,7 @@
               <!--报错信息-->
               <div class="progressWarnInfo">
                 <el-collapse>
-                  <el-collapse-item v-for="(item,index) in warnInfo">
+                  <el-collapse-item v-for="(item,index) in warnInfo" :key="'item_' + index">
                     <template slot="title">
                       <span class="title">{{ $t('public.error') }}{{ index ++ }}：{{ item.title }}</span>
                     </template>
@@ -187,7 +188,7 @@
 </template>
 
 <script>
-  import {mapState} from "vuex"
+  import {mapState} from 'vuex'
   import {
     createTableIconList
   } from '@/assets/common'
@@ -515,7 +516,7 @@
       padding: 6px;
     }
 
-    /deep/.el-table__body-wrapper {
+    /deep/ .el-table__body-wrapper {
       height: calc(100vh - 73px - 30px - 42px - 40px - 48px - 12px - 47px - 47px);
     }
 

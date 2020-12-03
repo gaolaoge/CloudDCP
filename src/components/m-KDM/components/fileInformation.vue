@@ -131,18 +131,20 @@
         if(data) Object.assign(this, data, {
           'packageDate': createDateFun(data.packageDate),
           // 'codingRule': ,
-          'resolution': resolutionList[data.resolution]['label'],
-          'sourceColor': colorTypeList[data.sourceColor]['label'],
-          'aspectRatio': proportionList[data.aspectRatio]['label'],
-          'captionLanguage': textLanguageList[data.captionLanguage]['label'],
-          'filmCategory': movieTypeList[data.filmCategory]['label'],
-          'filmType': modeList[data.filmType]['label'],
-          'soundtrack': channelTypeList[data.soundtrack]['label'],
-          'captionType': APList[data.captionType]['label'],
-          'taskStatus': DCPmainStatusList.find(item => item.code == data.taskStatus)['status'],
-          'region': areaList[data.region]['label'],
-          'frameRate': data.frameRate + 'fps',
-          'codingRate': data.codingRate + 'Mb/s'
+          // 'resolution': resolutionList[data.resolution]['label'],
+          // 'sourceColor': colorTypeList[data.sourceColor]['label'],
+          // 'aspectRatio': proportionList[data.aspectRatio]['label'],
+          // 'captionLanguage': textLanguageList[data.captionLanguage]['label'],
+          // 'filmCategory': movieTypeList[data.filmCategory]['label'],
+          // 'filmType': modeList[data.filmType]['label'],
+          // 'soundtrack': channelTypeList[data.soundtrack]['label'],
+          // 'captionType': APList[data.captionType]['label'],
+          // 'taskStatus': DCPmainStatusList.find(item => item.code == data.taskStatus)['status'],
+          // 'region': areaList[data.region]['label'],
+          // 'frameRate': data.frameRate + 'fps',
+          // 'codingRate': data.codingRate + 'Mb/s'
+          'movieStartTime': createDateFun(data.movieStartTime),
+          'movieEndTime': createDateFun(data.movieEndTime)
         })
       }
     },

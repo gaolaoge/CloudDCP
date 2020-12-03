@@ -133,9 +133,6 @@
       },
     },
     methods: {
-      saveF() {
-
-      },
       operating(action) {
         switch(action) {
           case '添加':
@@ -160,17 +157,11 @@
       // 下一步
       nextFun() {
         if (!this.tableData.length) return false
-        let theatreUuidList = [],
-          screenUuidList = []
         this.$emit('selectedAndNext', {
-          theatreUuidList,     // 全选集合
-          screenUuidList,      // 单选集合
-          certificateSource: 1
+          'screenList': this.tableData,
+          'certificateSource': 1
         })
       }
-    },
-    mounted() {
-      if (!this.socket_plugin) this.$store.commit('WEBSOCKET_PLUGIN_INIT', true)
     },
     computed: {
       ...mapState(['socket_plugin', 'socket_plugin_msg', 'user'])

@@ -169,6 +169,10 @@ export default new Vuex.Store({
         id: null
       })
     },
+    // 项目列表更新
+    setProjectList(state, projectList) {
+      state.projectList = projectList
+    },
     // 自【渲染农场】跳转，打开新建DCP窗口
     openCtreatDCPWin(state, boolean) {
       state.openCDCPW = boolean
@@ -326,7 +330,7 @@ export default new Vuex.Store({
         'sortBy': null,
         'sortType': 0
       })
-      context.state.projectList = data.data
+      context.commit('setProjectList', data.data)
     },
   }
 })

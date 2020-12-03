@@ -41,7 +41,9 @@
       :destroy-on-close="true"
       :show-close="false"
       width="860px">
-      <AddScreen @shutMe="shutAddDialog"/>
+      <AddScreen :nowSite="nowSite"
+                 @addSuc="addScreenS"
+                 @shutMe="shutAddDialog"/>
     </el-dialog>
   </div>
 </template>
@@ -87,10 +89,20 @@
           }
         ],
         searchInput: '',
+        nowSite: {
+          type: 'mineScreen',
+          data: {
+            theatreUuid: null
+          }
+        },                    // 给【添加银幕】模块指定Tab当前位置
         selectionList: []     // 多选结果
       }
     },
     methods: {
+      // 添加银幕成功 刷新tree
+      addScreenS(type) {
+        this.$emit('addScreenSuc', type)
+      },
       // 关闭添加银幕窗口
       shutAddDialog(boolean) {
         this.addSDialogVisible = false
@@ -102,6 +114,7 @@
           case '添加':
             // 所选记录都为"暂停"“暂停（欠费）且"未过期"才可以点击
             if (this.addBtn) this.addSDialogVisible = true
+            if (!this.socket_plugin) this.$store.commit('WEBSOCKET_PLUGIN_INIT', true)
             break
           case '编辑':
             // 所选记录都为"进行中"且"未过期"才可以点击

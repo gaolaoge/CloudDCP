@@ -54,7 +54,7 @@
           width="120"/>
 
         <el-table-column
-          prop="customerName"
+          prop="projectName"
           label="创建人"
           show-overflow-tooltip
           width="120"/>
@@ -70,7 +70,7 @@
           label="操作">
           <template slot-scope="scope">
             <span class="operateBtn" @click="editItem(scope.$index)">{{ tableOperateBtn[0] }}</span>
-            <span class="operateBtn" @click="setItem(scope.row.screenUuid)">{{ tableOperateBtn[1] }}</span>
+            <span class="operateBtn" @click="setItem(scope.row.projectUuid)">{{ tableOperateBtn[1] }}</span>
           </template>
         </el-table-column>
 
@@ -307,9 +307,9 @@
             //   updateBy: "1"
             //   updateTime: 1591689369051
             // }
-            return Object(curr, {
+            return Object.assign(curr, {
               'screenUuid': curr.screenUuid,
-              'createTime': createDateFun(new Date(curr.updateTime)),
+              'createTime': createDateFun(curr.createTime),
               'projectName': curr.projectName,
               'customerName': curr.customerName,
               'isDefault': curr.isDefault == 0 ? '否' : '是',
@@ -395,10 +395,8 @@
       },
       // 项目 - 设为当前项目
       async setItem(id) {
-        let {data} = await setDefault({
-          'screenUuid': id
-        })
-        if (data.code == 201) {
+        let {data} = await setDefault(id)
+        if (data.code == 200) {
           messageFun('success', '设置成功')
           this.getList('', 1, this.page.size)
         }

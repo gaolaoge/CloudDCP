@@ -405,7 +405,7 @@
         this.$emit('selectedAndNext', {
           theatreUuidList,     // 全选集合
           screenUuidList,      // 单选集合
-          certificateSource: this.screenType == 'internalScreen' ? 3 : 2
+          'certificateSource': this.screenType == 'internalScreen' ? 3 : 2
         })
       }
     },

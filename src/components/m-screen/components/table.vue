@@ -201,6 +201,7 @@
       // 获取表格数据
       async getList(obj) {
         this.tableFilerCondition = obj
+        if(!obj) return false
         new Promise(resolve => obj.type == 'mineScreen' ? resolve(this.getMineTab(obj)) : resolve(this.getTab(obj)))
           .then(({data}) => {
             this.total = data.total

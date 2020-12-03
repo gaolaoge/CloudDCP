@@ -43,10 +43,7 @@
             <!--KDM文件名-->
             <div class="fileItem item">
               <label>{{ setParameters.label.fileName }}：</label>
-              <span class="farm-span">
-                <!--所属项目-->
-                <span>{{ setParameters.form.project }}</span>_
-              </span>
+              <span class="farm-span" :title="setParameters.form.fileName">{{ setParameters.form.fileName }}</span>
               <!--设置-->
               <div class="btn" @click="setFileNameDialog.visible = true">
                 <span>{{ $t('public.set') }}</span>
@@ -65,8 +62,8 @@
                 <el-option
                   v-for="(item,index) in projectList"
                   :key="index"
-                  :label="item.customerName"
-                  :value="item.customerUuid">
+                  :label="item.projectName"
+                  :value="item.projectUuid">
                 </el-option>
               </el-select>
               <div class="btn" @click="addProjectDialog.visible = true"><span>{{ setParameters.createObject }}</span>
@@ -126,7 +123,7 @@
               <span>{{ $t('public.previous') }}</span>
             </div>
             <!--确定-->
-            <div :class="[{'cannotBeGo': false}, 'dialog-btn', 'save']"
+            <div :class="[{'cannotBeGo': !setParameters.form.kdmTaskName.trim()}, 'dialog-btn', 'save']"
                  @click="createKDMF">
               <span>{{ $t('public.save') }}</span>
             </div>
@@ -136,13 +133,34 @@
     </section>
     <!--设置KDM名-->
     <el-dialog
-      width="860px"
-      top="8vh"
+      width="640px"
+      top="20vh"
       :show-close=false
       :visible.sync="setFileNameDialog.visible"
       @close="closesetFileNameDialog"
       append-to-body>
-      <setName @shutMe="setFileNameDialog.visible = false"/>
+      <setName @shutMe="shutSetFileNameDia"
+               :typeList="typeList"
+               :typeUuid="setParameters.form.kdmFilenameTemplateUuid"
+               :fileName="setParameters.form.movieName"/>
+    </el-dialog>
+    <!--新建项目-->
+    <el-dialog
+      width="380px"
+      :show-close=false
+      :visible.sync="addProjectDialog.visible"
+      :destroy-on-close="true"
+      @close="closesetFileNameDialog"
+      append-to-body>
+      <div class="dialog-header">
+        <span class="title">{{ addProjectDialog.title }}</span>
+        <img src="@/icons/shutDialogIcon.png"
+             @click="addProjectDialog.visible = false"
+             class="closeBtn">
+      </div>
+      <div class="dialog-body">
+        <addProject @cancelAdd="shutAddProjectDialog"/>
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -150,6 +168,7 @@
 <script>
   import selectScreenFromAdmin from './components/selectScreenFromAdmin'
   import selectScreenFromLocal from './components/selectScreenFromLocal'
+  import addProject from '../public-module/add_project'
   import setName from './components/setKDMFileName'
   import {mapState} from 'vuex'
   import {
@@ -157,7 +176,8 @@
     timeZone
   } from '@/assets/common.js'
   import {
-    createNewKDM
+    createNewKDM,
+    getTypeList
   } from '@/api/addOne-api'
 
   export default {
@@ -172,13 +192,12 @@
         stepBtnActive: 1,
         selectBy: 'netdisc',
         selectScreen: {
-          theatreUuidList: [],     // 全选集合
-          screenUuidList: [],      // 单选集合
+          screenList: [],
           certificateSource: null  // 证书来源  1我的电脑, 2银幕列表-院线银幕, 3银幕列表-内部银幕
         },
         setParameters: {
           pl: {
-            taskName: '请输入人物名称'
+            taskName: '请输入任务名称'
           },
           createObject: '新建项目',
           form: {
@@ -189,8 +208,8 @@
             movieName: '',
             startTime: [new Date(), new Date()],
             endTime: [new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000), new Date()],
-            kdmCreateDate: new Date(),          // kdm制作时间
-            kdmFilenameTemplateUuid: null,      // kdm文件名格式uuid
+            kdmCreateDate: new Date().getTime(),          // kdm制作时间
+            kdmFilenameTemplateUuid: null,                // kdm文件名格式uuid
           },
           label: {
             project: '所属项目',
@@ -207,19 +226,41 @@
         setFileNameDialog: {
           visible: false
         },
+        // 新建项目
         addProjectDialog: {
-          visible: false
+          visible: false,
+          title: '新建项目'
         },
-        timeZone: []
+        timeZone: [],
+        typeList: [],
+        typeIndex: 0      // 文件名格式索引
       }
     },
     props: {
-      packageTaskUuid: {
-        type: String,
-        required: true
-      }
+      selectedDCPUTask: Object
     },
     methods: {
+      // 1.关闭新建项目窗口
+      shutAddProjectDialog(status) {
+        this.addProjectDialog.visible = false
+        if (status) this.getList()
+      },
+      // 获取列表
+      async getNameTypeList() {
+        let {data} = await getTypeList()
+        if (data.code == 200) {
+          this.typeList = data.data.map((item, index) => Object.assign(item, {index}))
+          this.setParameters.form.kdmFilenameTemplateUuid = data.data[0]['filenameTemplateUuid']
+        }
+      },
+      // 关闭【设置KDM文件名】弹窗
+      shutSetFileNameDia(obj) {
+        this.setFileNameDialog.visible = false
+        if (obj) {
+          this.setParameters.form.fileName = obj.name
+          this.setParameters.form.kdmFilenameTemplateUuid = obj.Uuid
+        }
+      },
       // 下一步
       nextFun(obj) {
         this.selectScreen = obj
@@ -231,47 +272,97 @@
       },
       // 3.创建KDM
       async createKDMF() {
+        if (!this.setParameters.form.kdmTaskName.trim()) return false
         let {theatreUuidList, screenUuidList, certificateSource} = this.selectScreen,
           {projectUuid, kdmTaskName, theatreTimeZone, kdmFilenameTemplateUuid, kdmCreateDate} = this.setParameters.form,
-          {zoneUuid, packageTaskUuid, movieStartTime, movieEndTime} = this,
+          {zoneUuid, movieStartTime, movieEndTime} = this,
+          {taskUuid} = this.selectedDCPUTask,
           {data} = await createNewKDM({
             kdmFilenameTemplateUuid,            // kdm文件名格式uuid
             kdmCreateDate,                      // kdm制作时间
-            packageTaskUuid,                    // 选中DCP文件的Uuid
+            'packageTaskUuid': taskUuid,        // 选中DCP文件的Uuid
             projectUuid,                        // 项目uuid
             kdmTaskName,                        // 任务名
             theatreTimeZone,                    // 影院时区
             movieStartTime,                     // 播放起始时间
             movieEndTime,                       // 播放结束时间
-            screenUuidList,                     // 单选银幕Uuid列表
-            theatreUuidList,                    // 全选银幕Uuid列表
-            'cinemaUuidList': [],               // 院线uuid列表(只有下面的影院全选是才传)
+            'screenUuidList': certificateSource == 1 ? [] : screenUuidList,      // 单选银幕Uuid列表
+            'theatreUuidList': certificateSource == 1 ? null : theatreUuidList,    // 全选银幕Uuid列表
+            'cinemaUuidList': certificateSource == 1 ? null : [],     // 院线uuid列表(只有下面的影院全选是才传)
             zoneUuid,                           // 分区uuid
             'operateSource': 1,                 // 操作来源, 1,网页端 2客户端
-            certificateSource                   // 证书来源 1我的电脑, 2银幕列表-院线银幕, 3银幕列表-内部银幕
+            certificateSource,                  // 证书来源 1我的电脑, 2银幕列表-院线银幕, 3银幕列表-内部银幕
+            'uploadCert': certificateSource == 1 ? {
+              'cinemaName': null,
+              'theatreName': null,
+              'screenList': this.selectScreen.screenList.map(item => {
+                return {
+                  'screenName': item.name,
+                  'localPath': item.localPath
+                }
+              })
+            } : null
           })
+        if (data.code == 200) {
+          messageFun('success', '创建成功')
+          this.$emit('closeDialogFun', 'createKDMDialog')
+          this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
+            userID: this.user.id,
+            code: 211,
+            files: data.data.map(item => {
+              return {
+                'taskUuid': item.taskUuid,
+                'ID': item.taskId,
+                'localPath': item.localPath,
+                'networkPath': {
+                  'front': item.pathPrefix,
+                  'back': item.certificateName
+                }
+              }
+            })
+          })
+        } else messageFun('error', '报错')
       }
     },
     mounted() {
       if (!this.projectList.length) this.$store.dispatch('getProjectList')
-      this.$nextTick(() => Object.assign(this, {
-        timeZone
-      }))
+      this.getNameTypeList()
+      this.$nextTick(() => {
+        Object.assign(this, {
+          timeZone
+        })
+        this.setParameters.form.fileName = 'KDM_' + this.setParameters.form.movieName + '_<银幕名称>'
+      })
     },
     watch: {
-      'projectList': function (list) {
-        if (!list.length) return false
-        console.log(list)
-        this.setParameters.form.projectUuid = list.find(item => item.isDefault == 1)['customerUuid']
+      'projectList': {
+        handler: function (list) {
+          if (!list.length) return false
+          this.setParameters.form.projectUuid = list.find(item => item.isDefault == 1)['projectUuid']
+        },
+        immediate: true
+      },
+      'selectedDCPUTask': {
+        handler: function (obj) {
+          if (!obj) return false
+          let {form} = this.setParameters
+          form.movieName = obj.filmName
+        },
+        immediate: true
+      },
+      selectBy(type) {
+        if(type == 'local' && !this.socket_plugin)
+          this.$store.commit('WEBSOCKET_PLUGIN_INIT', true)
       }
     },
     components: {
       selectScreenFromAdmin,
       selectScreenFromLocal,
-      setName
+      setName,
+      addProject
     },
     computed: {
-      ...mapState(['zoneUuid', 'projectList']),
+      ...mapState(['socket_plugin', 'zoneUuid', 'projectList', 'user']),
       movieStartTime() {
         let [d, t] = this.setParameters.form.startTime
         return new Date(d.toDateString()).getTime() + (t.getTime() - new Date(t.toDateString()).getTime())
@@ -382,5 +473,52 @@
   .dialog-btn-group {
     right: 0px;
     bottom: 0px;
+  }
+
+  .dialog-body {
+    padding: 30px;
+    box-sizing: border-box;
+
+    .box {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+
+      & > div {
+        flex-grow: 1;
+
+        /deep/ .el-slider__runway {
+          height: 4px;
+        }
+
+        /deep/ .el-slider__bar {
+          background-color: rgba(27, 83, 244, 1);
+          height: 4px;
+        }
+
+        /deep/ .el-slider__button {
+          border: 4px solid rgba(27, 83, 244, 1);
+          width: 8px;
+          height: 8px;
+        }
+
+        /deep/ .el-slider__button-wrapper {
+          top: -16px;
+        }
+      }
+
+      span {
+        text-align: right;
+        width: 90px;
+        font-size: 14px;
+        flex-grow: 0;
+      }
+    }
+
+    .farm-btnGroup {
+      height: auto;
+      margin-top: 22px;
+    }
   }
 </style>

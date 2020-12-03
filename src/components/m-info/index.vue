@@ -165,10 +165,10 @@
       // 修改生日
       async changeBirthdayDate() {
         let data = await editBasicInfo({
-          "nickname": null,
-          "headImg": null,
-          "sex": null,
-          "birthday": this.info.birthdayVal.getTime(),
+          'nickname': null,
+          'headImg': null,
+          'sex': null,
+          'birthday': this.info.birthdayVal.getTime(),
         })
         if (data.data.code == 200) {
           this.$store.commit('changeBirthday', this.info.birthdayVal.getTime())
@@ -178,10 +178,10 @@
       // 修改性别
       async changeSex() {
         let data = await editBasicInfo({
-          "nickname": null,
-          "headImg": null,
-          "sex": this.info.sexVal,
-          "birthday": null,
+          'nickname': null,
+          'headImg': null,
+          'sex': this.info.sexVal,
+          'birthday': null,
         })
         if (data.data.code == 200) {
           this.$store.commit('changeSex', this.info.sexVal)
@@ -192,10 +192,10 @@
       // 上传裁剪好的头像
       async uploadAvatar(src) {
         let data = await editBasicInfo({
-          "nickname": null,
-          "headImg": src,
-          "sex": null,
-          "birthday": null,
+          'nickname': null,
+          'headImg': src,
+          'sex': null,
+          'birthday': null,
         })
         if (data.data.code == 200) {
           this.$store.commit('changeAvatar', src)

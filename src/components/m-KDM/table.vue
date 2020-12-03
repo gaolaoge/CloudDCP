@@ -53,7 +53,7 @@
         prop="projectName"
         label="所属项目"
         show-overflow-tooltip
-        :filters="projectList"
+        :filters="tabProjectList"
         width="200"/>
 
       <!--电影名称-->
@@ -132,7 +132,7 @@
   } from 'vuex'
 
   export default {
-    name: 'DCPTable',
+    name: 'KDMTable',
     data() {
       return {
         selectionList: [],     // 多选结果
@@ -152,7 +152,6 @@
           {text: '已完成', value: '已完成'},
           {text: '待打包完成', value: '待打包完成'}
         ],
-        projectList: [],
         total: 0,
         pageIndex: 0
       }
@@ -172,15 +171,15 @@
       async getList() {
         let {zoneUuid} = this,
           {data} = await getKDMTableList({
-          pageIndex: this.pageIndex,
-          pageSize: this.setting.pageSize,
-          keyword: this.keyword,
-          kdmTaskStatusList: [],
-          projectUuidList: [],
-          sortBy: null,            // 排序字段
-          sortType: 0,             // 0降序,1升序
-          zoneUuid
-        })
+            pageIndex: this.pageIndex,
+            pageSize: this.setting.pageSize,
+            keyword: this.keyword,
+            kdmTaskStatusList: [],
+            projectUuidList: [],
+            sortBy: null,            // 排序字段
+            sortType: 0,             // 0降序,1升序
+            zoneUuid
+          })
         this.total = data.total
         this.tableData = data.data.map(item => Object.assign(item, {
           'taskStatusText': KDMmainStatusList.find(statusI => statusI.code == item.taskStatus)['status'],
@@ -262,13 +261,27 @@
       })
     },
     computed: {
-      ...mapState(['setting', 'zoneUuid'])
+      ...mapState(['setting', 'zoneUuid', 'projectList']),
+      'tabProjectList': function () {
+        return this.projectList.map(project => {
+          return {
+            text: project.projectName,
+            value: project.projectUuid
+          }
+        })
+      }
     },
     watch: {
       'selectionList': {
-        handler: function(list) {
+        handler: function (list) {
 
         }
+      },
+      'projectList': {
+        handler: function (list) {
+          if (!list.length) this.$store.dispatch('getProjectList')
+        },
+        immediate: true
       }
     }
   }

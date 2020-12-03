@@ -114,5 +114,5 @@ module.exports = [
   // , getInnerScreenGroupList
   // , addKdmTask
   // getTheatreList,
-  getScreenList
+  // getScreenList
 ]

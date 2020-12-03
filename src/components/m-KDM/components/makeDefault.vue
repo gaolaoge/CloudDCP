@@ -9,7 +9,7 @@
         <!--DCP文件名-->
         <div class="infoItem">
           <label>{{ info.nameL }}:</label>
-          <span>{{ info.nameV }}</span>
+          <span class="DCPFileName" :title="info.nameV">{{ info.nameV }}</span>
         </div>
         <!--打包进度-->
         <div class="infoItem">
@@ -68,14 +68,14 @@
 
             <!--序号-->
             <el-table-column
-              prop="projectName"
+              prop="taskDetailNo"
               label="序号"
               sortable
               width="100"/>
 
             <!--KDM文件名-->
             <el-table-column
-              prop="filmName"
+              prop="kdmFileName"
               label="KDM文件名"
               sortable />
 
@@ -87,16 +87,16 @@
               :filters="statusList"
               width="160">
               <template slot-scope="scope">
-          <span v-if="[101, 201, 610, 620].some(item => item == scope.row.taskStatus)"
+          <span v-if="[101, 201, 610, 620].some(item => item == scope.row.kdmStatus)"
                 style="color: rgba(22, 29, 37, 0.8)">{{ scope.row.taskStatusText }}
           </span>
-                <span v-if="[301, 302, 630].some(item => item == scope.row.taskStatus)"
+                <span v-if="[301, 302, 630].some(item => item == scope.row.kdmStatus)"
                       style="color: rgba(255, 191, 0, 1)">{{ scope.row.taskStatusText }}
           </span>
-                <span v-if="[400, 640].some(item => item == scope.row.taskStatus)"
+                <span v-if="[400, 640].some(item => item == scope.row.kdmStatus)"
                       style="color: rgba(255, 62, 77, 1)">{{ scope.row.taskStatusText }}
           </span>
-                <span v-if="[500, 650].some(item => item == scope.row.taskStatus)"
+                <span v-if="[500, 650].some(item => item == scope.row.kdmStatus)"
                       style="color: rgba(70, 203, 93, 1)">{{ scope.row.taskStatusText }}
           </span>
               </template>
@@ -104,7 +104,7 @@
 
             <!--费用（金币）-->
             <el-table-column
-              prop="useTime"
+              prop="cost"
               label="费用（金币）"
               sortable
               width="160"/>
@@ -125,7 +125,10 @@
   import {
     getKDMSonTableList
   } from '@/api/kdm-api'
-  import {mapState} from "vuex";
+  import {mapState} from 'vuex'
+  import {
+    KDMmainStatusList
+  } from '@/assets/common'
 
   export default {
     name: 'make-default',
@@ -196,7 +199,8 @@
       }
     },
     props: {
-      'DCPUuid': String
+      'DCPUuid': String,
+      'topWinInfo': Object
     },
     methods: {
       //
@@ -212,8 +216,8 @@
 
       },
       async getTabList(ID) {
-        let {keyword, sortBy, sortType, kdmStatusList} = this.tab,
-          {DCPUuid} = this,
+        let {DCPUuid, tab} = this,
+          {keyword, sortBy, sortType, kdmStatusList} = tab,
           {data} = await getKDMSonTableList({
             kdmTaskUuid: ID || DCPUuid,
             kdmStatusList,
@@ -223,6 +227,7 @@
             pageIndex: 1,
             pageSize: 999
           })
+        if(data.code == 200) tab.tableData = data.data
       },
       // table 行样式
       tableRowStyle({row}) {
@@ -262,6 +267,21 @@
         if (String('6').includes(this.baleStatus)) return true
         else return false
       }
+    },
+    watch: {
+      'topWinInfo': {
+        handler: function(obj) {
+          this.info.nameV = obj.packageName
+          this.info.progressV = KDMmainStatusList.find(item => item.code == obj.taskStatus)['status']
+        },
+        immediate: true,
+        deep: true
+      }
+    },
+    mounted() {
+      this.$nextTick(() => Object.assign(this, {
+        KDMmainStatusList
+      }))
     }
   }
 </script>
@@ -344,5 +364,12 @@
     .DCPFile-wrapper {
 
     }
+  }
+
+  .DCPFileName {
+    width: 70% !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 </style>

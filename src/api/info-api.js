@@ -98,7 +98,7 @@ export function editPhonePS(data) {
 export function getPhoneCodeFromEmail() {
   return http({
     url: '/customer/sendPhoneCode4ChangeEmail',
-    method: 'GET',
+    method: 'GET'
   })
 }
 

@@ -55,7 +55,7 @@
       </el-tree>
     </div>
     <!--院线银幕-->
-    <div class="screenW cinema" v-show="activeName == 1">
+    <div class="screenW cinema" v-if="refresh" v-show="activeName == 1">
       <!--操作-->
       <div class="search">
         <!--搜索框-->
@@ -111,12 +111,12 @@
             :visible-arrow="false">
             <!--院线-->
             <ul class="tree-node-operate-brnG" v-if="node.level == 1">
-              <li @click="deleteInnerTreeG(data.cinemaUuid)"><span>{{ $t('public.delete') }}</span></li>
+              <li @click="deleteCinemaTreeG(data.cinemaUuid)"><span>{{ $t('public.delete') }}</span></li>
               <li @click="showRenameInnerTreeG(data)"><span>{{ $t('public.rename') }}</span></li>
             </ul>
             <!--影院-->
             <ul class="tree-node-operate-brnG" v-if="node.level == 2">
-              <li @click="deleteInnerTreeG(data.cinemaUuid)"><span>{{ $t('public.delete') }}</span></li>
+              <li @click="deleteInnerTreeG(data.theatreUuid)"><span>{{ $t('public.delete') }}</span></li>
               <li @click="showRenameInnerTreeG(data)"><span>{{ $t('public.rename') }}</span></li>
             </ul>
             <div class="r" slot="reference">
@@ -229,7 +229,7 @@
           <span class="item-title">{{ addNewTheatre.label1 }}：</span>
           <el-select v-model="selectCinemaUuid" placeholder="请选择">
             <el-option
-              v-for="item in this.cinemaList"
+              v-for="item in cinemaList"
               :key="item.value"
               :label="item.cinemaName"
               :value="item.cinemaUuid">
@@ -243,8 +243,8 @@
                  :placeholder="addNewTheatre.placeholder"
                  v-model="addNewTheatre.input"
                  @keyup.enter="addMineScreenGroupFun"
-                 @input="verifAddMineScreenName(true)"
-                 @blur="verifAddMineScreenName(false)"
+                 @input="verifAddCinemaName(true)"
+                 @blur="verifAddCinemaName(false)"
                  @focus="addNewTheatre.status = null">
           <span class="warnInfo" v-show="addNewTheatre.status === false">
             {{ addNewTheatre.warnInfo }}
@@ -254,8 +254,8 @@
           <div class="dialog-btn cancel" @click="addNewTheatre.visible = false">
             <span>{{ $t('public.cancel') }}</span>
           </div>
-          <div :class="[{'cannotBeGo': !addNewTheatre.status}, 'dialog-btn', 'save']"
-               @click="renameInnerTreeG">
+          <div :class="[{'cannotBeGo': !addNewTheatre.status || !selectCinemaUuid}, 'dialog-btn', 'save']"
+               @click="addNewTheatreF">
             <span>{{ $t('public.save') }}</span>
           </div>
         </div>
@@ -312,7 +312,8 @@
     deleteMineScreenG,
     renameMineScreenG,
     getCinemaGList,
-    getTheatreList
+    getTheatreList,
+    deleteCinemaG
   } from '@/api/screen-api'
   import {
     messageFun,
@@ -382,16 +383,11 @@
         activeName: '0',
         cinemaList: [],
         selectCinemaUuid: '',
-        callback: {
-          cinemaF: null
-        }
+        refresh: true,
+        selectedCinemaUuid: null
       }
     },
     methods: {
-      // 添加银幕成功 刷新tree
-      refreshTree(type) {
-        setTimeout(() => type == 'mineScreen' ? this.getMineScreenListNode() : this.getScreenListNode(), 1000)
-      },
       // 拖拽事件预判
       allowDrop(draggingNode, dropNode, type) {
         return type !== 'inner'
@@ -419,6 +415,11 @@
           addNewCinema.warnInfo = '院线已存在，请重新输入'
         }
       },
+      // 【院线银幕】刷新
+      refreshTree() {
+        this.refresh = false
+        this.$nextTick(() => this.refresh = true)
+      },
       // 【院线银幕】添加院线
       async addNewCinemaFun() {
         let {status, input} = this.addNewCinema
@@ -426,16 +427,14 @@
         let {data} = await addNewCinema({
           'cinemaName': input
         })
-        if(data.code == 201) {
+        if (data.code == 201) {
           messageFun('success', '操作成功')
           Object.assign(this.addNewCinema, {
             'status': null,
             'input': '',
             'visible': false
           })
-          this.getScreenListNode({
-            'level': 0
-          }, this.callback.cinemaF)
+          this.refreshTree()
         }
       },
       // 【院线银幕】获取银幕tab
@@ -447,23 +446,63 @@
           }
         })
       },
+      // 【院线银幕】删除分组
+      deleteCinemaTreeG(cinemaUuid) {
+        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+          .then(async () => {
+            let {data} = await deleteCinemaG(cinemaUuid)
+            if (data.code == 204) {
+              messageFun('success', '操作成功！')
+              this.refreshTree()
+            } else if (data.code == 1000) messageFun('info', data.msg)
+          })
+
+      },
       // 【院线银幕】获取结构
       async getScreenListNode(node, resolve) {
-        // if (!node) return false
         if (node.level == 0) {
-          this.callback.cinemaF = resolve
           let {data} = await getCinemaGList()
           if (data.code == 200) {
             this.cinemaList = data.data
             resolve(data.data)
           } else resolve([])
         } else if (node.level == 1) {
+          this.selectedCinemaUuid = node.data.cinemaUuid
           let {data} = await getTheatreList(node.data.cinemaUuid)
           if (data.code == 200) resolve(data.data.map(item => Object.assign(item, {
             'leaf': true
           })))
           else resolve([])
         }
+      },
+      // 【院线银幕】添加影院
+      async addNewTheatreF() {
+        let {status, input} = this.addNewTheatre
+        if(!status) return false
+        let {data} = await addNewCScreenGroup({
+          'cinemaUuid': this.selectCinemaUuid,
+          'theatreName': input
+        })
+        if(data.code == 200) {
+          messageFun('success', '操作成功')
+          this.addNewTheatre.visible = false
+          this.refreshTree()
+        }
+      },
+      // 【院线银幕】验证【添加影院】name 格式
+      async verifAddCinemaName(ing) {
+        let {input} = this.addNewTheatre,
+          {addNewTheatre} = this
+        if (!input.trim()) {
+          ing ? addNewTheatre.status = null : addNewTheatre.status = false
+        } else if (input.trim().length > 50) {
+          addNewTheatre.status = false
+          addNewTheatre.warnInfo = '最多输入50个字符'
+        } else addNewTheatre.status = true
       },
       // 【内部银幕】获取结构
       async getMineScreenListNode() {
@@ -486,16 +525,13 @@
       async addMineScreenGroupFun() {
         if (!this.addMineScreen.status) return false
         let {activeName, addMineScreen} = this,
-          {data} = activeName == 0 ? await addNewScreenGroup({'groupName': addMineScreen.input}) : await addNewCScreenGroup({
-            'cinemaUuid': '',
-            'theatreName': addMineScreen.input
-          })
+          {data} = await addNewScreenGroup({'groupName': addMineScreen.input})
         if (data.code == 201) {
           messageFun('success', '操作成功！')
           addMineScreen.visible = false
           this.mineScreenKeyword = ''
           addMineScreen.input = ''
-          activeName == 0 ? this.getMineScreenListNode() : this.getScreenListNode()
+          activeName == 0 ? this.getMineScreenListNode() : null
         } else if (data.code == 1000) {
           messageFun('info', '分组名已存在，请重新输入')
           addMineScreen.status = false
@@ -513,8 +549,8 @@
             let {data} = await deleteMineScreenG(theatreUuid)
             if (data.code == 204) {
               messageFun('success', '操作成功！')
-              this.getMineScreenListNode()
-            }
+              this.activeName == 0 ? this.getMineScreenListNode() : this.refreshTree()
+            } else if (data.code == 1000) messageFun('info', data.msg)
           })
 
       },
@@ -534,7 +570,7 @@
           theatreUuid,
           'theatreName': input
         })
-        if(data.code == 201) {
+        if (data.code == 201) {
           messageFun('success', '操作成功')
           this.addMineScreen.visible = false
           this.getMineScreenListNode()
@@ -555,8 +591,8 @@
     },
     watch: {
       'activeName': {
-        handler: function(num) {
-          if(num == 0) this.$emit('mineScreen', {
+        handler: function (num) {
+          if (num == 0) this.$emit('mineScreen', {
             'type': 'threateScreen',
             'data': {'theatreUuid': null}
           })
@@ -567,13 +603,22 @@
         }
       },
       'addMineScreen.visible': {
-        handler: function(boolean) {
-          if(!boolean) Object.assign(this.addMineScreen, {
+        handler: function (boolean) {
+          if (!boolean) Object.assign(this.addMineScreen, {
             'input': '',
             'theatreUuid': ''
           })
         }
-      }
+      },
+      'addNewTheatre.visible': {
+        handler: function (boolean) {
+          if (boolean) {
+            if (this.selectedCinemaUuid) this.selectCinemaUuid = this.selectedCinemaUuid
+            this.addNewTheatre.input = ''
+            this.addNewTheatre.status = null
+          }
+        }
+      },
     }
   }
 </script>

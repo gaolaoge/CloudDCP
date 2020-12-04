@@ -23,12 +23,12 @@
         <input type="text"
                class="input"
                v-model="searchInput"
-               @keyup.enter="$refs.screenTableReal.getList()"
+               @keyup.enter="$refs.screenTableReal.getList(searchInput)"
                placeholder="输入场景名、任务ID">
         <!--搜索按钮-->
         <img src="@/icons/global-search-icon.png"
              class="searchIcon"
-             @click="$refs.screenTableReal.getList()">
+             @click="$refs.screenTableReal.getList(searchInput)">
       </div>
     </div>
     <div class="hr" />

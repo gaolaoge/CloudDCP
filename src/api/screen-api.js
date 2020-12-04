@@ -56,10 +56,11 @@ export function addNewScreenGroup(data) {
 // 添加【院线】银幕分组
 export function addNewCScreenGroup({cinemaUuid, theatreName}) {
   return http({
-    url: `/dcpProfessional/screen/addTheatre/${cinemaUuid}`,
+    url: `/dcpProfessional/screen/addTheatre`,
     method: 'POST',
     data: {
-      theatreName
+      theatreName,
+      cinemaUuid
     }
   })
 }
@@ -68,6 +69,14 @@ export function addNewCScreenGroup({cinemaUuid, theatreName}) {
 export function deleteMineScreenG(theatreUuid) {
   return http({
     url: `/dcpProfessional/screen/deleteTheatre/${theatreUuid}`,
+    method: 'DELETE'
+  })
+}
+
+// 删除【院线】分组
+export function deleteCinemaG(cinemaUuid) {
+  return http({
+    url: `/dcpProfessional/screen/deleteCinema/${cinemaUuid}`,
     method: 'DELETE'
   })
 }

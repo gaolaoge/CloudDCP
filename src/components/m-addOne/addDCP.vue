@@ -688,7 +688,7 @@
           , mp3LanguageList ? mp3LanguageList.find(curr => curr.val == soundLanguage)['label'].split(' ')[1] + '-' + '字幕语言-AP' : null
           , areaList ? areaList.find(curr => curr.val == region)['label'].split(' ')[1] : null
           , channelTypeList ? channelTypeList[soundtrack]['tag'] : null
-          , resolutionList[resolution]['tag']
+          , resolutionList[resolution - 1]['tag']
           , presenter ? presenter : 'NULL'
           , packageDate.toLocaleDateString().split('/').join('')
           , productor ? productor : 'NULL'

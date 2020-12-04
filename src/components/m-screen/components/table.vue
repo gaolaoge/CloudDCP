@@ -199,9 +199,11 @@
         this.getList(this.tableFilerCondition)
       },
       // 获取表格数据
-      async getList(obj) {
-        this.tableFilerCondition = obj
-        if(!obj) return false
+      async getList(obj, keyword) {
+        if(obj) this.tableFilerCondition = obj
+        // else {
+        //   return false
+        // }
         new Promise(resolve => obj.type == 'mineScreen' ? resolve(this.getMineTab(obj)) : resolve(this.getTab(obj)))
           .then(({data}) => {
             this.total = data.total
@@ -241,11 +243,14 @@
       },
       // 操作 - 编辑 - 预览
       selectLocalScreen() {
-        if (true) this.$store.dispatch('WEBSOCKET_PLUGIN_INIT', true)
-        else this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
-          code: 210,
-          type: ['pem']
-        })
+        let cb = () => {
+          this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
+            code: 210,
+            type: ['pem']
+          })
+        }
+        if (this.socket_plugin) cb()
+        else this.$store.dispatch('WEBSOCKET_PLUGIN_INIT', true).then(() => cb())
       },
       // 操作 - 确认编辑
       async realEditScreen() {

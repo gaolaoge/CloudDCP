@@ -177,7 +177,7 @@
       downloadBtn() {
         if (!this.selectionList.length) return false
         else if (this.selectionList.some(item => item.validPeriod == 0)) return false
-        else if (this.selectionList.every(item => item.taskStatus == 8)) return true
+        else if (this.selectionList.every(item => item.taskStatus == 500)) return true
         else return false
       },
       copyBtn() {

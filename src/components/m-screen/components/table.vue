@@ -168,7 +168,8 @@
           certificateV: '/',
           statusL: '银幕状态',
           statusV: '1',
-          screenUuid: null
+          screenUuid: null,
+          editPath: false
         },
         selectionList: [],     // 多选结果
         tableData: [
@@ -200,7 +201,7 @@
       },
       // 获取表格数据
       async getList(obj, keyword) {
-        if(obj) this.tableFilerCondition = obj
+        if (obj) this.tableFilerCondition = obj
         // else {
         //   return false
         // }
@@ -254,17 +255,32 @@
       },
       // 操作 - 确认编辑
       async realEditScreen() {
-        let {nameV: screenName, certificateV: localPath, statusV: screenStatus, screenUuid} = this.editSDialog,
+        let {nameV: screenName, filePath, statusV: screenStatus, screenUuid, editPath} = this.editSDialog,
           {data} = await editScreen({
             screenUuid,
             screenName,
             screenStatus,
-            localPath
+            'filePath': editPath ? filePath : null
           })
         if (data.code == 201) {
           messageFun('success', '操作成功')
           this.getList(this.tableFilerCondition)
           this.editSDialog.visible = false
+          if (editPath) this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
+            code: 211,
+            userID: this.user.id,
+            files: [data.data].map((item, index) => {
+              return {
+                taskUuid: item['screenUuid'],
+                ID: item['screenId'],
+                localPath: filePath,
+                networkPath: {
+                  front: item['pathPrefix'],
+                  back: item['certificatePath']
+                }
+              }
+            })
+          })
         }
       },
       // 操作 - 编辑
@@ -300,7 +316,7 @@
       },
       // 操作 - 下载
       downloadFun() {
-        let cb =  () => {
+        let cb = () => {
           this.selectionList.forEach(async item => {
             let {data} = await downloadScreen(item.screenUuid)
             this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
@@ -353,7 +369,12 @@
           if (!e) return false
           let data = JSON.parse(e.data)
           if (data.code == 210) {
-            if (data.result == 0) this.editSDialog.certificateV = data.files[0]['localPath']
+            if (data.result == 0) {
+              console.log(data)
+              this.editSDialog.editPath = true
+              this.editSDialog.certificateV = data.files[0]['name']
+              this.editSDialog.filePath = data.files[0]['localPath']
+            }
           }
         }
       }

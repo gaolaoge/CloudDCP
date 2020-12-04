@@ -258,7 +258,9 @@
         this.$emit('tableRowClick', row)
       },
       // 页码跳转
-      handleCurrentChange() {
+      handleCurrentChange(index) {
+        this.pageIndex = index
+        this.getList()
       },
       // 获取表格数据
       async getList() {

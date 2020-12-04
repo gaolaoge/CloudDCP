@@ -126,7 +126,7 @@
             <!--影片名称-->
             <div class="fileItem">
               <label>{{ setUnpackBase.label.movieName }}：</label>
-              <input type="text" :placeholder="setUnpackBase.pl.movieName" v-model="setUnpackBase.form.movieName">
+              <input type="text" :placeholder="setUnpackBase.pl.movieName" v-model="setUnpackBase.form.filmName">
             </div>
             <!--影片类型-->
             <div class="fileItem item">
@@ -465,18 +465,17 @@
             channelType: '声道类型'
           },
           form: {
-            fileName: '',            // 影片名称
             filmCategory: 0,         // 影片类型
             filmVersion: 0,          // 类型版本
             projectUuid: '',         // 所属项目Uuid
             taskName: '',            // 任务名称
-            movieName: '',
+            filmName: '',            // 影片名称
             aspectRatio: 0,          // 宽高比
             soundLanguage: 1,        // 声音语言
             captionLanguage: 1,      // 字幕语言
             captionType: 0,          // OCAP/CCAP
             region: 0,               // 地区
-            resolution: 0,           // 分辨率
+            resolution: 1,           // 分辨率
             sourceColor: 0,          // 源色彩
             presenter: '',           // 出品方
             packageDate: new Date(),    // 打包日期
@@ -679,11 +678,11 @@
     },
     computed: {
       packageName() {
-        let {movieName, filmCategory, filmVersion, packageDate, aspectRatio, soundLanguage, region, resolution, presenter, productor, filmType, packageType, soundtrack} = this.setUnpackBase.form
+        let {filmName, filmCategory, filmVersion, packageDate, aspectRatio, soundLanguage, region, resolution, presenter, productor, filmType, packageType, soundtrack} = this.setUnpackBase.form
           , {dialogAdd, movieTypeList, proportionList, mp3LanguageList, areaList, resolutionList, modeList, DCPTypeList, channelTypeList} = this
           , {renderTList, renderTListActive} = this.selectUnpackBase
           , name = [
-          movieName
+          filmName
           , movieTypeList ? movieTypeList[filmCategory]['tag'] + '-' + filmVersion : null
           , proportionList ? proportionList[aspectRatio]['tag'] : null
           , mp3LanguageList ? mp3LanguageList.find(curr => curr.val == soundLanguage)['label'].split(' ')[1] + '-' + '字幕语言-AP' : null
@@ -906,8 +905,7 @@
       },
       // 3.保存
       async confirmFun() {
-        console.log(this.selectUnpackBase)
-        let {isEncrypt, patternUuid, captionType, packageDate, productor, presenter, packageType, region, soundtrack, captionLanguage, soundLanguage, sourceColor, taskName, projectUuid, fileName, filmCategory, filmVersion, aspectRatio, resolution, filmType} = this.setUnpackBase.form
+        let {isEncrypt, patternUuid, captionType, packageDate, productor, presenter, packageType, region, soundtrack, captionLanguage, soundLanguage, sourceColor, taskName, projectUuid, filmName, filmCategory, filmVersion, aspectRatio, resolution, filmType} = this.setUnpackBase.form
           , {renderTList, renderTListActive, checked} = this.selectUnpackBase
           , {imgFileList, mp3FileList, subtitleFileList} = this.selectFileBase
           , {zoneUuid, user, packageName} = this
@@ -916,7 +914,7 @@
           taskName,                  // 任务名
           packageName,               // dcp文件名
           projectUuid,               // 项uuid
-          fileName,                  // 影片名称
+          filmName,                  // 影片名称
           filmCategory,              // 影片类型
           filmVersion,               // 类型版本
           aspectRatio,               // 宽高比

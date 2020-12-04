@@ -147,7 +147,8 @@ export default {
     pause: '暂停',
     error: '错误',
     suggest: '建议',
-    back: '返回'
+    back: '返回',
+    selectAll: '全选'
   },
   // 公共下拉框选项
   selectionList: {

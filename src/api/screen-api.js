@@ -45,10 +45,11 @@ export function getTheatreList(cinemaUuid) {
 }
 
 // 添加【内部影院】银幕分组
-export function addNewScreenGroup(groupName) {
+export function addNewScreenGroup(data) {
   return http({
-    url: `/dcpProfessional/screen/addInnerGroup?groupName=${groupName}`,
-    method: 'POST'
+    url: `/dcpProfessional/screen/addInnerGroup`,
+    method: 'POST',
+    data
   })
 }
 
@@ -72,10 +73,11 @@ export function deleteMineScreenG(theatreUuid) {
 }
 
 // 重命名【我的银幕】分组
-export function renameMineScreenG(theatreUuid, theatreName) {
+export function renameMineScreenG(data) {
   return http({
-    url: `/dcpProfessional/screen/renameTheatre/${theatreUuid}?theatreName=${theatreName}`,
-    method: 'PUT'
+    url: `/dcpProfessional/screen/renameTheatre`,
+    method: 'PUT',
+    data
   })
 }
 

@@ -405,12 +405,12 @@ const resolutionList = [
   {
     label: '2K（2048*1080）',
     tag: '2K',
-    value: 0
+    value: 1
   },
   {
     label: '4K（4096*2160）',
     tag: '4K',
-    value: 1
+    value: 2
   }
 ]
 

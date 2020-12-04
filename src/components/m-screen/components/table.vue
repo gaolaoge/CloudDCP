@@ -282,7 +282,7 @@
           cancelButtonText: '取消'
         })
           .then(
-            () => Promise.resolve(deleteScreen(screenUuidList)),
+            () => Promise.resolve(deleteScreen({screenUuidList})),
             () => null
           )
           .then(({data}) => {

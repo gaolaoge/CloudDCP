@@ -13,7 +13,7 @@
           <label class="farm-label">{{ label.fileName }}</label>
           <p class="farm-span no-font-size">
             <!--影片名称-->
-            <span class="fns" style="color: #E02020">{{ form.movieName }}</span>
+            <span class="fns" style="color: #E02020">{{ form.filmName }}</span>
             <span class="fns">_</span>
             <!--影片类型-类型版本-->
             <span class="fns" style="color: #FA6400">
@@ -76,7 +76,7 @@
           <label class="farm-label">{{ label.movieName }}</label>
           <input type="text"
                  :class="[{'inputError': null}, 'farm-input', 'farm-name-input']"
-                 v-model="form.movieName">
+                 v-model="form.filmName">
         </div>
         <!--影片类型-->
         <div class="item mini">
@@ -300,22 +300,21 @@
           DCPType: 'DCP类型'
         },
         form: {
-          fileName: '',          // DCP文件名
-          movieName: '',         // 影片名称
-          filmCategory: 0,          // 影片类型
-          filmVersion: 0,            // 类型版本
-          aspectRatio: 0,         // 宽高比
-          soundLanguage: 1,        // 声音语言
-          captionLanguage: 1,      // 字幕语言
-          captionType: 0,                 // OCAP/CCAP
-          region: 0,               // 地区
-          soundtrack: 0,            // 声道类型
-          resolution: 0,         // 分辨率
-          presenter: '',          // 出品方
+          filmName: '',          // 影片名称
+          filmCategory: 0,       // 影片类型
+          filmVersion: 0,        // 类型版本
+          aspectRatio: 0,        // 宽高比
+          soundLanguage: 1,      // 声音语言
+          captionLanguage: 1,    // 字幕语言
+          captionType: 0,        // OCAP/CCAP
+          region: 0,             // 地区
+          soundtrack: 0,         // 声道类型
+          resolution: 1,         // 分辨率
+          presenter: '',         // 出品方
           packageDate: new Date(),              // 打包日期
-          productor: '',              // 制作方
+          productor: '',         // 制作方
           type: 0,               // 2D/3D
-          packageType: 0             // DCP类型
+          packageType: 0         // DCP类型
         },
         movieTypeList: [],
         proportionList: [],

@@ -13,7 +13,6 @@
       <div class="tableList">
         <!--KDM制作结果-->
         <make-default ref="makeDefault"
-                      :DCPUuid="DCPUuid"
                       :topWinInfo="defaultWinTop"
                       v-show="activeIndex == 0"/>
         <!--KDM文件信息-->
@@ -37,7 +36,6 @@
         infoData: null,
         navList: ['KDM制作结果', 'KDM文件信息'],
         activeIndex: 0,
-        DCPUuid: '',
         defaultWinTop: {
           packageName: '',
           taskStatus: 101
@@ -56,7 +54,6 @@
       },
       // 获取数据
       async getData(taskUuid) {
-        this.DCPUuid = taskUuid
         this.$refs.makeDefault.getTabList(taskUuid)
         let {data} = await getKDMInfo(taskUuid)
         if (data.code == 200) {

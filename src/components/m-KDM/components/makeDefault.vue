@@ -41,12 +41,12 @@
             <input type="text"
                    class="input"
                    v-model="tab.keyword"
-                   @keyup.enter="getTabList"
+                   @keyup.enter="getTabList(KDMUuid)"
                    placeholder="检索KDM文件名">
             <!--搜索按钮-->
             <img src="@/icons/global-search-icon.png"
                  class="searchIcon"
-                 @click="getTabList">
+                 @click="getTabList(KDMUuid)">
           </div>
         </div>
         <div class="table">
@@ -196,10 +196,10 @@
           {text: '已完成', value: '已完成'},
           {text: '待打包完成', value: '待打包完成'}
         ],
+        KDMUuid: null
       }
     },
     props: {
-      'DCPUuid': String,
       'topWinInfo': Object
     },
     methods: {
@@ -216,10 +216,11 @@
 
       },
       async getTabList(ID) {
-        let {DCPUuid, tab} = this,
+        this.KDMUuid = ID
+        let {tab} = this,
           {keyword, sortBy, sortType, kdmStatusList} = tab,
           {data} = await getKDMSonTableList({
-            kdmTaskUuid: ID || DCPUuid,
+            kdmTaskUuid: this.KDMUuid,
             kdmStatusList,
             keyword,
             sortBy,

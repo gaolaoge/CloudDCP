@@ -147,7 +147,7 @@
                  class="farm-input addMineScreenInput"
                  :placeholder="addMineScreen.placeholder"
                  v-model="addMineScreen.input"
-                 @keyup.enter="addMineScreenGroupFun"
+                 @keyup.enter="addMineScreen.addOrEdit == 'add' ? addMineScreenGroupFun() : renameInnerTreeG()"
                  @input="verifAddMineScreenName(true)"
                  @blur="verifAddMineScreenName(false)"
                  @focus="addMineScreen.status = null">
@@ -162,12 +162,12 @@
           <div :class="[{'cannotBeGo': !addMineScreen.status}, 'dialog-btn', 'save']"
                v-if="addMineScreen.addOrEdit == 'add'"
                @click="addMineScreenGroupFun">
-            <span>{{ $t('public.save') }}</span>
+            <span>add{{ $t('public.save') }}</span>
           </div>
           <div :class="[{'cannotBeGo': !addMineScreen.status}, 'dialog-btn', 'save']"
                v-if="addMineScreen.addOrEdit == 'edit'"
                @click="renameInnerTreeG">
-            <span>{{ $t('public.save') }}</span>
+            <span>edit{{ $t('public.save') }}</span>
           </div>
         </div>
       </div>
@@ -381,7 +381,10 @@
         card: ['内部银幕', '院线银幕'],
         activeName: '0',
         cinemaList: [],
-        selectCinemaUuid: ''
+        selectCinemaUuid: '',
+        callback: {
+          cinemaF: null
+        }
       }
     },
     methods: {
@@ -423,6 +426,17 @@
         let {data} = await addNewCinema({
           'cinemaName': input
         })
+        if(data.code == 201) {
+          messageFun('success', '操作成功')
+          Object.assign(this.addNewCinema, {
+            'status': null,
+            'input': '',
+            'visible': false
+          })
+          this.getScreenListNode({
+            'level': 0
+          }, this.callback.cinemaF)
+        }
       },
       // 【院线银幕】获取银幕tab
       getThreateTab(data, node) {
@@ -435,8 +449,9 @@
       },
       // 【院线银幕】获取结构
       async getScreenListNode(node, resolve) {
-        if (!node) return false
-        else if (node.level == 0) {
+        // if (!node) return false
+        if (node.level == 0) {
+          this.callback.cinemaF = resolve
           let {data} = await getCinemaGList()
           if (data.code == 200) {
             this.cinemaList = data.data
@@ -470,17 +485,21 @@
       // 【内部银幕】【添加分组】 - 确定
       async addMineScreenGroupFun() {
         if (!this.addMineScreen.status) return false
-        let {activeName} = this,
-          {data} = activeName == 0 ? await addNewScreenGroup(this.addMineScreen.input) : await addNewCScreenGroup({
+        let {activeName, addMineScreen} = this,
+          {data} = activeName == 0 ? await addNewScreenGroup({'groupName': addMineScreen.input}) : await addNewCScreenGroup({
             'cinemaUuid': '',
-            'theatreName': this.addMineScreen.input
+            'theatreName': addMineScreen.input
           })
         if (data.code == 201) {
           messageFun('success', '操作成功！')
-          this.addMineScreen.visible = false
+          addMineScreen.visible = false
           this.mineScreenKeyword = ''
-          this.addMineScreen.input = ''
+          addMineScreen.input = ''
           activeName == 0 ? this.getMineScreenListNode() : this.getScreenListNode()
+        } else if (data.code == 1000) {
+          messageFun('info', '分组名已存在，请重新输入')
+          addMineScreen.status = false
+          addMineScreen.warnInfo = '分组名已存在，请重新输入'
         }
       },
       // 【内部银幕】删除分组
@@ -511,7 +530,15 @@
       // 【内部银幕】- 重命名分组
       async renameInnerTreeG() {
         let {theatreUuid, input} = this.addMineScreen
-        let {data} = await renameMineScreenG(theatreUuid, input)
+        let {data} = await renameMineScreenG({
+          theatreUuid,
+          'theatreName': input
+        })
+        if(data.code == 201) {
+          messageFun('success', '操作成功')
+          this.addMineScreen.visible = false
+          this.getMineScreenListNode()
+        }
       },
       // 【内部银幕】添加分组
       addNewInnerTreeG() {
@@ -523,7 +550,7 @@
     mounted() {
       this.$nextTick(() => {
         this.getMineScreenListNode()
-        this.getScreenListNode()
+        // this.getScreenListNode()
       })
     },
     watch: {
@@ -536,6 +563,14 @@
           else this.$emit('selectMineScreen', {
             'type': 'threateScreen',
             'data': {'theatreUuid': null}
+          })
+        }
+      },
+      'addMineScreen.visible': {
+        handler: function(boolean) {
+          if(!boolean) Object.assign(this.addMineScreen, {
+            'input': '',
+            'theatreUuid': ''
           })
         }
       }

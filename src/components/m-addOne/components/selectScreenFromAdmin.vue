@@ -34,7 +34,7 @@
                 <el-checkbox :indeterminate="checkedList[data.index]['checkAll']"
                              v-model="checkedList[data.index]['checkAll']"
                              @change="checkAllScreen(data.index)"/>
-                <span class="">全选</span>
+                <span>{{ $t('public.selectAll') }}</span>
               </span>
               <!--银幕-->
               <span class="tree-node-span screenName"
@@ -45,6 +45,7 @@
                     v-if="data.leaf">{{ data.certificateName }}</span>
               <span class="tree-node-operate" v-if="data.leaf">
                 <el-checkbox v-model="checkedList[data.fatherIndex]['checkItemList']"
+                             @change="checkItemScreen(checkedList[data.fatherIndex])"
                              :label="data.screenUuid"><span style="display: none"/></el-checkbox>
               </span>
             </span>
@@ -67,7 +68,7 @@
                   <el-checkbox :indeterminate="cinemaCheckedList[data.index]['checkAll']"
                                v-model="cinemaCheckedList[data.index]['checkAll']"
                                @change="cinemaCheckAllScreen(data)"/>
-                  <span class="">全选</span>
+                  <span class="">{{ $t('public.selectAll') }}</span>
                 </span>
               </div>
               <!--影院-->
@@ -327,7 +328,13 @@
         }
       },
       getList() {
-
+        this.screenType == 'internalScreen'
+      },
+      // 【内部银幕】银幕选中
+      checkItemScreen(group) {
+        if(group.checkItemList.length == group.itemList.length && group.itemList.length > 0)
+          group.checkAll = true
+        else group.checkAll = false
       },
       // 内部银幕 全选
       checkAllScreen(index) {

@@ -85,7 +85,7 @@
           prop="projectName"
           label="所属项目"
           show-overflow-tooltip
-          :filters="projectList"
+          :filters="tabProjectList"
           width="200"/>
 
         <!--电影名称-->
@@ -201,10 +201,6 @@
              @click="$emit('closeDialogFun', 'selectDCODialog')">
           <span>{{ $t('public.cancel') }}</span>
         </div>
-        <div class="btnGroup-btn previous"
-             @click="$emit('didSelected', {})">
-          <span>临时跳转</span>
-        </div>
       </div>
     </div>
   </div>
@@ -277,7 +273,6 @@
           {text: '加密', value: '加密'},
           {text: '未加密', value: '未加密'}
         ],
-        projectList: [],
         total: 0,
         pageIndex: 0,
         keyword: '',
@@ -306,7 +301,7 @@
             zoneUuid
           })
         this.total = data.total
-        this.tableData = data.data.map(item => Object.assign(item, {
+        this.tableData = data.data.map((item, index) => Object.assign(item, {
           'taskStatusText': DCPmainStatusList.find(curr => curr.code == item.taskStatus)['status'],
           'film_category': movieTypeList.find(curr => curr.value == item.filmCategory)['label'],
           'useTime': consum(item.useTime),
@@ -315,7 +310,8 @@
           'resolution': this.resolutionList[item.resolution]['text'],
           'is_encrypt': item.is_encrypt ? '加密' : '未加密',
           'createTime': createDateFun(new Date(item.createTime)),
-          'validPeriod': new Date().getTime() >= item.expireTime ? 0 : 1
+          'validPeriod': new Date().getTime() >= item.expireTime ? 0 : 1,
+          index
         }))
       },
       // table 行样式
@@ -354,7 +350,23 @@
       })
     },
     computed: {
-      ...mapState(['setting', 'zoneUuid'])
+      ...mapState(['setting', 'zoneUuid', 'projectList']),
+      'tabProjectList': function () {
+        return this.projectList.map(project => {
+          return {
+            text: project.projectName,
+            value: project.projectUuid
+          }
+        })
+      }
+    },
+    watch: {
+      'projectList': {
+        handler: function (list) {
+          if (!list.length) this.$store.dispatch('getProjectList')
+        },
+        immediate: true
+      }
     }
   }
 </script>
@@ -372,8 +384,10 @@
       box-sizing: border-box;
 
       .table-operate {
+        position: relative;
         float: right;
         margin: 10px 0px;
+        z-index: 1;
       }
 
       /deep/ .el-table__body-wrapper {

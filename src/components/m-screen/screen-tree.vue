@@ -62,8 +62,8 @@
         <input type="text" class="input"
                :placeholder="screenPlaceholder"
                v-model="screenKeyword"
-               @keyup.enter="getScreenListNode">
-        <img src="@/icons/search.png" class="icon search" @click="getScreenListNode">
+               @keyup.enter="createKeywordTree">
+        <img src="@/icons/search.png" class="icon search" @click="createKeywordTree">
         <!--添加-->
         <el-popover
           placement="right-end"
@@ -85,6 +85,7 @@
         </el-popover>
       </div>
       <el-tree
+        v-show="!showKeywordTree"
         :props="props2"
         :load="getScreenListNode"
         :allow-drop="allowDrop"
@@ -125,6 +126,45 @@
             </div>
           </el-popover>
         </span>
+      </el-tree>
+      <el-tree
+        v-show="showKeywordTree"
+        :data="keywordTree"
+        @node-click="getThreateTab">
+<!--        <span class="custom-tree-node" :key="node.id" slot-scope="{ node, data }">-->
+          <!--院线-->
+         <!-- <div class="l" v-if="node.level == 1">
+            <img src="@/icons/filer.png" class="filer default">
+            <img src="@/icons/filer-hover.png" class="filer hover">
+            <span class="tree-node-span">{{ data.cinemaName }}</span>
+          </div>-->
+          <!--影院-->
+<!--          <div class="l theatre" v-if="node.level == 2">-->
+<!--            <img src="@/icons/movie-icon-black.png" class="filer default">-->
+<!--            <img src="@/icons/movie-icon-white.png" class="filer hover">-->
+<!--            <span class="tree-node-span">{{ data.theatreName }}</span>-->
+<!--          </div>-->
+<!--          <el-popover-->
+<!--            placement="right-start"-->
+<!--            width="72"-->
+<!--            trigger="hover"-->
+<!--            :visible-arrow="false">-->
+<!--            &lt;!&ndash;院线&ndash;&gt;-->
+<!--            <ul class="tree-node-operate-brnG" v-if="node.level == 1">-->
+<!--              <li @click="deleteCinemaTreeG(data.cinemaUuid)"><span>{{ $t('public.delete') }}</span></li>-->
+<!--              <li @click="showRenameInnerTreeG(data)"><span>{{ $t('public.rename') }}</span></li>-->
+<!--            </ul>-->
+<!--            &lt;!&ndash;影院&ndash;&gt;-->
+<!--            <ul class="tree-node-operate-brnG" v-if="node.level == 2">-->
+<!--              <li @click="deleteInnerTreeG(data.theatreUuid)"><span>{{ $t('public.delete') }}</span></li>-->
+<!--              <li @click="showRenameInnerTreeG(data)"><span>{{ $t('public.rename') }}</span></li>-->
+<!--            </ul>-->
+<!--            <div class="r" slot="reference">-->
+<!--              <span v-if="node.level == 2" class="total">{{ data.screenCount }}</span>-->
+<!--              <img src="@/icons/operate-icon-white.png" class="operate-icon hover">-->
+<!--            </div>-->
+<!--          </el-popover>-->
+<!--        </span>-->
       </el-tree>
     </div>
     <!--添加分组-->
@@ -313,7 +353,8 @@
     renameMineScreenG,
     getCinemaGList,
     getTheatreList,
-    deleteCinemaG
+    deleteCinemaG,
+    searchCinemaKey
   } from '@/api/screen-api'
   import {
     messageFun,
@@ -384,10 +425,35 @@
         cinemaList: [],
         selectCinemaUuid: '',
         refresh: true,
-        selectedCinemaUuid: null
+        selectedCinemaUuid: null,
+        keywordTree: [],
+        showKeywordTree: false
       }
     },
     methods: {
+      // 影院结构 - 关键字检索
+      async createKeywordTree() {
+        let {screenKeyword} =  this
+        if(!screenKeyword.trim()) return false
+        let {data} = await searchCinemaKey(transformParameterT({
+          'keyword': screenKeyword
+        }))
+        if(data.code == 200) {
+          this.showKeywordTree = true
+          this.keywordTree = data.data.map(cinema => {
+            return {
+              'id': cinema.cinemaUuid,
+              'label': cinema.cinemaName,
+              'children': cinema.theatreResultDTOList.map(theatre => {
+                return {
+                  'id': theatre.theatreUuid,
+                  'label': theatre.theatreName
+                }
+              })
+            }
+          })
+        }
+      },
       // 拖拽事件预判
       allowDrop(draggingNode, dropNode, type) {
         return type !== 'inner'

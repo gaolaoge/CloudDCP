@@ -47,25 +47,19 @@ const createDateFun = function (date, mini, inADay, miniInDay) {
 }
 
 // 耗时
-const consum = function (time) {
+const consum = function (time, real) {
   let result = ''
-  if (time >= 1000) {
+  if (time >= 1) {
     let day = parseInt(time / (24 * 60 * 60 * 1000)),
       hour = parseInt((time % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000)),
       minute = parseInt(((time % (24 * 60 * 60 * 1000)) % (60 * 60 * 1000)) / (60 * 1000)),
-      second = parseInt((((time % (24 * 60 * 60 * 1000)) % (60 * 60 * 1000)) % (60 * 1000)) / 1000)
-    if (day !== 0) {
-      result += day + '天'
-    }
-    if (hour !== 0 || result !== '') {
-      result += hour + '小时'
-    }
-    if (minute !== 0 || result !== '') {
-      result += minute + '分'
-    }
-    if (second !== 0 || result !== '') {
-      result += second + '秒'
-    }
+      second = parseInt((((time % (24 * 60 * 60 * 1000)) % (60 * 60 * 1000)) % (60 * 1000)) / 1000),
+      realSecond = ((((time % (24 * 60 * 60 * 1000)) % (60 * 60 * 1000)) % (60 * 1000)) / 1000).toFixed(2)
+    if (day !== 0) result += day + '天'
+    if (hour !== 0 || result !== '') result += hour + '小时'
+    if (minute !== 0 || result !== '') result += minute + '分'
+    if ((second !== 0 || result !== '') && !real) result += second + '秒'
+    if ((realSecond !== 0 || result !== '') && real) result += realSecond + '秒'
   }
   return result === '' ? '0秒' : result
 }
@@ -1044,6 +1038,49 @@ const DCPmainStatusList = [
   }
 ]
 
+const DCFrameStatusList = [
+  {
+    code: 101,
+    class: '等待',
+    status: '等待开始'
+  },
+  {
+    code: 102,
+    class: '等待',
+    status: '等待分配节点机'
+  },
+  {
+    code: 201,
+    class: '进行中',
+    status: '压缩中'
+  },
+  {
+    code: 301,
+    class: '暂停',
+    status: '手动暂停'
+  },
+  {
+    code: 302,
+    class: '暂停',
+    status: '欠费暂停'
+  },
+  {
+    code: 303,
+    class: '暂停',
+    status: '失败暂停'
+  },
+  {
+    code: 400,
+    class: '失败',
+    status: '压缩失败'
+  },
+  {
+    code: 500,
+    class: '成功',
+    status: '压缩成功'
+  }
+]
+
 const KDMmainStatusList = [
   {
     code: 610,
@@ -1223,6 +1260,7 @@ export {
   textLanguageList,
   areaList,
   DCPmainStatusList,
+  DCFrameStatusList,
   KDMmainStatusList,
   timeZone,
   createCalendar,

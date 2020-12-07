@@ -89,8 +89,9 @@ export default new Vuex.Store({
           this.WEBSOCKET_BACKS_INIT(state, account)
         }
       })
-      state.socket_backS.addEventListener('message', function (data) {
-        state.socket_backS_msg = data
+      state.socket_backS.addEventListener('message', data => {
+        // state.socket_backS_msg = data
+        this.commit('change_websocket_back_message', data)
       })
       state.socket_backS.addEventListener('close', e => {
         console.log(`--与后台连接断开，code码为${e.code},尝试重新连接--` + new Date().toLocaleString())
@@ -143,6 +144,10 @@ export default new Vuex.Store({
       if (!state.socket_backS) return false
       state.socket_backS.close()
       state.socket_backS = null
+    },
+    //
+    change_websocket_back_message(state, msg) {
+      state.socket_backS_msg = msg
     },
     // vuex 数据复位
     reset(s) {

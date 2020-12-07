@@ -113,7 +113,7 @@
       'socket_plugin_msg': {
         handler: function (e) {
           let data = JSON.parse(e.data)
-          if (data.code == 210) {
+          if (data.code == 220) {
             if (data.result == 0) {
               data.files.forEach(item => {
                 this.tableData.push({
@@ -122,7 +122,7 @@
                 })
               })
             }
-          } else if (data.code == 211) {
+          } else if (data.code == 221) {
             if (data.result == 0) {
               // 银幕添加成功
               messageFun('success', '银幕添加成功')
@@ -153,7 +153,7 @@
       // 添加银幕
       addScreenFun() {
         this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
-          code: 210,
+          code: 220,
           type: ['pem']
         })
       },
@@ -185,7 +185,7 @@
           })
         if (data.code == 201) {
           this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
-            code: 211,
+            code: 221,
             userID: user.id,
             files: data.data.map((item, index) => {
               return {

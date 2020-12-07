@@ -5,7 +5,8 @@
       <!--DCP文件简介-->
       <div class="wrapper-border info">
         <div class="showPicCompress"
-             @click="$router.push({'name': 'dcp'})">{{ showPicCompress }}</div>
+             @click="$router.push({'name': 'dcp'})">{{ showPicCompress }}
+        </div>
         <!--DCP文件名-->
         <div class="infoItem">
           <label>{{ info.nameL }}:</label>
@@ -77,7 +78,7 @@
             <el-table-column
               prop="kdmFileName"
               label="KDM文件名"
-              sortable />
+              sortable/>
 
             <!--KDM状态-->
             <el-table-column
@@ -87,18 +88,14 @@
               :filters="statusList"
               width="160">
               <template slot-scope="scope">
-          <span v-if="[101, 201, 610, 620].some(item => item == scope.row.kdmStatus)"
-                style="color: rgba(22, 29, 37, 0.8)">{{ scope.row.taskStatusText }}
-          </span>
+                <span v-if="[101, 201, 610, 620].some(item => item == scope.row.kdmStatus)"
+                      style="color: rgba(22, 29, 37, 0.8)">{{ scope.row.taskStatusText }}</span>
                 <span v-if="[301, 302, 630].some(item => item == scope.row.kdmStatus)"
-                      style="color: rgba(255, 191, 0, 1)">{{ scope.row.taskStatusText }}
-          </span>
+                      style="color: rgba(255, 191, 0, 1)">{{ scope.row.taskStatusText }}</span>
                 <span v-if="[400, 640].some(item => item == scope.row.kdmStatus)"
-                      style="color: rgba(255, 62, 77, 1)">{{ scope.row.taskStatusText }}
-          </span>
+                      style="color: rgba(255, 62, 77, 1)">{{ scope.row.taskStatusText }}</span>
                 <span v-if="[500, 650].some(item => item == scope.row.kdmStatus)"
-                      style="color: rgba(70, 203, 93, 1)">{{ scope.row.taskStatusText }}
-          </span>
+                      style="color: rgba(70, 203, 93, 1)">{{ scope.row.taskStatusText }}</span>
               </template>
             </el-table-column>
 
@@ -228,7 +225,9 @@
             pageIndex: 1,
             pageSize: 999
           })
-        if(data.code == 200) tab.tableData = data.data
+        if (data.code == 200) tab.tableData = data.data.map(item => Object.assign(item, {
+          'taskStatusText': KDMmainStatusList.find(curr => curr.code == item.kdmStatus)['status']
+        }))
       },
       // table 行样式
       tableRowStyle({row}) {
@@ -271,7 +270,7 @@
     },
     watch: {
       'topWinInfo': {
-        handler: function(obj) {
+        handler: function (obj) {
           this.info.nameV = obj.packageName
           this.info.progressV = KDMmainStatusList.find(item => item.code == obj.taskStatus)['status']
         },

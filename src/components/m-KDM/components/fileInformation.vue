@@ -8,7 +8,7 @@
       </div>
       <!--任务名称-->
       <div class="infoItem">
-        <label>{{ taskStatusL }}:</label>
+        <label>{{ taskNameL }}:</label>
         <span>{{ taskName }}</span>
       </div>
       <!--状态-->
@@ -86,7 +86,8 @@
     mp3LanguageList,
     textLanguageList,
     areaList,
-    DCPmainStatusList
+    KDMmainStatusList,
+    timeZone
   } from '@/assets/common'
   export default {
     name: 'fileInfo',
@@ -130,6 +131,10 @@
       'infoData': function(data) {
         if(data) Object.assign(this, data, {
           'packageDate': createDateFun(data.packageDate),
+          'taskId': data.kdmTaskId,
+          'taskName': data.kdmTaskName,
+          'taskStatus': KDMmainStatusList.find(item => item.code == data.taskStatus)['status'],
+          'theatreTimeZone': timeZone.find(item => item.val == data.theatreTimeZone)['label'],
           // 'codingRule': ,
           // 'resolution': resolutionList[data.resolution]['label'],
           // 'sourceColor': colorTypeList[data.sourceColor]['label'],
@@ -143,8 +148,11 @@
           // 'region': areaList[data.region]['label'],
           // 'frameRate': data.frameRate + 'fps',
           // 'codingRate': data.codingRate + 'Mb/s'
+          'kdmCreateDate': createDateFun(data.kdmCreateDate, true),
+          'createTime': createDateFun(data.createTime),
           'movieStartTime': createDateFun(data.movieStartTime),
-          'movieEndTime': createDateFun(data.movieEndTime)
+          'movieEndTime': createDateFun(data.movieEndTime),
+          'fileNameTemplate': data.filenameTemplate
         })
       }
     },
@@ -163,7 +171,8 @@
         mp3LanguageList,
         textLanguageList,
         areaList,
-        DCPmainStatusList
+        KDMmainStatusList,
+        timeZone
       }))
     }
   }

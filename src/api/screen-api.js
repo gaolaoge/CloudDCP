@@ -144,9 +144,18 @@ export function editScreen(data) {
 }
 
 // 银幕操作 - 下载
-export function downloadScreen(screenUuid) {
+export function downloadScreen(data) {
   return http({
-    url: `/dcpProfessional/screen/downloadCertificate/${screenUuid}`,
+    url: `/dcpProfessional/screen/downloadCertificate`,
+    method: 'POST',
+    data
+  })
+}
+
+// 检索院线关键字
+export function searchCinemaKey(data) {
+  return http({
+    url: `/dcpProfessional/screen/getTheatreListByKeyword?${data}`,
     method: 'GET'
   })
 }

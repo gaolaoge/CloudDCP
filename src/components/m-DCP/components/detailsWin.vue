@@ -12,19 +12,23 @@
       <!--table-->
       <div class="tableList">
         <!--DCP打包结果-->
-        <bale-default v-show="activeIndex == 0"/>
+        <bale-default ref="baleDefault" v-show="activeIndex == 0" :packTheResult="packTheResult" :infoData="infoData"/>
         <!--DCP文件信息-->
-        <file-information v-show="activeIndex == 1" :infoData="infoData"/>
+        <file-information ref="fileInformation" v-show="activeIndex == 1" :infoData="infoData"/>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+  import {
+    mapState
+  } from 'vuex'
   import baleDefault from './baleDefault'
   import fileInformation from './fileInformation'
   import {
-    getDCPTableDefault
+    getDCPTableDefault,
+    getDCPPackTheResult
   } from '@/api/dcp-api'
 
   export default {
@@ -32,7 +36,9 @@
     data() {
       return {
         infoData: null,
+        packTheResult: null,
         navList: ['DCP打包结果', 'DCP文件信息'],
+        taskUuid: null,       // 当前DCP的Uuid
         activeIndex: 0
       }
     },
@@ -44,17 +50,38 @@
       },
       // 复位
       reset() {
-
+        this.activeIndex = 0
+        this.$refs.baleDefault.reset()
+        this.$refs.fileInformation.reset()
       },
-      // 获取数据
+      // 获取【文件信息】数据
       async getData(taskUuid) {
         let {data} = await getDCPTableDefault(taskUuid)
-        if(data.code == 200) this.infoData = data.data
+        if (data.code == 200) this.infoData = data.data
+      },
+      // 获取【打包结果】数据
+      async getPackTheResult(taskUuid) {
+        let {data} = await getDCPPackTheResult(taskUuid)
+        if (data.code == 200) {
+          this.taskUuid = data.data.dcpPackageTaskUuid
+          this.packTheResult = data.data
+        }
       }
     },
     components: {
       baleDefault,
       fileInformation
+    },
+    watch: {
+      'socket_backS_msg': {
+        handler: function (e) {
+          let data = JSON.parse(e.data)
+          if (data.code == '102' && data.dcpPackageTaskUuid == this.taskUuid) this.getPackTheResult(this.taskUuid)
+        }
+      }
+    },
+    computed: {
+      ...mapState(['socket_backS_msg', 'user'])
     }
   }
 </script>
@@ -88,6 +115,7 @@
     .tableGroup {
       height: 100%;
     }
+
     .tableList {
       height: calc(100% - 42px);
     }

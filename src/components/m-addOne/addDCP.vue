@@ -686,7 +686,7 @@
           , movieTypeList ? movieTypeList[filmCategory]['tag'] + '-' + filmVersion : null
           , proportionList ? proportionList[aspectRatio]['tag'] : null
           , mp3LanguageList ? mp3LanguageList.find(curr => curr.val == soundLanguage)['label'].split(' ')[1] + '-' + '字幕语言-AP' : null
-          , areaList ? areaList.find(curr => curr.val == region)['label'].split(' ')[1] : null
+          , areaList.length ? areaList.find(curr => curr.val == region)['label'].split(' ')[1] : null
           , channelTypeList ? channelTypeList[soundtrack]['tag'] : null
           , resolutionList[resolution - 1]['tag']
           , presenter ? presenter : 'NULL'
@@ -726,6 +726,9 @@
               let index = team.findIndex(curr => curr.key == data.key)
               team[index]['localPath'] = data.localPath
             }
+          } else if (data.code == 202) {
+            messageFun('success', '创建成功')
+            this.closeDialogFun()
           }
         },
         immediate: true
@@ -964,7 +967,8 @@
           code: 202,
           userID: user.id,
           TaskUUid: data.data.packageTaskUuid,
-          ID: 1,
+          taskName,
+          ID: data.data.taskId,
           files: list.map(item => {
             return {
               'localPath': item.localPath,

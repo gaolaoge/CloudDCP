@@ -18,3 +18,29 @@ export function getDCPTableDefault(taskUuid) {
     method: 'GET'
   })
 }
+
+// 下载DCP
+export function downloadDCPFile(data) {
+  return http({
+    url: `/dcpProfessional/dcp/dcpDownload`,
+    method: 'POST',
+    data
+  })
+}
+
+// DCP 详情 - 打包结果 => 初始数据
+export function getDCPPackTheResult(packageTaskUuid) {
+  return http({
+    url: `/dcpProfessional/dcp/getProcessList/${packageTaskUuid}`,
+    method: 'GET'
+  })
+}
+
+// DCP 详情 - 打包结果 => 初始数据
+export function getDCPPackTheResultFForTab(data) {
+  return http({
+    url: `/dcpProfessional/dcp/getFrameTaskList`,
+    method: 'POST',
+    data
+  })
+}

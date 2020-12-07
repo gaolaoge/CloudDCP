@@ -22,9 +22,11 @@
           </div>
         </div>
       </div>
+      <!--查看图像压缩-->
       <div class="showPicCompress"
            @click="showWin = 'compression'"
-           v-show="String('34567').includes(baleStatus)">{{ showPicCompress }}
+           v-show="[101, 201, 900, 301, 302, 400, 500].find(item => item == processTextStatus)">
+        {{ showPicCompress }}
       </div>
       <div class="wrapper-border setScollBarStyle">
         <div class="form">
@@ -38,44 +40,47 @@
             <label>{{ compressL }}：</label>
             <div class="main">
               <!--当前状态-->
-              <p class="status" v-show="baleStatus == 0">{{ baleUploading }}</p>
-              <p class="status" v-show="baleStatus == 0">{{ baleUploadPause }}</p>
-              <p class="status" v-show="baleStatus == 0">{{ baleUploadError }}</p>
-              <p class="status" v-show="baleStatus == 0">{{ baleWait }}</p>
-              <p class="status" v-show="baleStatus == 0">{{ baleIng }}</p>
-              <p class="status" v-show="baleStatus == 0">{{ balePause }}</p>
-              <p class="status" v-show="baleStatus == 0">{{ baleError[0] }}{{ baleError[1] }}</p>
-              <p class="status" v-show="baleStatus == 0">{{ baleDone }}</p>
+              <p class="status" v-show="processTextStatus == 620">{{ statusTitText.baleUploading }}</p>
+              <p class="status" v-show="processTextStatus == 630">{{ statusTitText.baleUploadPause }}</p>
+              <p class="status" v-show="processTextStatus == 640">{{ statusTitText.baleUploadError }}</p>
+              <p class="status" v-show="processTextStatus == 101">{{ statusTitText.baleWait }}</p>
+              <p class="status" v-show="processTextStatus == 201 || processTextStatus == 900">{{ statusTitText.baleIng
+                }}</p>
+              <p class="status" v-show="processTextStatus == 301 || processTextStatus == 302">{{ statusTitText.balePause
+                }}</p>
+              <p class="status" v-show="processTextStatus == 400">{{ statusTitText.baleError[0] }}{{
+                statusTitText.baleError[1] }}</p>
+              <p class="status" v-show="processTextStatus == 500">{{ statusTitText.baleDone }}</p>
               <!--进度条-->
               <div class="progressItem"
                    v-for="(item, index) in compressList"
                    :key="'progressKey-' + index"
-                   v-show="true">
+                   v-if="baleStatus >= index && item.status">
                 <div class="m">
                   <el-progress :percentage="item.percent"
                                :show-text="false"
                                :class="[setProgressColorF(item), 'progressColor']"/>
-                  <span class="info">{{ item.info }}</span>
-                  <div class="iconB" v-show="item.status == 0">
+                  <span class="info">{{ item.info1 }}{{ item.time }}{{ item.info2 }}</span>
+                  <div class="iconB" v-show="item.status == 5">
                     <img src="@/icons/check-circle.png">
                     <span class="iconText">{{ $t('public.consummation') }}</span>
                   </div>
-                  <div class="iconB" v-show="item.status == 1">
+                  <div class="iconB" v-show="item.status == 3">
                     <img src="@/icons/progressWarnIcon.png">
                     <span class="iconText">{{ $t('public.pause') }}</span>
                   </div>
-                  <div class="iconB" v-show="item.status == 2">
+                  <div class="iconB" v-show="item.status == 4">
                     <img src="@/icons/progressErrorIcon.png">
                     <span class="iconText">{{ $t('public.error') }}</span>
                   </div>
-                  <span class="percent" v-show="item.status == 3">{{ item.percent }}%</span>
+                  <span class="percent" v-show="item.status == 2">{{ item.percent }}%</span>
                 </div>
                 <span class="progressType">{{ item.type }}</span>
               </div>
               <!--报错信息-->
-              <div class="progressWarnInfo">
+              <div class="progressErrorInfo" v-show="showErrorInfo">
                 <el-collapse>
-                  <el-collapse-item v-for="(item,index) in warnInfo" :key="'item_' + index">
+                  <el-collapse-item v-for="(item,index) in errorInfo" :key="'item_' + index">
                     <template slot="title">
                       <span class="title">{{ $t('public.error') }}{{ index ++ }}：{{ item.title }}</span>
                     </template>
@@ -107,7 +112,7 @@
         <div class="searchInput">
           <input type="text"
                  class="input"
-                 v-model="tabSearchInput"
+                 v-model="keyword"
                  @keyup.enter="getTableList"
                  placeholder="搜索帧">
           <!--搜索按钮-->
@@ -125,31 +130,30 @@
 
           <!--帧数-->
           <el-table-column
-            prop="screenId"
+            prop="frameNo"
             label="帧数"
             sortable
             show-overflow-tooltip
-            width="100"/>
+            width="80"/>
 
           <!--帧状态-->
           <el-table-column
-            prop="screenStatus"
+            prop="frameTaskStatus"
             label="帧状态"
             show-overflow-tooltip
             column-key="status"
             :filters="statusList"
-            width="100"/>
+            width="134"/>
 
           <!--压缩时长-->
           <el-table-column
-            prop="certificateName"
+            prop="compressUseTime"
             label="压缩时长"
-            show-overflow-tooltip
-            width="180"/>
+            show-overflow-tooltip/>
 
           <!--压缩开始时间-->
           <el-table-column
-            prop="updateName"
+            prop="compressStartTime"
             label="压缩开始时间"
             sortable
             show-overflow-tooltip
@@ -157,7 +161,7 @@
 
           <!--压缩结束时间-->
           <el-table-column
-            prop="updateTime"
+            prop="compressEndTime"
             label="压缩结束时间"
             sortable
             show-overflow-tooltip
@@ -190,8 +194,16 @@
 <script>
   import {mapState} from 'vuex'
   import {
-    createTableIconList
+    createTableIconList,
+    consum,
+    createDateFun,
+    DCFrameStatusList,
+    messageFun
   } from '@/assets/common'
+  import {
+    getDCPPackTheResultFForTab,
+    downloadDCPFile
+  } from '@/api/dcp-api'
 
   export default {
     name: 'bale-default',
@@ -231,50 +243,35 @@
         ],
         selectionList: [],
         nameL: 'DCP文件名',
-        nameV: '0103S_FTR-2_F_EN-XX_INT_51_2K_NULL_20200801_NULL_SMPTE_OV',
+        nameV: null,
+        packageTaskUuid: '',    // Uuid
         compressL: '打包进度',
-        baleStatus: 3,  // 0上传中 1上传暂停 2 上传失败 3等待打包 4正在打包 5打包暂停 6打包失败 7打包完成
-        baleUploading: '上传中，请稍后……',
-        baleUploadPause: '上传暂停，您可点击下方【传输列表】，启动插件后，查看详情。',
-        baleUploadError: '上传失败，您可点击下方【传输列表】，启动插件后，查看详情。',
-        baleWait: '等待打包，请稍后……',
-        baleIng: '打包进行中，请稍后……',
-        balePause: '打包暂停，请点击【开始】继续打包。',
-        baleError: ['打包失败，共发现', '处错误'],
-        baleDone: '打包完成，请您下载DCP文件包。',
+        baleStatus: 0,     // 打包所在进程 -1上传中 0内容检查 1图像压缩 2图像MXF封装 3声音MXF封装 4DCP打包 5打包结束
+        processTextStatus: 101,  // 620上传中 630上传暂停 640上传失败 101等待打包 201/900进行打包 301/302打包暂停 400打包失败 500打包成功
+        statusTitText: {
+          baleUploading: '上传中，请稍后……',
+          baleUploadPause: '上传暂停，您可点击下方【传输列表】，启动插件后，查看详情。',
+          baleUploadError: '上传失败，您可点击下方【传输列表】，启动插件后，查看详情。',
+          baleWait: '等待打包，请稍后……',
+          baleIng: '打包进行中，请稍后……',
+          balePause: '打包暂停，请点击【开始】继续打包。',
+          baleError: ['打包失败，共发现', '处错误'],
+          baleDone: '打包完成，请您下载DCP文件包。'
+        },
+        titleText: ['内容检查', '图像压缩', '图像MXF封装', '声音MXF封装', '字幕MXF封装', 'DCP打包'],
+        titleText2: ['内容检查', '图像压缩', '图像MXF封装', '声音MXF封装', 'DCP打包'],
+        statusText: [null, '等待开始', '进行中（已耗时：', '暂停（已耗时：', '失败（已耗时：', '成功（共耗时：', null, null, null, '进行中（已耗时：'],
         compressList: [
-          {
-            type: '内容检查',
-            percent: 100,
-            status: 0,       // 完成
-            info: '内容检查完成（共耗时：1分35秒）'
-          },
-          {
-            type: '图像压缩',
-            percent: 50,
-            status: 1,       // 暂停
-            info: '图像压缩完成（共耗时：1分35秒）'
-          },
-          {
-            type: '图像MXF封装',
-            percent: 50,
-            status: 2,      // 失败
-            info: '图像封装完成（共耗时：1分35秒）'
-          },
-          {
-            type: '声音MXF封装',
-            percent: 50,
-            status: 3,
-            info: '声音封装完成（共耗时：1分35秒）'
-          },
-          {
-            type: 'DCP打包',
-            percent: 50,
-            status: 3,
-            info: 'DCP打包完成（共耗时：1分35秒）'
-          },
+          // {
+          //   type: '内容检查',
+          //   percent: 100,
+          //   status: 0,       // 完成
+          //   time: '0',
+          //   info1: '内容检查完成（共耗时：',
+          //   info2: '）'
+          // }
         ],
-        warnInfo: [
+        errorInfo: [
           {
             title: '导入图片设置的源色彩格式不符',
             content: '请检查导入图片的色彩空间，确认无误后请重新创建DCP打包任务；',
@@ -286,56 +283,165 @@
             framesList: null
           }
         ],
-        tabSearchInput: '',    // 结果 - Table - 搜索框
+        showErrorInfo: false,
+        keyword: '',    // 结果 - Table - 搜索框
         tableData: [],
         total: 0,
         pageIndex: 1,
         statusList: []
       }
     },
+    props: {
+      'packTheResult': Object,
+      'infoData': Object
+    },
     methods: {
+      // 复位
+      reset() {
+        Object.assign(this, {
+          'showWin': 'main',
+          'total': 0,
+          'pageIndex': 1,
+          'keyword': ''
+        })
+      },
+      // 构建【打包进度】
+      buildProcessList() {
+        let {packTheResult: PTR, titleText, titleText2, statusText} = this,
+          realTitleText = PTR.processList.length == 5 ? titleText2 : titleText,
+          compressList = PTR.processList.map((item, index) => {
+            return {
+              'type': realTitleText[index],
+              'percent': Number((item.percent * 100).toFixed(2)),
+              'status': item.processStatus,
+              'time': item.processStatus > 1 ? consum(item.useTime) : null,
+              'info1': statusText[item.processStatus],
+              'info2': item.processStatus > 1 ? '）' : null
+            }
+          })
+        // if (PTR.processList.length == 5)
+
+        // processType 1内容检查 2图像压缩 3图像MXF封装 4声音MXF封装 5字幕MXF封装 6DCP打包
+        Object.assign(this, {
+          'nameV': PTR.dcpPackageName,
+          'baleStatus': PTR.currentProcessType,
+          'packageTaskUuid': PTR.dcpPackageTaskUuid,
+          'processTextStatus': PTR.taskStatus,
+          compressList
+        })
+      },
       //
       handleCurrentChange(pageIndex) {
-
+        this.pageIndex = pageIndex
+        this.getTableList()
       },
       //
       filterChangeF() {
 
       },
       // 操作
-      operating() {
+      operating(action) {
+        switch (action) {
+          case '下载':
+            this.downloadFun()
+            break
+        }
+      },
+      // 操作 - 下载
+      async downloadFun() {
+        let {data} = await downloadDCPFile({'packageTaskUuid': [this.packageTaskUuid]})
+        if (data.code != 200) {
+          messageFun('error', '操作失败')
+          return false
+        }
+        let cb = () => {
+          this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
+            'code': 300,
+            'userID': this.user.id,
+            'ID': this.infoData['taskId'],
+            'filmName': this.infoData['fileName'],
+            'taskName': this.infoData['taskName'],
+            'path': [{'front': data.data[0]['pathPrefix'], 'back': data.data[0]['relativePath']}]
+          })
+        }
+        if (this.socket_plugin) cb()
+        else this.$store.dispatch('WEBSOCKET_PLUGIN_INIT', true).then(() => cb())
       },
       // 样式 - 进度条颜色
       setProgressColorF({percent, status}) {
-        if (status == 1) return 'statusPause'
-        else if (status == 2) return 'statusError'
+        if (status == 301 || status == 302) return 'statusPause'
+        else if (status == 400) return 'statusError'
         else return 'statusDone'
       },
+      // 获取【打包结果】Tab
       async getTableList() {
-
+        let {pageIndex, keyword, packTheResult} = this,
+          {data} = await getDCPPackTheResultFForTab({
+            'taskUuid': packTheResult.dcpPackageTaskUuid,
+            pageIndex,
+            'pageSize': 10,
+            frameTaskStatusList: [],
+            keyword,
+            sortBy: null,
+            sortType: 0
+          })
+        if (data.code == 200) this.tableData = data.data.map(item => Object.assign(item, {
+          'frameTaskStatus': DCFrameStatusList.find(curr => curr.code == item.frameTaskStatus)['status'],
+          'compressEndTime': createDateFun(item.compressEndTime),
+          'compressStartTime': createDateFun(item.compressStartTime),
+          'compressUseTime': consum(item.compressUseTime, true)
+        }))
+        this.total = data.total
       }
     },
     computed: {
-      ...mapState([]),
+      ...mapState(['user', 'socket_backS_msg', 'socket_plugin']),
       startBtn() {
-        if (String('5').includes(this.baleStatus)) return true
+        if ([301, 302].find(item => item == this.processTextStatus)) return true
         else return false
       },
       pauseBtn() {
-        if (String('34').includes(this.baleStatus)) return true
+        if ([201, 900].find(item => item == this.processTextStatus)) return true
         else return false
       },
       downloadBtn() {
-        if (String('7').includes(this.baleStatus)) return true
+        if ([500].find(item => item == this.processTextStatus)) return true
         else return false
       },
       againBtn() {
-        if (String('6').includes(this.baleStatus)) return true
+        if ([400].find(item => item == this.processTextStatus)) return true
         else return false
       }
     },
     mounted() {
-      this.$nextTick(() => createTableIconList())
+      this.$nextTick(() => {
+        createTableIconList()
+        Object.assign(this, {
+          DCFrameStatusList
+        })
+      })
+    },
+    watch: {
+      'packTheResult': {
+        handler: function (obj) {
+          if ('dcpPackageTaskUuid' in obj) {
+            this.packageTaskUuid = obj.dcpPackageTaskUuid
+            this.buildProcessList()
+            if (this.packageTaskUuid != obj.dcpPackageTaskUuid) this.getTableList()
+          }
+        },
+        deep: true
+      },
+      'socket_backS_msg': {
+        handler: function (e) {
+          let data = JSON.parse(e.data)
+          if (data.code == '103' && data.packageTaskUuid == this.packageTaskUuid && this.showWin == 'compression')
+            this.getTableList()
+        }
+      },
+      'showWin': function (val) {
+        if (val == 'compression' && this.total == 0) this.getTableList()
+      }
     }
   }
 </script>
@@ -476,7 +582,7 @@
 
               }
 
-              .progressWarnInfo {
+              .progressErrorInfo {
                 /deep/ .el-collapse,
                 /deep/ .el-collapse-item__wrap,
                 /deep/ .el-collapse-item__header {

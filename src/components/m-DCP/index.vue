@@ -118,6 +118,7 @@
       showDetails(data) {
         this.showWin = true
         this.$refs.win.getData(data.taskUuid)
+        this.$refs.win.getPackTheResult(data.taskUuid)
       },
       // 操作
       operating(action) {
@@ -142,7 +143,7 @@
             // 状态为「失败」且未过期
             if (this.againBtn) this.$refs.dcptable.againFun()
             break
-          case '下载DCP':
+          case '下载':
             // 状态为「已完成」且未过期
             if (this.downloadBtn) this.$refs.dcptable.downloadFun()
             break
@@ -176,7 +177,6 @@
       },
       downloadBtn() {
         if (!this.selectionList.length) return false
-        else if (this.selectionList.some(item => item.validPeriod == 0)) return false
         else if (this.selectionList.every(item => item.taskStatus == 500)) return true
         else return false
       },
@@ -247,6 +247,7 @@
     right: -924px;
     transition: all 0.2s;
     border-radius: 8px;
+    z-index: 1;
 
     &.showMe {
       right: -20px;

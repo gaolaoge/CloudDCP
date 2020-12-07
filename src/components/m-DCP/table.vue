@@ -175,7 +175,8 @@
 
 <script>
   import {
-    getDCPTableList
+    getDCPTableList,
+    downloadDCPFile
   } from '@/api/dcp-api'
   import {
     consum,
@@ -317,9 +318,28 @@
 
       },
       // 操作 - 下载DCP
-      downloadFun() {
+      async downloadFun() {
         // 状态为「已完成」且未过期
-
+        let {selectionList} = this,
+          {data} = await downloadDCPFile({'packageTaskUuid': selectionList.map(item => item.taskUuid)})
+        if (data.code != 200) {
+          messageFun('error', '操作失败')
+          return false
+        }
+        let cb = () => {
+          data.data.forEach((item ,index) => {
+            this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
+              'code': 300,
+              'userID': this.user.id,
+              'ID': item.taskId,
+              'filmName': selectionList[index]['fileName'],
+              'taskName': selectionList[index]['taskName'],
+              'path': [{'front': item.pathPrefix, 'back': item.relativePath}]
+            })
+          })
+        }
+        if (this.socket_plugin) cb()
+        else this.$store.dispatch('WEBSOCKET_PLUGIN_INIT', true).then(() => cb())
       },
       // 操作 - 创建KDM
       createKDMFun() {
@@ -363,7 +383,7 @@
       })
     },
     computed: {
-      ...mapState(['setting', 'zoneUuid', 'projectList']),
+      ...mapState(['setting', 'zoneUuid', 'projectList', 'socket_plugin', 'socket_backS_msg']),
       'tabProjectList': function () {
         return this.projectList.map(project => {
           return {
@@ -384,6 +404,12 @@
           if (!list.length) this.$store.dispatch('getProjectList')
         },
         immediate: true
+      },
+      'socket_backS_msg': {
+        handler: function (e) {
+          let data = JSON.parse(e.data)
+          if (data.code == '101') this.getList()
+        }
       }
     }
   }

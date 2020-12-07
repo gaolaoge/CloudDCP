@@ -2,7 +2,8 @@ import Axios from 'axios'
 import vue from '@/main.js'
 import {
   messageFun,
-  transformParameterS
+  transformParameterS,
+  getUserInfoF
 } from '../assets/common'
 
 import store from '@/store'
@@ -47,7 +48,6 @@ http.interceptors.response.use(
         vue.$router.push({'name': 'dcp', params: { 'path': obj.path }})
       } else {
         createEM()
-        // sessionStorage.setItem('token','')
         vue.$router.push({'name': 'login'})
       }
     }

@@ -256,10 +256,11 @@
     },
     mounted() {
       this.$nextTick(() => {
-        createTableIconList()
         Object.assign(this, {
           KDMmainStatusList
         })
+        createTableIconList()
+        this.getList()
       })
     },
     computed: {
@@ -274,11 +275,16 @@
       }
     },
     watch: {
-      'selectionList': {
-        handler: function (list) {
-
+      'zoneUuid': {
+        handler: function(id) {
+          if(id) this.getList()
         }
       },
+      // 'selectionList': {
+      //   handler: function (list) {
+      //
+      //   }
+      // },
       'projectList': {
         handler: function (list) {
           if (!list.length) this.$store.dispatch('getProjectList')

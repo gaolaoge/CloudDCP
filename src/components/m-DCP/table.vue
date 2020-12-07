@@ -96,7 +96,7 @@
         label="内容类型"
         show-overflow-tooltip
         column-key="type"
-        :filters="movieTypeList"
+        :filters="typeList"
         width="200"/>
 
       <!--宽高比-->
@@ -196,12 +196,9 @@
     data() {
       return {
         selectionList: [],     // 多选结果
-        movieTypeList: [],
         proportionList: [],
         tableData: [
-          // {
-          //   // validPeriod,   1有效 0过期
-          // }
+          // { validPeriod,   1有效 0过期 }
         ],
         statusList: [
           {text: '上传中', value: '上传中...'},
@@ -277,7 +274,7 @@
             isEncryptList: [],       // 是否加密 0不加密,1加密
             sortBy: null,            // 排序字段
             sortType: 0,             // 0降序,1升序
-            'zoneUuid': 'zone001'
+            zoneUuid
           })
         this.total = data.total
         this.tableData = data.data.map(item => Object.assign(item, {
@@ -332,7 +329,7 @@
               'code': 300,
               'userID': this.user.id,
               'ID': item.taskId,
-              'filmName': selectionList[index]['fileName'],
+              'filmName': selectionList[index]['filmName'],
               'taskName': selectionList[index]['taskName'],
               'path': [{'front': item.pathPrefix, 'back': item.relativePath}]
             })
@@ -383,15 +380,15 @@
       })
     },
     computed: {
-      ...mapState(['setting', 'zoneUuid', 'projectList', 'socket_plugin', 'socket_backS_msg']),
+      ...mapState(['setting', 'zoneUuid', 'projectList', 'socket_plugin', 'socket_backS_msg', 'user']),
       'tabProjectList': function () {
-        return this.projectList.map(project => {
+        return this.projectList ? this.projectList.map(project => {
           return {
             text: project.projectName,
             value: project.projectUuid
           }
-        })
-      }
+        }) : []
+      },
     },
     watch: {
       'selectionList': {
@@ -409,6 +406,11 @@
         handler: function (e) {
           let data = JSON.parse(e.data)
           if (data.code == '101') this.getList()
+        }
+      },
+      'zoneUuid': {
+        handler: function(id) {
+          if(id) this.getList()
         }
       }
     }

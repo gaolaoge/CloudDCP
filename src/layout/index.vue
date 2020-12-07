@@ -80,7 +80,6 @@
                :destroy-on-close="true"
                :close-on-press-escape="false"
                :close-on-click-modal="false"
-               top="8vh"
                width="862px">
       <addKDM @closeDialogFun="closeDialogFun"
               :selectedDCPUTask="selectedDCPUTask"/>

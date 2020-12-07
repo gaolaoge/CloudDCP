@@ -8,7 +8,7 @@
       </div>
       <!--任务名称-->
       <div class="infoItem">
-        <label>{{ taskStatusL }}:</label>
+        <label>{{ taskNameL }}:</label>
         <span>{{ taskName }}</span>
       </div>
       <!--状态-->
@@ -151,7 +151,8 @@
     mp3LanguageList,
     textLanguageList,
     areaList,
-    DCPmainStatusList
+    DCPmainStatusList,
+    normList
   } from '@/assets/common'
   export default {
     name: 'fileInfo',
@@ -212,7 +213,12 @@
         createTime: null
       }
     },
-    methods: {},
+    methods: {
+      // 数据复位
+      reset() {
+
+      }
+    },
     props: {
       infoData: Object
     },
@@ -220,7 +226,7 @@
       'infoData': function(data) {
         if(data) Object.assign(this, data, {
           'packageDate': createDateFun(data.packageDate),
-          // 'codingRule': ,
+          'codingRule': normList[data.codingRule]['label'],                 // 打包标准
           'resolution': resolutionList[data.resolution]['label'],
           'sourceColor': colorTypeList[data.sourceColor]['label'],
           'aspectRatio': proportionList[data.aspectRatio]['label'],
@@ -232,7 +238,11 @@
           'taskStatus': DCPmainStatusList.find(item => item.code == data.taskStatus)['status'],
           'region': areaList[data.region]['label'],
           'frameRate': data.frameRate + 'fps',
-          'codingRate': data.codingRate + 'Mb/s'
+          'codingRate': data.codingRate + 'Mb/s',
+          'filmVersion': versionList[data.filmVersion]['label'],            // 类型版本
+          'soundLanguage': mp3LanguageList[data.soundLanguage]['label'],    // 声音语言
+          'packageType': DCPTypeList[data.packageType]['label'],            // DCP类型
+          'createTime':createDateFun(data.createTime)                       // 创建时间
         })
       }
     },
@@ -246,12 +256,12 @@
         channelTypeList,
         APList,
         DCPTypeList,
-        soundtrackList,
         versionList,
         mp3LanguageList,
         textLanguageList,
         areaList,
-        DCPmainStatusList
+        DCPmainStatusList,
+        normList
       }))
     }
   }

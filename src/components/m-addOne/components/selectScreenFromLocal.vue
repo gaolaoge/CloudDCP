@@ -1,72 +1,85 @@
 <template>
   <div class="selectScreenFromLocal">
-    <div class="win wrapper-border setScollBarStyle">
-      <div class="localFileTab">
-        <div class="table">
-          <div class="table-operate">
-            <div class="btnGroup"
-                 :class="[{'cannotDelete': !selectionList.length}]">
-              <div :class="[item.class, 'btn']"
-                   @click="operating(item['action'])"
-                   v-for="(item,index) in btnGroup"
-                   :key="'renderBtn-' + index">
-                <img :src="item.iconDefault" v-if="item.iconDefault" class="btnIcon default">
-                <img :src="item.iconHover" v-if="item.iconHover" class="btnIcon hover">
-                <span>{{ item['action'] }}</span>
-              </div>
-            </div>
-          </div>
-          <el-table
-            ref="multipleTable"
-            :data="tableData"
-            tooltip-effect="dark"
-            style="width: 100%"
-            @selection-change="selection => selectionList = selection">
-
-            <el-table-column
-              type="selection"
-              align="right"
-              width="45"/>
-
-            <!--银幕名称-->
-            <el-table-column
-              label="银幕名称"
-              sortable
-              width="320">
-              <template slot-scope="scope">{{ scope.row.name }}</template>
-            </el-table-column>
-
-            <!--银幕证书-->
-            <el-table-column
-              label="银幕证书">
-              <template slot-scope="scope">{{ scope.row.localPath }}</template>
-            </el-table-column>
-          </el-table>
-          <!--暂无数据-->
-          <div class="nullTableData" v-show="!tableData.length">
-            <img src="@/icons/tableDataNull.png">
-            <span>{{ $t('public.unData') }}</span>
+    <div class="stepOne" v-show="step == 1">
+      <div class="dialog-btn-group rightOperate">
+        <div class="totalText" v-show="true">
+          <!--下一步-->
+          <div class="dialog-btn save"
+               @click="step = 2">
+            <span>{{ $t('public.nextStop') }}</span>
           </div>
         </div>
       </div>
     </div>
-    <div class="bottomOperate">
-      <div class="back" @click="$emit('selectByNetdisc')">
-        <img src="@/icons/toUploadTab.png" class="icon">
-        <span class="text">{{ fromNetdisc }}</span>
+    <div class="stepTwo" v-show="step == 2">
+      <div class="win wrapper-border setScollBarStyle">
+        <div class="localFileTab">
+          <div class="table">
+            <div class="table-operate">
+              <div class="btnGroup"
+                   :class="[{'cannotDelete': !selectionList.length}]">
+                <div :class="[item.class, 'btn']"
+                     @click="operating(item['action'])"
+                     v-for="(item,index) in btnGroup"
+                     :key="'renderBtn-' + index">
+                  <img :src="item.iconDefault" v-if="item.iconDefault" class="btnIcon default">
+                  <img :src="item.iconHover" v-if="item.iconHover" class="btnIcon hover">
+                  <span>{{ item['action'] }}</span>
+                </div>
+              </div>
+            </div>
+            <el-table
+              ref="multipleTable"
+              :data="tableData"
+              tooltip-effect="dark"
+              style="width: 100%"
+              @selection-change="selection => selectionList = selection">
+
+              <el-table-column
+                type="selection"
+                align="right"
+                width="45"/>
+
+              <!--银幕名称-->
+              <el-table-column
+                label="银幕名称"
+                sortable
+                width="320">
+                <template slot-scope="scope">{{ scope.row.name }}</template>
+              </el-table-column>
+
+              <!--银幕证书-->
+              <el-table-column
+                label="银幕证书">
+                <template slot-scope="scope">{{ scope.row.localPath }}</template>
+              </el-table-column>
+            </el-table>
+            <!--暂无数据-->
+            <div class="nullTableData" v-show="!tableData.length">
+              <img src="@/icons/tableDataNull.png">
+              <span>{{ $t('public.unData') }}</span>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="dialog-btn-group rightOperate">
-        <div class="totalText" v-show="true">
-          <!--已选择n个场景-->
-          <span class="internalScrSelText">
+      <div class="bottomOperate">
+        <div class="back" @click="$emit('selectByNetdisc')">
+          <img src="@/icons/toUploadTab.png" class="icon">
+          <span class="text">{{ fromNetdisc }}</span>
+        </div>
+        <div class="dialog-btn-group rightOperate">
+          <div class="totalText" v-show="true">
+            <!--已选择n个场景-->
+            <span class="internalScrSelText">
             {{ bottomOperate.selectedText1 }}
             <span class="internalScrSelTotal">{{ tableData.length }}</span>
             {{ bottomOperate.selectedText2 }}
           </span>
-          <!--下一步-->
-          <div :class="[{'cannotBeGo': !tableData.length}, 'dialog-btn', 'save']"
-               @click="nextFun">
-            <span>{{ $t('public.nextStop') }}</span>
+            <!--下一步-->
+            <div :class="[{'cannotBeGo': !tableData.length}, 'dialog-btn', 'save']"
+                 @click="nextFun">
+              <span>{{ $t('public.nextStop') }}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -106,8 +119,12 @@
           selectedText1: '已选择',
           selectedText2: '个银幕'
         },
-        selectionList: []
+        selectionList: [],
+        step: 1
       }
+    },
+    props: {
+      'chooseSelf': Boolean
     },
     watch: {
       'socket_plugin_msg': {
@@ -131,6 +148,15 @@
           }
         }
       },
+      'step': function(num) {
+        if (num == 2) this.$emit('localWinStatus', 'selectFile')
+      },
+      'chooseSelf': {
+        handler: function(boolean) {
+          if(boolean) this.$emit('localWinStatus', 'inputName')
+        },
+        immediate: true
+      }
     },
     methods: {
       operating(action) {

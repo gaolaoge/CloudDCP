@@ -1,5 +1,5 @@
 <template>
-  <div class="addKDM">
+  <div :class="[{'mini': LSIS}, 'addKDM']">
     <header class="header">
       <span class="title">{{ title }}</span>
       <img src="@/icons/shutDialogIcon.png"
@@ -33,8 +33,10 @@
             v-show="selectBy == 'netdisc'"/>
           <!--从我的电脑选择-->
           <selectScreenFromLocal
+            :chooseSelf="selectBy == 'local' ? true : false"
             @selectedAndNext="nextFun"
             @selectByNetdisc="selectBy = 'netdisc'"
+            @localWinStatus="localWinStatus"
             v-show="selectBy == 'local'"/>
         </div>
         <!--设置KDM参数-->
@@ -233,13 +235,19 @@
         },
         timeZone: [],
         typeList: [],
-        typeIndex: 0      // 文件名格式索引
+        typeIndex: 0,      // 文件名格式索引
+        LSIS: false        // 处于【选择播放银幕】-【从电脑选中】-【输入院线/影院信息】  需要收缩窗口高度
       }
     },
     props: {
       selectedDCPUTask: Object
     },
     methods: {
+      //
+      localWinStatus(status) {
+        if(status == 'inputName') this.LSIS = true
+        else this.LSIS = false
+      },
       // 1.关闭新建项目窗口
       shutAddProjectDialog(status) {
         this.addProjectDialog.visible = false
@@ -312,6 +320,7 @@
             files: data.data.map(item => {
               return {
                 'taskUuid': item.taskUuid,
+                'taskName': kdmTaskName,
                 'ID': item.taskId,
                 'localPath': item.localPath,
                 'networkPath': {
@@ -380,6 +389,10 @@
     user-select: none;
     height: 80vh;
     position: relative;
+
+    &.mini {
+      height: 400px;
+    }
 
     .stepGroup {
       height: calc(100% - 35px - 40px);

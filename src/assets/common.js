@@ -8,7 +8,7 @@ import {
 } from '@/api/info-api'
 
 // get请求读取参数返回OBJ
-const transformParameterS = function(json) {
+const transformParameterS = function (json) {
   let text = json[0] == '?' ? json.slice(1) : json,
     list = text.split('&'),
     obj = {}
@@ -21,16 +21,15 @@ const transformParameterS = function(json) {
 
 // get请求转换参数为字符串
 const transformParameterT = function (obj) {
-  if(!obj instanceof Object) return false
+  if (!obj instanceof Object) return false
   let default_ = []
   Object.keys(obj).forEach(key => default_.push(`${key}=${obj[key]}`))
   return default_.join('&')
 }
 
 // 获取个人信息
-const
-getUserInfoF = function () {
-  getUserInfo().then(data => setInfo(data.data.data))
+const getUserInfoF = function () {
+  getUserInfo().then(({data}) => setInfo(data.data))
 }
 
 // 读取时间戳
@@ -238,6 +237,7 @@ const UuidFun = function () {
 }
 
 const setInfo = function (data) {
+  store.commit('changeZoneId', data.zoneUuid || 'zone001')
   sessionStorage.setItem('info', JSON.stringify({
     account: data.account,
     phone: data.phone,
@@ -253,7 +253,7 @@ const setInfo = function (data) {
   store.commit('changeBirthday', data.birthday)                                                  // 生日
   store.commit('changeEmail', data.email)                                                        // email
   store.commit('changeSex', data.sex)                                                            // 性别
-  store.commit('changeZoneId', data.zoneUuid || 'zone001')                                                    // 所在区ID
+                                                   // 所在区ID
   store.commit('changeUserBalance', data.goldBalance.toFixed(3))                      // 金币余额
 }
 
@@ -556,6 +556,18 @@ const versionList = [
   {
     label: '版本9',
     val: 9
+  }
+]
+
+// DCP打包标准
+const normList = [
+  {
+    label: 'SMPTE',
+    val: 0
+  },
+  {
+    label: 'Interop',
+    val: 1
   }
 ]
 
@@ -1275,6 +1287,7 @@ export {
   DCFrameStatusList,
   KDMmainStatusList,
   timeZone,
+  normList,
   createCalendar,
   createDateFun,
   getDate,

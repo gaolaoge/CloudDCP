@@ -8,7 +8,7 @@ module.exports = merge(prodEnv, {
   // BASE_URI: '"http://192.168.1.87:6050/"',    // 继宏达
   // BASE_URI: '"http://223.80.107.190:38146"',              // 测试
   BACK_WS_API: '"ws://192.168.1.176:5002/websocket/dcp/web/"',
-  PLUGIN_WS_API: '"ws://localhost:15000"',
+  PLUGIN_WS_API: '"ws://localhost:17002"',
   // PLUGIN_WS_API: '"ws://192.168.1.87:15000"',
   MOCK: true,
   VERSION: "'-'",

@@ -141,9 +141,6 @@
         }
       }
     },
-    mounted() {
-      this.$refs.kdmtable.getList()
-    },
     computed: {
       ...mapState(['user', 'zone']),
       startBtn() {

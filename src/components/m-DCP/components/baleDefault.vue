@@ -359,7 +359,7 @@
             'code': 300,
             'userID': this.user.id,
             'ID': this.infoData['taskId'],
-            'filmName': this.infoData['fileName'],
+            'filmName': this.infoData['filmName'],
             'taskName': this.infoData['taskName'],
             'path': [{'front': data.data[0]['pathPrefix'], 'back': data.data[0]['relativePath']}]
           })

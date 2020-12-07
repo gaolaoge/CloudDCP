@@ -71,7 +71,7 @@
               </div>
               <div class="bodyB">
                 <span class="software">
-                  {{ dialogAdd.normL }}： {{ dialogAdd['normList'][item.codingRule]['label'] }}
+                  {{ dialogAdd.normL }}： {{ normList[item.codingRule]['label'] }}
                 </span>
                 <span class="software">{{ dialogAdd.internetSL }}： {{ item.codingRate }}Mb/s</span>
                 <span class="software">
@@ -325,7 +325,7 @@
           <el-select v-model="dialogAdd.form.codingRule"
                      class="farm-select">
             <el-option
-              v-for="(item,index) in dialogAdd.normList"
+              v-for="(item,index) in normList"
               :key="index"
               :label="item.label"
               :value="item.val">
@@ -376,7 +376,7 @@
       @close="closesetFileNameDialog"
       append-to-body>
       <setName @shutMe="shutSetNameDialog"
-               :codingRule="selectUnpackBase.renderTList.length && selectUnpackBase.renderTListActive != -1 ? dialogAdd['normList'][selectUnpackBase.renderTList[selectUnpackBase.renderTListActive]['codingRule']]['label'] : null"/>
+               :codingRule="selectUnpackBase.renderTList.length && selectUnpackBase.renderTListActive != -1 ? normList[selectUnpackBase.renderTList[selectUnpackBase.renderTListActive]['codingRule']]['label'] : null"/>
     </el-dialog>
     <!--新建项目-->
     <el-dialog
@@ -426,7 +426,8 @@
     textLanguageList,
     areaList,
     messageFun,
-    throwInfoFun
+    throwInfoFun,
+    normList
   } from '@/assets/common.js'
   import addProject from '@/components/public-module/add_project'
   import setName from './components/setDCPFileName'
@@ -626,16 +627,6 @@
           warnInfo: {
             name: null
           },
-          normList: [
-            {
-              label: 'SMPTE',
-              val: 0
-            },
-            {
-              label: 'Interop',
-              val: 1
-            }
-          ],
           speedList: [
             {
               label: '24FPS',
@@ -692,7 +683,7 @@
           , presenter ? presenter : 'NULL'
           , packageDate.toLocaleDateString().split('/').join('')
           , productor ? productor : 'NULL'
-          , renderTList.length && renderTListActive != -1 ? (dialogAdd.normList.find(curr => curr.val == renderTList[renderTListActive]['codingRule'])['label'] + modeList ? modeList[filmType]['label'] : '') : null
+          , renderTList.length && renderTListActive != -1 ? (normList.find(curr => curr.val == renderTList[renderTListActive]['codingRule'])['label'] + modeList ? modeList[filmType]['label'] : '') : null
           , DCPTypeList ? DCPTypeList[packageType]['tag'] : ''
         ]
         return name.join('_')
@@ -1006,7 +997,8 @@
         versionList,
         mp3LanguageList,
         textLanguageList,
-        areaList
+        areaList,
+        normList
       })
       this.getList()  // 1.选择打包模板 - 获取渲染模板列表
     },

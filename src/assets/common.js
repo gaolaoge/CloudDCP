@@ -7,6 +7,18 @@ import {
   getUserInfo
 } from '@/api/info-api'
 
+// get请求读取参数返回OBJ
+const transformParameterS = function(json) {
+  let text = json[0] == '?' ? json.slice(1) : json,
+    list = text.split('&'),
+    obj = {}
+  list.forEach(item => {
+    let t = item.split('=')
+    obj[t[0]] = t[1]
+  })
+  return obj
+}
+
 // get请求转换参数为字符串
 const transformParameterT = function (obj) {
   if(!obj instanceof Object) return false
@@ -1282,5 +1294,6 @@ export {
   sortDateF,
   openPlugin,
   getUserInfoF,
-  transformParameterT
+  transformParameterT,
+  transformParameterS
 }

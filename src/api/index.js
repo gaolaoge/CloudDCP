@@ -1,7 +1,8 @@
 import Axios from 'axios'
 import vue from '@/main.js'
 import {
-  messageFun
+  messageFun,
+  transformParameterS
 } from '../assets/common'
 
 import store from '@/store'
@@ -37,12 +38,13 @@ http.interceptors.response.use(
   error => {
     if (vue.$route.path === '/login') return false
     if (error.response.status === 401) {
-      if (window.location.search.split('=')[0] === '?token') {
-        let token = window.location.search.split('=')[1]
+      let obj = transformParameterS(window.location.search)
+      if ('token' in obj) {
+        let token = obj.token
         sessionStorage.setItem('token', token)
         localStorage.setItem('loginPageIndex', this.activeIndex)
         store.commit('openCtreatDCPWin', true)
-        vue.$router.push({'name': 'dcp'})
+        vue.$router.push({'name': 'dcp', params: { 'path': obj.path }})
       } else {
         createEM()
         // sessionStorage.setItem('token','')

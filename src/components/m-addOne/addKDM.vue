@@ -136,7 +136,7 @@
     <!--设置KDM名-->
     <el-dialog
       width="640px"
-      top="20vh"
+      top="0px"
       :show-close=false
       :visible.sync="setFileNameDialog.visible"
       @close="closesetFileNameDialog"
@@ -148,6 +148,7 @@
     </el-dialog>
     <!--新建项目-->
     <el-dialog
+      top="0px"
       width="380px"
       :show-close=false
       :visible.sync="addProjectDialog.visible"

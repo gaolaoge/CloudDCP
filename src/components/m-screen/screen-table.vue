@@ -37,6 +37,7 @@
            @tableSelectionF="result => selectionList = result"/>
     <!--添加银幕-->
     <el-dialog
+      top="0px"
       :visible.sync="addSDialogVisible"
       :destroy-on-close="true"
       :show-close="false"

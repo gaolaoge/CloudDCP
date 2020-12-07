@@ -169,10 +169,10 @@
     </div>
     <!--添加分组-->
     <el-dialog
+      top="0px"
       :append-to-body="true"
       :visible.sync="addMineScreen.visible"
       :destroy-on-close="true"
-      top="30vh"
       width="380px">
       <div class="dialog-header">
         <span class="title" v-if="addMineScreen.addOrEdit == 'add'">{{ addMineScreen.titleA }}</span>
@@ -202,12 +202,12 @@
           <div :class="[{'cannotBeGo': !addMineScreen.status}, 'dialog-btn', 'save']"
                v-if="addMineScreen.addOrEdit == 'add'"
                @click="addMineScreenGroupFun">
-            <span>add{{ $t('public.save') }}</span>
+            <span>{{ $t('public.save') }}</span>
           </div>
           <div :class="[{'cannotBeGo': !addMineScreen.status}, 'dialog-btn', 'save']"
                v-if="addMineScreen.addOrEdit == 'edit'"
                @click="renameInnerTreeG">
-            <span>edit{{ $t('public.save') }}</span>
+            <span>{{ $t('public.save') }}</span>
           </div>
         </div>
       </div>
@@ -217,7 +217,7 @@
       :append-to-body="true"
       :visible.sync="addNewCinema.visible"
       :destroy-on-close="true"
-      top="30vh"
+      top="0px"
       width="380px">
       <div class="dialog-header">
         <span class="title">{{ addNewCinema.title }}</span>
@@ -256,7 +256,7 @@
       :append-to-body="true"
       :visible.sync="addNewTheatre.visible"
       :destroy-on-close="true"
-      top="30vh"
+      top="0px"
       width="380px">
       <div class="dialog-header">
         <span class="title">{{ addNewTheatre.title }}</span>
@@ -306,7 +306,7 @@
       :append-to-body="true"
       :visible.sync="addFromTem.visible"
       :destroy-on-close="true"
-      top="30vh"
+      top="0px"
       width="380px">
       <div class="dialog-header">
         <span class="title">{{ addFromTem.title }}</span>
@@ -354,7 +354,8 @@
     getCinemaGList,
     getTheatreList,
     deleteCinemaG,
-    searchCinemaKey
+    searchCinemaKey,
+    renameCinemaScreenG
   } from '@/api/screen-api'
   import {
     messageFun,
@@ -377,7 +378,8 @@
           theatreUuid: null,
           input: '',
           status: null,
-          warnInfo: ''
+          warnInfo: '',
+          addMineScreen: false      // 若重命名窗口属于【院线】则打开
         },
         addNewCinema: {
           visible: false,
@@ -622,24 +624,39 @@
       },
       // 【内部银幕】显示【重命名分组】窗口
       showRenameInnerTreeG(data) {
+        console.log(data)
         let {addMineScreen} = this
         addMineScreen.visible = true
         addMineScreen.addOrEdit = 'edit'
-        addMineScreen.input = data.theatreName
-        addMineScreen.theatreUuid = data.theatreUuid
+        if('theatreName' in data) {
+          addMineScreen.input = data.theatreName
+          addMineScreen.theatreUuid = data.theatreUuid
+          addMineScreen.cinemaLevel = false
+        } else {
+          addMineScreen.input = data.cinemaName
+          addMineScreen.theatreUuid = data.cinemaUuid
+          addMineScreen.addMineScreen = true
+        }
         addMineScreen.status = true
       },
       // 【内部银幕】- 重命名分组
       async renameInnerTreeG() {
-        let {theatreUuid, input} = this.addMineScreen
-        let {data} = await renameMineScreenG({
+        let {theatreUuid, input, addMineScreen} = this.addMineScreen
+        let {data} = addMineScreen ? await renameCinemaScreenG({
+          'cinemaUuid': theatreUuid,
+          'cinemaName': input
+        }) : await renameMineScreenG({
           theatreUuid,
           'theatreName': input
         })
-        if (data.code == 201) {
+        if (data.code == 201 || data.code == 200) {
           messageFun('success', '操作成功')
           this.addMineScreen.visible = false
-          this.getMineScreenListNode()
+          this.refreshTree()
+        } else if(data.code == 101) messageFun('info', data.msg)
+        else if (data.code == 1000) {
+          messageFun('info', data.msg)
+          this.addMineScreen.visible = false
         }
       },
       // 【内部银幕】添加分组

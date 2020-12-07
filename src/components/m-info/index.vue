@@ -64,6 +64,7 @@
     </section>
     <!--修改头像-->
     <el-dialog
+      top="0px"
       :visible.sync="showCutter"
       :destroy-on-close="true"
       :show-close="false"
@@ -75,6 +76,7 @@
     </el-dialog>
     <!--修改绑定手机号-->
     <el-dialog
+      top="0px"
       :visible.sync="editPhoneMoudle"
       :destroy-on-close="true"
       :show-close="false"
@@ -83,6 +85,7 @@
     </el-dialog>
     <!--修改邮箱-->
     <el-dialog
+      top="0px"
       :visible.sync="editEmailMoudle"
       :destroy-on-close="true"
       :show-close="false"
@@ -91,6 +94,7 @@
     </el-dialog>
     <!--修改密码-->
     <el-dialog
+      top="0px"
       :visible.sync="editPasswordMoudle"
       :destroy-on-close="true"
       :show-close="false"
@@ -99,6 +103,7 @@
     </el-dialog>
     <!--修改昵称-->
     <el-dialog
+      top="0px"
       :visible.sync="editNameMoudle"
       :destroy-on-close="true"
       :show-close="false"

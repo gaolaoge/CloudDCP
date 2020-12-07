@@ -17,7 +17,7 @@
     <!--启动/下载 插件窗口-->
     <el-dialog :visible.sync="pluginDialog"
                :show-close="false"
-               top="34vh"
+               top="0px"
                width="360px">
       <header class="dl_header">
         <span>{{ pluginDialog_.title }}</span>
@@ -41,7 +41,7 @@
     <!--打开异地登录窗口-->
     <el-dialog :visible.sync="remoteLoginDialog.show"
                :show-close="false"
-               top="30vh"
+               top="0px"
                width="520px">
       <header class="dl_header">
         <span>{{ remoteLoginDialog.title }}</span>
@@ -70,12 +70,13 @@
                :destroy-on-close="true"
                :close-on-press-escape="false"
                :close-on-click-modal="false"
-               top="8vh"
+               top="0px"
                width="862px">
       <addDCP @closeDialogFun="closeDialogFun"/>
     </el-dialog>
     <!--新建KDM-->
-    <el-dialog :visible.sync="createKDMDialog"
+    <el-dialog top="0px"
+               :visible.sync="createKDMDialog"
                :show-close="false"
                :destroy-on-close="true"
                :close-on-press-escape="false"
@@ -90,7 +91,7 @@
                :destroy-on-close="true"
                :close-on-press-escape="false"
                :close-on-click-modal="false"
-               top="8vh"
+               top="0px"
                width="80%"
                style="maxWidth: 1412px; margin: 0px auto">
       <selectDCP @closeDialogFun="closeDialogFun" @didSelected="didSelected"/>
@@ -446,14 +447,14 @@
   .fileItem {
     display: flex;
     align-items: center;
-    margin-bottom: 15px!important;
+    margin-bottom: 15px !important;
 
     label {
       color: rgba(22, 29, 37, 0.6);
       font-size: 14px;
       margin-right: 60px;
       display: inline-block;
-      width: 96px!important;
+      width: 96px !important;
       text-align: right;
     }
 

@@ -83,11 +83,11 @@
       </div>
     </div>
     <!--充值-->
-    <el-dialog :visible.sync="rechargeIframe">
+    <el-dialog top="0px" :visible.sync="rechargeIframe">
       <div ref="dom"></div>
     </el-dialog>
     <!--充值窗口-->
-    <el-dialog width="600px" :visible.sync="dialogNode">
+    <el-dialog top="0px" width="600px" :visible.sync="dialogNode">
       <header class="dl_header">
         <span>{{ dialogNodeText.title }}</span>
         <img src="@/icons/shutDialogIcon.png" class="closeIcon" @click="dialogNode = false">

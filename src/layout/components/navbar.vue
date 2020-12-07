@@ -49,7 +49,7 @@
     <!--选择新建项-->
     <el-dialog
       :visible.sync="selectCreateDialogVisible"
-      top="30vh"
+      top="0px"
       width="300px">
       <div class="selectCreateType">
         <el-button @click="createFun('createDCP')">DCP打包</el-button>

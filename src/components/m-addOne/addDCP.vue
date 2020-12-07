@@ -290,12 +290,12 @@
       </div>
     </div>
     <!--添加模板-->
-    <el-dialog
-      width="460px"
-      :show-close=false
-      :visible.sync="dialogAdd.visible"
-      @close="closeAddTemplateDialog"
-      append-to-body>
+    <el-dialog top="0px"
+               width="460px"
+               :show-close=false
+               :visible.sync="dialogAdd.visible"
+               @close="closeAddTemplateDialog"
+               append-to-body>
       <div class="dialog-header">
         <span class="title">{{ dialogAdd.title }}</span>
         <img src="@/icons/shutDialogIcon.png"
@@ -370,7 +370,7 @@
     <!--设置DCP参数-->
     <el-dialog
       width="860px"
-      top="8vh"
+      top="0px"
       :show-close=false
       :visible.sync="setFileNameDialog.visible"
       @close="closesetFileNameDialog"
@@ -380,6 +380,7 @@
     </el-dialog>
     <!--新建项目-->
     <el-dialog
+      top="0px"
       width="380px"
       :show-close=false
       :visible.sync="addProjectDialog.visible"

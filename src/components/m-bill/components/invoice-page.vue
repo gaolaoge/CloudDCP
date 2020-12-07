@@ -142,7 +142,7 @@
       </div>
     </div>
     <!--添加发票抬头-->
-    <el-dialog
+    <el-dialog top="0px"
       :visible.sync="dialogData.visible"
       :close-on-click-modal="false"
       :close-on-press-escape="false"

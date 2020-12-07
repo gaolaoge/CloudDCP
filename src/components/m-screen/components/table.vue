@@ -84,6 +84,7 @@
     </div>
     <!--编辑银幕-->
     <el-dialog
+      top="0px"
       :visible.sync="editSDialog.visible"
       :destroy-on-close="true"
       :show-close="false"

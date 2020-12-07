@@ -190,6 +190,7 @@
             files: data.data.map((item, index) => {
               return {
                 taskUuid: item['screenUuid'],
+                taskName: item.screenName.split('.')[0],
                 ID: item['screenId'],
                 localPath: tableData[index]['localPath'],
                 networkPath: {

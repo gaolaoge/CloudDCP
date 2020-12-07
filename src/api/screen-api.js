@@ -90,6 +90,15 @@ export function renameMineScreenG(data) {
   })
 }
 
+// 重命名【院线】分组
+export function renameCinemaScreenG(data) {
+  return http({
+    url: `/dcpProfessional/screen/renameCinema/`,
+    method: 'PUT',
+    data
+  })
+}
+
 // 添加【我的银幕】
 export function addMineScreen(data) {
   return http({

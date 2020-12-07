@@ -136,16 +136,16 @@
           width="146"/>
         <!--影片名 -->
         <el-table-column
-        prop="filmName"
-        label="影片名"
-        show-overflow-tooltip
-        width="160" />
+          prop="filmName"
+          label="影片名"
+          show-overflow-tooltip
+          width="160"/>
         <!--总帧数-->
-<!--        <el-table-column-->
-<!--          prop="total"-->
-<!--          label="总帧数"-->
-<!--          show-overflow-tooltip-->
-<!--          width="100"/>-->
+        <!--        <el-table-column-->
+        <!--          prop="total"-->
+        <!--          label="总帧数"-->
+        <!--          show-overflow-tooltip-->
+        <!--          width="100"/>-->
         <!--消费类型-->
         <el-table-column
           prop="type"
@@ -177,16 +177,16 @@
           show-overflow-tooltip
           width="200"/>
         <!--操作-->
-<!--        <el-table-column-->
-<!--          label="操作"-->
-<!--          show-overflow-tooltip-->
-<!--          width="100">-->
-<!--          <template slot-scope="scope">-->
-<!--            <div class="operateBtn" @click="seeMore(scope.row)">-->
-<!--              查看-->
-<!--            </div>-->
-<!--          </template>-->
-<!--        </el-table-column>-->
+        <!--        <el-table-column-->
+        <!--          label="操作"-->
+        <!--          show-overflow-tooltip-->
+        <!--          width="100">-->
+        <!--          <template slot-scope="scope">-->
+        <!--            <div class="operateBtn" @click="seeMore(scope.row)">-->
+        <!--              查看-->
+        <!--            </div>-->
+        <!--          </template>-->
+        <!--        </el-table-column>-->
       </el-table>
     </div>
     <!--分页-->
@@ -203,10 +203,12 @@
       </div>
     </div>
     <!--详情-->
-    <el-dialog :visible.sync="dialogVisible"
+    <el-dialog top="0px"
+               :visible.sync="dialogVisible"
                :modal-append-to-body="false"
                :show-close=false>
-      <more-dialog @closeDialog="closeDialog"
+      <more-dialog top="0px"
+                   @closeDialog="closeDialog"
                    width="80vw"
                    :dialogTableType="dialogTableType"
                    :renderDialogTableData="renderDialogTableData"
@@ -354,13 +356,13 @@
         let {patternOfConsumption, taskIdVal, scenesVal, projectVal, fileNameVal, date} = this.filter,
           {pageSize, currentPage} = this.table,
           {data} = await getConsumptionTable({
-          pageSize,
-          'pageIndex': currentPage,
-          // 'layerNo': taskIdVal,
-          // 'fileName': scenesVal,
-          // 'projectUuid': projectVal,
-          'beginTime': date ? date[0].getTime() : 0,
-          'endTime': date ? date[1].getTime() : new Date().getTime(),
+            pageSize,
+            'pageIndex': currentPage,
+            // 'layerNo': taskIdVal,
+            // 'fileName': scenesVal,
+            // 'projectUuid': projectVal,
+            'beginTime': date ? date[0].getTime() : 0,
+            'endTime': date ? date[1].getTime() : new Date().getTime(),
             'taskNo': taskIdVal,
             // 'taskNoSort': '',
             'taskName': scenesVal,
@@ -369,7 +371,7 @@
             patternOfConsumption,
             // 'actualPaymentSort': '',
             // 'timeSort': ''
-        })
+          })
         this.table.rechargeData = data.data.map(curr => {
           let tableType = ''
           switch (curr.patternOfConsumption) {
@@ -454,6 +456,6 @@
   }
 
   .filter-item-i {
-    width: 134px!important;
+    width: 134px !important;
   }
 </style>

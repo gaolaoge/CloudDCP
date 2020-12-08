@@ -335,7 +335,7 @@ export default new Vuex.Store({
         'sortBy': null,
         'sortType': 0
       })
-      context.commit('setProjectList', data.data)
+      if(data.data.length) context.commit('setProjectList', data.data)
     },
   }
 })

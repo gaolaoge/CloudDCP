@@ -29,7 +29,10 @@ const transformParameterT = function (obj) {
 
 // 获取个人信息
 const getUserInfoF = function () {
-  getUserInfo().then(({data}) => setInfo(data.data))
+  return getUserInfo().then(({data}) => {
+    setInfo(data.data)
+    return Promise.resolve()
+  })
 }
 
 // 读取时间戳

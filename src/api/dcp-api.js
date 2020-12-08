@@ -44,3 +44,12 @@ export function getDCPPackTheResultFForTab(data) {
     data
   })
 }
+
+// DCP 操作
+export function DCPTabOperating(data) {
+  return http({
+    url: `/dcpProfessional/dcp/buttonOperate`,
+    method: 'POST',
+    data
+  })
+}

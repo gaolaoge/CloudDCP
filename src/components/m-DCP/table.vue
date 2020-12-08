@@ -176,7 +176,8 @@
 <script>
   import {
     getDCPTableList,
-    downloadDCPFile
+    downloadDCPFile,
+    DCPTabOperating
   } from '@/api/dcp-api'
   import {
     consum,
@@ -290,19 +291,37 @@
         }))
       },
       // 操作 - 开始
-      startFun() {
+      async startFun() {
         // 所选记录都为"暂停"“暂停（欠费）且"未过期"才可以点击
-
+        let {selectionList} = this,
+          {data} = await DCPTabOperating({
+            'taskUuidList': selectionList.map(item => item.taskUuid),
+            'operateType': 1
+          })
+        if (data.code == 200) messageFun('success', '操作成功')
       },
       // 操作 - 暂停
-      pauseFun() {
+      async pauseFun() {
         // 所选记录都为"进行中"且"未过期"才可以点击
-        messageFun('success', '暂停')
+        let {selectionList} = this,
+          {data} = await DCPTabOperating({
+            'taskUuidList': selectionList.map(item => item.taskUuid),
+            'operateType': 2
+          })
+        if (data.code == 200) messageFun('success', '操作成功')
       },
       // 操作 - 删除
-      deleteFun() {
+      async deleteFun() {
         // 当选中项中存在「进行中」状态时不可使用
-
+        let {selectionList} = this,
+          {data} = await DCPTabOperating({
+            'taskUuidList': selectionList.map(item => item.taskUuid),
+            'operateType': 3
+          })
+        if (data.code == 200){
+          messageFun('success', '操作成功')
+          this.getList()
+        }
       },
       // 操作 - 拷贝
       copyFun() {
@@ -324,7 +343,7 @@
           return false
         }
         let cb = () => {
-          data.data.forEach((item ,index) => {
+          data.data.forEach((item, index) => {
             this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
               'code': 300,
               'userID': this.user.id,
@@ -409,8 +428,8 @@
         }
       },
       'zoneUuid': {
-        handler: function(id) {
-          if(id) this.getList()
+        handler: function (id) {
+          if (id) this.getList()
         }
       }
     }

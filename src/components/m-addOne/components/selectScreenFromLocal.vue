@@ -1,18 +1,18 @@
 <template>
   <div class="selectScreenFromLocal">
-    <div class="stepOne" v-show="step == 1">
-      <div class="dialog-btn-group rightOperate">
-        <div class="totalText" v-show="true">
-          <!--下一步-->
-          <div class="dialog-btn save"
-               @click="step = 2">
-            <span>{{ $t('public.nextStop') }}</span>
-          </div>
+    <div class="win wrapper-border setScollBarStyle">
+      <div class="stepOne" v-show="step == 1">
+        <div class="fileTitle">{{ inputName.title }}</div>
+        <div class="fileItem">
+          <label>{{ inputName.cinemaNameLabel }}：</label>
+          <input type="text" v-model="inputName.cinenaNameValue">
+        </div>
+        <div class="fileItem">
+          <label>{{ inputName.theatreNameLabel }}：</label>
+          <input type="text" v-model="inputName.theatreNameValue">
         </div>
       </div>
-    </div>
-    <div class="stepTwo" v-show="step == 2">
-      <div class="win wrapper-border setScollBarStyle">
+      <div class="stepTwo" v-show="step == 2">
         <div class="localFileTab">
           <div class="table">
             <div class="table-operate">
@@ -62,28 +62,34 @@
           </div>
         </div>
       </div>
-      <div class="bottomOperate">
-        <div class="back" @click="$emit('selectByNetdisc')">
-          <img src="@/icons/toUploadTab.png" class="icon">
-          <span class="text">{{ fromNetdisc }}</span>
+    </div>
+    <div class="bottomOperate">
+      <div class="back" @click="backToSA">
+        <img src="@/icons/toUploadTab.png" class="icon">
+        <span class="text">{{ fromNetdisc }}</span>
+      </div>
+        <div class="totalText dialog-btn-group rightOperate" v-show="step == 1">
+          <!--下一步-->
+          <div class="dialog-btn save"
+               @click="step = 2">
+            <span>{{ btn }}</span>
+          </div>
         </div>
-        <div class="dialog-btn-group rightOperate">
-          <div class="totalText" v-show="true">
-            <!--已选择n个场景-->
-            <span class="internalScrSelText">
+        <div class="totalText dialog-btn-group rightOperate" v-show="step == 2">
+          <!--已选择n个场景-->
+          <span class="internalScrSelText">
             {{ bottomOperate.selectedText1 }}
             <span class="internalScrSelTotal">{{ tableData.length }}</span>
             {{ bottomOperate.selectedText2 }}
           </span>
-            <!--下一步-->
-            <div :class="[{'cannotBeGo': !tableData.length}, 'dialog-btn', 'save']"
-                 @click="nextFun">
-              <span>{{ $t('public.nextStop') }}</span>
-            </div>
+          <!--下一步-->
+          <div :class="[{'cannotBeGo': !tableData.length}, 'dialog-btn', 'save']"
+               @click="nextFun">
+            <span>{{ $t('public.nextStop') }}</span>
           </div>
         </div>
-      </div>
     </div>
+
   </div>
 </template>
 
@@ -92,10 +98,18 @@
     mapState
   } from 'vuex'
   import {messageFun} from "../../../assets/common"
+
   export default {
     name: 'selectScreenFromLocal',
     data() {
       return {
+        inputName: {
+          title: '请先输入院线/影院信息',
+          cinemaNameLabel: '院线名称',
+          cinenaNameValue: '',
+          theatreNameLabel: '影院名称',
+          theatreNameValue: ''
+        },
         btn: '去选择',
         tableData: [],
         fromNetdisc: '从银幕管理选择',
@@ -148,19 +162,26 @@
           }
         }
       },
-      'step': function(num) {
+      'step': function (num) {
         if (num == 2) this.$emit('localWinStatus', 'selectFile')
+        if (num == 2 && !this.socket_plugin) this.$store.commit('WEBSOCKET_PLUGIN_INIT', true)
       },
       'chooseSelf': {
-        handler: function(boolean) {
-          if(boolean) this.$emit('localWinStatus', 'inputName')
+        handler: function (boolean) {
+          if (boolean) this.$emit('localWinStatus', 'inputName')
         },
         immediate: true
       }
     },
     methods: {
+      //
+      backToSA() {
+        this.$emit('selectByNetdisc')
+        this.step = 1
+        this.$emit('localWinStatus', 'inputName')
+      },
       operating(action) {
-        switch(action) {
+        switch (action) {
           case '添加':
             this.addScreenFile()
             break
@@ -184,6 +205,8 @@
       nextFun() {
         if (!this.tableData.length) return false
         this.$emit('selectedAndNext', {
+          'cinemaName': this.cinenaNameValue,
+          'theatreName': this.theatreNameValue,
           'screenList': this.tableData,
           'certificateSource': 1
         })
@@ -269,8 +292,25 @@
       }
     }
 
-    /deep/.el-table__body-wrapper {
-      height: 454px!important;
+    /deep/ .el-table__body-wrapper {
+      height: 454px !important;
+    }
+
+    .fileTitle {
+      font-size: 16px;
+      font-weight: 600;
+      color: rgba(22, 29, 37, 1);
+      margin-left: 32px;
+      margin-bottom: 26px;
+      margin-top: 12px;
+    }
+
+    .fileItem {
+      padding-right: 46px;
+
+      label {
+        width: 104px!important;
+      }
     }
   }
 </style>

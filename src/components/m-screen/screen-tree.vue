@@ -130,41 +130,42 @@
       <el-tree
         v-show="showKeywordTree"
         :data="keywordTree"
+        :default-expand-all="true"
         @node-click="getThreateTab">
-<!--        <span class="custom-tree-node" :key="node.id" slot-scope="{ node, data }">-->
+        <span class="custom-tree-node" :key="node.id" slot-scope="{ node, data }">
           <!--院线-->
-         <!-- <div class="l" v-if="node.level == 1">
+          <div class="l" v-if="data.class == 'cinema'">
             <img src="@/icons/filer.png" class="filer default">
             <img src="@/icons/filer-hover.png" class="filer hover">
             <span class="tree-node-span">{{ data.cinemaName }}</span>
-          </div>-->
+          </div>
           <!--影院-->
-<!--          <div class="l theatre" v-if="node.level == 2">-->
-<!--            <img src="@/icons/movie-icon-black.png" class="filer default">-->
-<!--            <img src="@/icons/movie-icon-white.png" class="filer hover">-->
-<!--            <span class="tree-node-span">{{ data.theatreName }}</span>-->
-<!--          </div>-->
-<!--          <el-popover-->
-<!--            placement="right-start"-->
-<!--            width="72"-->
-<!--            trigger="hover"-->
-<!--            :visible-arrow="false">-->
-<!--            &lt;!&ndash;院线&ndash;&gt;-->
-<!--            <ul class="tree-node-operate-brnG" v-if="node.level == 1">-->
-<!--              <li @click="deleteCinemaTreeG(data.cinemaUuid)"><span>{{ $t('public.delete') }}</span></li>-->
-<!--              <li @click="showRenameInnerTreeG(data)"><span>{{ $t('public.rename') }}</span></li>-->
-<!--            </ul>-->
-<!--            &lt;!&ndash;影院&ndash;&gt;-->
-<!--            <ul class="tree-node-operate-brnG" v-if="node.level == 2">-->
-<!--              <li @click="deleteInnerTreeG(data.theatreUuid)"><span>{{ $t('public.delete') }}</span></li>-->
-<!--              <li @click="showRenameInnerTreeG(data)"><span>{{ $t('public.rename') }}</span></li>-->
-<!--            </ul>-->
-<!--            <div class="r" slot="reference">-->
-<!--              <span v-if="node.level == 2" class="total">{{ data.screenCount }}</span>-->
-<!--              <img src="@/icons/operate-icon-white.png" class="operate-icon hover">-->
-<!--            </div>-->
-<!--          </el-popover>-->
-<!--        </span>-->
+          <div class="l theatre" v-if="data.class == 'theatre'">
+            <img src="@/icons/movie-icon-black.png" class="filer default">
+            <img src="@/icons/movie-icon-white.png" class="filer hover">
+            <span class="tree-node-span">{{ data.theatreName }}</span>
+          </div>
+          <el-popover
+            placement="right-start"
+            width="72"
+            trigger="hover"
+            :visible-arrow="false">
+            <!--院线-->
+            <ul class="tree-node-operate-brnG" v-if="data.class == 'cinema'">
+              <li @click="deleteCinemaTreeG(data.cinemaUuid)"><span>{{ $t('public.delete') }}</span></li>
+              <li @click="showRenameInnerTreeG(data)"><span>{{ $t('public.rename') }}</span></li>
+            </ul>
+            <!--影院-->
+            <ul class="tree-node-operate-brnG" v-if="data.class == 'theatre'">
+              <li @click="deleteInnerTreeG(data.cinemaUuid)"><span>{{ $t('public.delete') }}</span></li>
+              <li @click="showRenameInnerTreeG(data)"><span>{{ $t('public.rename') }}</span></li>
+            </ul>
+            <div class="r" slot="reference">
+              <span v-if="data.class == 'theatre'" class="total">{{ data.screenCount }}</span>
+              <img src="@/icons/operate-icon-white.png" class="operate-icon hover">
+            </div>
+          </el-popover>
+        </span>
       </el-tree>
     </div>
     <!--添加分组-->
@@ -435,25 +436,30 @@
     methods: {
       // 影院结构 - 关键字检索
       async createKeywordTree() {
-        let {screenKeyword} =  this
-        if(!screenKeyword.trim()) return false
-        let {data} = await searchCinemaKey(transformParameterT({
-          'keyword': screenKeyword
-        }))
-        if(data.code == 200) {
-          this.showKeywordTree = true
-          this.keywordTree = data.data.map(cinema => {
-            return {
-              'id': cinema.cinemaUuid,
-              'label': cinema.cinemaName,
-              'children': cinema.theatreResultDTOList.map(theatre => {
-                return {
-                  'id': theatre.theatreUuid,
-                  'label': theatre.theatreName
-                }
-              })
-            }
-          })
+        let {screenKeyword} = this
+        if (!screenKeyword.trim()) this.showKeywordTree = false
+        else {
+          let {data} = await searchCinemaKey(transformParameterT({
+            'keyword': screenKeyword
+          }))
+          if (data.code == 200) {
+            this.showKeywordTree = true
+            this.keywordTree = data.data.map(({cinemaUuid, cinemaName, theatreResultDTOList}) => {
+              return {
+                cinemaUuid,
+                cinemaName,
+                'class': 'cinema',
+                'children': theatreResultDTOList ? theatreResultDTOList.map(({theatreUuid, theatreName, screenCount}) => {
+                  return {
+                    theatreUuid,
+                    theatreName,
+                    screenCount,
+                    'class': 'theatre'
+                  }
+                }) : []
+              }
+            })
+          }
         }
       },
       // 拖拽事件预判
@@ -528,7 +534,6 @@
               this.refreshTree()
             } else if (data.code == 1000) messageFun('info', data.msg)
           })
-
       },
       // 【院线银幕】获取结构
       async getScreenListNode(node, resolve) {
@@ -550,12 +555,12 @@
       // 【院线银幕】添加影院
       async addNewTheatreF() {
         let {status, input} = this.addNewTheatre
-        if(!status) return false
+        if (!status) return false
         let {data} = await addNewCScreenGroup({
           'cinemaUuid': this.selectCinemaUuid,
           'theatreName': input
         })
-        if(data.code == 200) {
+        if (data.code == 200) {
           messageFun('success', '操作成功')
           this.addNewTheatre.visible = false
           this.refreshTree()
@@ -624,14 +629,13 @@
       },
       // 【内部银幕】显示【重命名分组】窗口
       showRenameInnerTreeG(data) {
-        console.log(data)
         let {addMineScreen} = this
         addMineScreen.visible = true
         addMineScreen.addOrEdit = 'edit'
-        if('theatreName' in data) {
+        if ('theatreName' in data) {
           addMineScreen.input = data.theatreName
           addMineScreen.theatreUuid = data.theatreUuid
-          addMineScreen.cinemaLevel = false
+          addMineScreen.addMineScreen = false
         } else {
           addMineScreen.input = data.cinemaName
           addMineScreen.theatreUuid = data.cinemaUuid
@@ -653,7 +657,7 @@
           messageFun('success', '操作成功')
           this.addMineScreen.visible = false
           this.refreshTree()
-        } else if(data.code == 101) messageFun('info', data.msg)
+        } else if (data.code == 101) messageFun('info', data.msg)
         else if (data.code == 1000) {
           messageFun('info', data.msg)
           this.addMineScreen.visible = false
@@ -854,6 +858,9 @@
 
       &.cinema {
         .custom-tree-node {
+          position: absolute;
+          right: 0px;
+          width: calc(100% - 40px);
           padding-left: 0px;
         }
 

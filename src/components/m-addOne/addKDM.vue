@@ -246,7 +246,7 @@
     methods: {
       //
       localWinStatus(status) {
-        if(status == 'inputName') this.LSIS = true
+        if(status == 'inputName' && this.selectBy == 'local') this.LSIS = true
         else this.LSIS = false
       },
       // 1.关闭新建项目窗口
@@ -282,7 +282,7 @@
       // 3.创建KDM
       async createKDMF() {
         if (!this.setParameters.form.kdmTaskName.trim()) return false
-        let {theatreUuidList, screenUuidList, certificateSource} = this.selectScreen,
+        let {cinemaName, theatreName, screenList, certificateSource} = this.selectScreen,
           {projectUuid, kdmTaskName, theatreTimeZone, kdmFilenameTemplateUuid, kdmCreateDate} = this.setParameters.form,
           {zoneUuid, movieStartTime, movieEndTime} = this,
           {taskUuid} = this.selectedDCPUTask,
@@ -295,16 +295,16 @@
             theatreTimeZone,                    // 影院时区
             movieStartTime,                     // 播放起始时间
             movieEndTime,                       // 播放结束时间
-            'screenUuidList': certificateSource == 1 ? [] : screenUuidList,      // 单选银幕Uuid列表
-            'theatreUuidList': certificateSource == 1 ? null : theatreUuidList,    // 全选银幕Uuid列表
+            // 'screenUuidList': certificateSource == 1 ? [] : screenUuidList,        // 单选银幕Uuid列表
+            // 'theatreUuidList': certificateSource == 1 ? null : theatreUuidList,    // 全选银幕Uuid列表
             'cinemaUuidList': certificateSource == 1 ? null : [],     // 院线uuid列表(只有下面的影院全选是才传)
             zoneUuid,                           // 分区uuid
             'operateSource': 1,                 // 操作来源, 1,网页端 2客户端
             certificateSource,                  // 证书来源 1我的电脑, 2银幕列表-院线银幕, 3银幕列表-内部银幕
             'uploadCert': certificateSource == 1 ? {
-              'cinemaName': null,
-              'theatreName': null,
-              'screenList': this.selectScreen.screenList.map(item => {
+              cinemaName,
+              theatreName,
+              'screenList': screenList.map(item => {
                 return {
                   'screenName': item.name,
                   'localPath': item.localPath
@@ -359,10 +359,6 @@
           form.movieName = obj.filmName
         },
         immediate: true
-      },
-      selectBy(type) {
-        if(type == 'local' && !this.socket_plugin)
-          this.$store.commit('WEBSOCKET_PLUGIN_INIT', true)
       }
     },
     components: {
@@ -392,7 +388,7 @@
     position: relative;
 
     &.mini {
-      height: 400px;
+      height: 380px;
     }
 
     .stepGroup {

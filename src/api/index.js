@@ -44,8 +44,10 @@ http.interceptors.response.use(
         let token = obj.token
         sessionStorage.setItem('token', token)
         localStorage.setItem('loginPageIndex', this.activeIndex)
-        store.commit('openCtreatDCPWin', true)
-        vue.$router.push({'name': 'dcp', params: { 'path': obj.path }})
+        getUserInfoF().then(() => {
+          store.commit('openCtreatDCPWin', true)
+          vue.$router.push({'name': 'dcp', params: { 'path': obj.path }})
+        })
       } else {
         createEM()
         vue.$router.push({'name': 'login'})

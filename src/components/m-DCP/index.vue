@@ -161,18 +161,17 @@
       startBtn() {
         if (!this.selectionList.length) return false
         else if (this.selectionList.some(item => item.validPeriod == 0)) return false
-        else if (this.selectionList.every(item => String('56').includes(item.taskStatus))) return true
+        else if (this.selectionList.every(item => [301, 302].some(curr => curr == item.taskStatus))) return true
         else return false
       },
       pauseBtn() {
         if (!this.selectionList.length) return false
-        else if (this.selectionList.some(item => item.validPeriod == 0)) return false
-        else if (this.selectionList.every(item => item.taskStatus == 4)) return true
+        else if (this.selectionList.every(item => [201, 900].some(curr => curr == item.taskStatus))) return true
         else return false
       },
       deleteBtn() {
         if (!this.selectionList.length) return false
-        else if (this.selectionList.some(item => item.validPeriod == 4)) return false
+        else if (this.selectionList.some(item => [201, 900].some(curr => curr == item.taskStatus))) return false
         else return true
       },
       downloadBtn() {

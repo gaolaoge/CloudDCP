@@ -563,11 +563,11 @@ const versionList = [
 const normList = [
   {
     label: 'SMPTE',
-    val: 0
+    val: 1
   },
   {
     label: 'Interop',
-    val: 1
+    val: 0
   }
 ]
 

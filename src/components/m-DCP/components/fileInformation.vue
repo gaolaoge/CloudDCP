@@ -146,7 +146,6 @@
     channelTypeList,
     APList,
     DCPTypeList,
-    soundtrackList,
     versionList,
     mp3LanguageList,
     textLanguageList,
@@ -226,7 +225,7 @@
       'infoData': function(data) {
         if(data) Object.assign(this, data, {
           'packageDate': createDateFun(data.packageDate),
-          'codingRule': normList[data.codingRule]['label'],                 // 打包标准
+          'codingRule': normList.find(item => item.val == data.codingRule)['label'],                 // 打包标准
           'resolution': resolutionList[data.resolution]['label'],
           'sourceColor': colorTypeList[data.sourceColor]['label'],
           'aspectRatio': proportionList[data.aspectRatio]['label'],

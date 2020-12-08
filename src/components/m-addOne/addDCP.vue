@@ -71,7 +71,7 @@
               </div>
               <div class="bodyB">
                 <span class="software">
-                  {{ dialogAdd.normL }}： {{ normList[item.codingRule]['label'] }}
+                  {{ dialogAdd.normL }}： {{ normList.find(curr => curr.val == item.codingRule)['label'] }}
                 </span>
                 <span class="software">{{ dialogAdd.internetSL }}： {{ item.codingRate }}Mb/s</span>
                 <span class="software">
@@ -376,7 +376,7 @@
       @close="closesetFileNameDialog"
       append-to-body>
       <setName @shutMe="shutSetNameDialog"
-               :codingRule="selectUnpackBase.renderTList.length && selectUnpackBase.renderTListActive != -1 ? normList[selectUnpackBase.renderTList[selectUnpackBase.renderTListActive]['codingRule']]['label'] : null"/>
+               :codingRule="selectUnpackBase.renderTList.length && selectUnpackBase.renderTListActive != -1 ? normList.find(item => item.val == selectUnpackBase.renderTList[selectUnpackBase.renderTListActive]['codingRule'])['label'] : null"/>
     </el-dialog>
     <!--新建项目-->
     <el-dialog
@@ -429,7 +429,7 @@
     messageFun,
     throwInfoFun,
     normList
-  } from '@/assets/common.js'
+  } from '@/assets/common'
   import addProject from '@/components/public-module/add_project'
   import setName from './components/setDCPFileName'
 

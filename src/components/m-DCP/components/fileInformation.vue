@@ -231,7 +231,7 @@
           'aspectRatio': proportionList[data.aspectRatio]['label'],
           'captionLanguage': textLanguageList[data.captionLanguage]['label'],
           'filmCategory': movieTypeList[data.filmCategory]['label'],
-          'filmType': modeList[data.filmType]['label'],
+          'filmType': modeList.find(item => item.value == data.filmType)['label'],
           'soundtrack': channelTypeList[data.soundtrack]['label'],
           'captionType': APList[data.captionType]['label'],
           'taskStatus': DCPmainStatusList.find(item => item.code == data.taskStatus)['status'],

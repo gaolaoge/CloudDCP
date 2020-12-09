@@ -270,17 +270,15 @@
           if (editPath) this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
             code: 211,
             userID: this.user.id,
-            files: [data.data].map((item, index) => {
-              return {
-                taskUuid: item['screenUuid'],
-                ID: item['screenId'],
-                localPath: filePath,
-                networkPath: {
-                  front: item['pathPrefix'],
-                  back: item['certificatePath']
-                }
+            files: [{
+              taskUuid: data.data['screenUuid'],
+              ID: data.data['screenId'],
+              localPath: filePath,
+              networkPath: {
+                front: data.data['pathPrefix'],
+                back: data.data['certificatePath']
               }
-            })
+            }]
           })
         }
       },
@@ -320,12 +318,6 @@
         let cb = async () => {
           let screenUuidList = this.selectionList.map(item => item.screenUuid),
             {data} = await downloadScreen({screenUuidList})
-          // if (data.code == 200) data.data.forEach(item => this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
-          //   code: 302,
-          //   userID: this.user.id,
-          //   ID: item.screenId,
-          //   path: [{'front': item.pathPrefix, 'back': item.certificatePath}]
-          // }))
           if (data.code == 200) this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
             code: 302,
             userID: this.user.id,
@@ -337,7 +329,6 @@
               }
             })
           })
-
         }
         if (this.socket_plugin) cb()
         else this.$store.dispatch('WEBSOCKET_PLUGIN_INIT', true).then(() => cb())

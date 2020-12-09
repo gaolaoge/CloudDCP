@@ -280,11 +280,6 @@
           if(id) this.getList()
         }
       },
-      // 'selectionList': {
-      //   handler: function (list) {
-      //
-      //   }
-      // },
       'projectList': {
         handler: function (list) {
           if (!list.length) this.$store.dispatch('getProjectList')

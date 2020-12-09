@@ -62,7 +62,7 @@
               <div v-if="node.level == 1" class="box">
                 <span class="tree-node-span">
                   <img src="@/icons/filter.png" class="filterIcon">
-                  {{ data.cinemaName }} ({{ data.theatreCount }})
+                  {{ data.cinemaName }}
                 </span>
                 <span class="tree-node-operate">
                   <el-checkbox :indeterminate="cinemaCheckedList[data.index]['checkAll']"
@@ -75,7 +75,7 @@
               <div v-if="node.level == 2" class="box">
                 <span class="tree-node-span">
                   <img src="@/icons/filter.png" class="filterIcon">
-                  {{ data.theatreName }}
+                  {{ data.theatreName }} ({{ data.screenCount }})
                 </span>
                 <span class="tree-node-operate">
                   <el-checkbox
@@ -106,21 +106,19 @@
         <span class="text">{{ backText.fromLocal }}</span>
       </div>
       <div class="dialog-btn-group rightOperate">
-        <!--院线银幕-->
-        <div class="totalText" v-show="false">
-          <div class="filter-btn primary">{{btn}}</div>
-        </div>
-        <!--内部银幕按钮-->
-        <div class="totalText" v-show="true">
+        <div class="totalText">
           <!--已选择n个场景-->
           <span class="internalScrSelText">
             {{ bottomOperate.selectedText1 }}
-            <span class="internalScrSelTotal">{{ internalScrSelTotal }}</span>
+            <span class="internalScrSelTotal">
+              {{ screenType == 'internalScreen' ? internalScrSelTotal : cinemaScrSelTotal }}
+            </span>
             {{ bottomOperate.selectedText2 }}
           </span>
           <!--下一步-->
-          <div :class="[{'cannotBeGo': (!internalScrSelTotal && screenType == 'internalScreen') || (!cinemaScrSelTotal && screenType == 'theaterScreen')}, 'dialog-btn', 'save']"
-               @click="nextFun">
+          <div
+            :class="[{'cannotBeGo': (!internalScrSelTotal && screenType == 'internalScreen') || (!cinemaScrSelTotal && screenType == 'theaterScreen')}, 'dialog-btn', 'save']"
+            @click="nextFun">
             <span>{{ $t('public.nextStop') }}</span>
           </div>
         </div>
@@ -170,22 +168,16 @@
           //   checkAll: false,    // 分组全选状态
           //   acquired: false,    // 分组内荧幕是否已被加载
           //   checkItemList: [],  // 分组内被选中影院
-          //   theatreItemList: [] // 影院列表
+          //   theatreItemList: [
+          //    {
+          //      theatreUuid,        // 影院ID
+          //      checkAll: false,    // 分组全选状态
+          //      acquired: false,    // 分组内荧幕是否已被加载
+          //      checkItemList: []   // 分组内被选中银幕
+          //    }
+          //   ] // 影院列表
           // }
         ],                         // 院线分组结构和即时状态
-        // theatreCheckedList: [
-        // {
-        //   theatreUuid,        // 影院ID
-        //   checkAll: false,    // 分组全选状态
-        //   acquired: false,    // 分组内荧幕是否已被加载
-        //   checkItemList: []   // 分组内被选中银幕
-        // }
-        // ],                         // 影院银分组结构和即时状态
-        // screenCheckedList: [
-          // {
-          //   screenUuid,        // 银幕ID
-          // }
-        // ],                          // 银幕分组结构和即时状态
         adminTreeResolve: null,    // 内部银幕 - 系统tree回调函数
         checkAll_ing: false,       // 内部银幕 - 全选指令（加载并展开分组时是否需要全选动作）
         btn: '去选择',
@@ -239,6 +231,7 @@
               acquired: false,             // 影院下【荧幕列表】是否已被获取
               checkItemList: [],           // 影院下【荧幕】选中结果
               screenList: [],              // 影院下【荧幕列表】
+              screenLength: 0,             // 影院下银幕数量
               callback: null,              // 预留获取【荧幕列表】的 Promise
               fromCinemaIndex: index,      // 所在院线的索引
               selfIndex                    // 自身在院线内的索引
@@ -246,6 +239,7 @@
             // 填充tree影院节点
             fillNode(data.data.map((theatre, selfIndex) => {
               this.cinemaCheckedList[index]['theatreItemList'][selfIndex]['theatreUuid'] = theatre['theatreUuid']   // 补充tree数据备份
+              this.cinemaCheckedList[index]['theatreItemList'][selfIndex]['screenLength'] = theatre['screenCount']
               return Object.assign(theatre, {
                 'leaf': false,
                 'type': 'theatre',
@@ -332,7 +326,7 @@
       },
       // 【内部银幕】银幕选中
       checkItemScreen(group) {
-        if(group.checkItemList.length == group.itemList.length && group.itemList.length > 0)
+        if (group.checkItemList.length == group.itemList.length && group.itemList.length > 0)
           group.checkAll = true
         else group.checkAll = false
       },
@@ -357,6 +351,7 @@
                 item.checkItemList = item.screenList.map(t => t.screenUuid)
               })
             }
+
             if (!list[val.index]['acquired']) list[val.index]['callback'].then(() => doing())
             else doing()
           } else {
@@ -374,16 +369,16 @@
           if (checkAll) {
             function doing() {
               screenList.forEach(screen => {
-                if (!checkItemList.find(Uuid => Uuid == screen.screenUuid))
-                  checkItemList.push(screen.screenUuid)
+                if (!checkItemList.find(Uuid => Uuid == screen.screenUuid)) checkItemList.push(screen.screenUuid)
               })
             }
+
             if (!acquired) callback.then(() => doing())
             else doing()
-            // 判断影院是否已被全部选中 => 修改院线全选状态
-            if (list[fromCinemaIndex]['theatreItemList'].every(item => item.checkAll)) list[fromCinemaIndex]['checkAll'] = true
-            else list[fromCinemaIndex]['checkAll'] = false
           } else checkItemList.splice(0)  // 清空
+          // 判断影院是否已被全部选中 => 修改院线全选状态
+          if (list[fromCinemaIndex]['theatreItemList'].every(item => item.checkAll)) list[fromCinemaIndex]['checkAll'] = true
+          else list[fromCinemaIndex]['checkAll'] = false
         }
       },
       // 【院线银幕】银幕选中
@@ -402,17 +397,39 @@
       },
       // 下一步
       nextFun() {
-        if (!this.internalScrSelTotal) return false
-        let theatreUuidList = [],
-          screenUuidList = []
-        this.checkedList.forEach(item => {
-          if (item.checkAll) theatreUuidList.push(item.theatreUuid)
-          else screenUuidList = [...screenUuidList, ...item.checkItemList]
+        if (this.screenType == 'internalScreen' && !this.internalScrSelTotal) return false
+        if (this.screenType == 'theaterScreen' && !this.cinemaScrSelTotal) return false
+        let screenUuidList = []
+        let promise = new Promise(resolve => {
+          // 内部银幕
+          if (this.screenType == 'internalScreen') {
+            this.checkedList.forEach(item => screenUuidList = [...screenUuidList, ...item.checkItemList])
+            resolve()
+          }
+          else {
+            // 院线银幕
+            this.cinemaCheckedList.forEach(({theatreItemList}) => {
+              theatreItemList.forEach(async ({theatreUuid, acquired, checkItemList}) => {
+                // 银幕列表已被加载
+                if(acquired) screenUuidList = [...screenUuidList, ...checkItemList]
+                else {
+                  // 银幕列表尚未加载
+                  let {data} = await getInternalScrList(theatreUuid)
+                  screenUuidList = [...screenUuidList, ...data.data.map(screen => screen['screenUuid'])]
+                  console.log(screenUuidList)
+                }
+              })
+              console.log(screenUuidList)
+              resolve()
+            })
+          }
         })
-        this.$emit('selectedAndNext', {
-          theatreUuidList,     // 全选集合
-          screenUuidList,      // 单选集合
-          'certificateSource': this.screenType == 'internalScreen' ? 3 : 2
+        promise.then(() => {
+          console.log(screenUuidList)
+          this.$emit('selectedAndNext', {
+            screenUuidList,
+            'certificateSource': this.screenType == 'internalScreen' ? 3 : 2
+          })
         })
       }
     },
@@ -424,7 +441,18 @@
       // 【院线银幕】选中项长度
       cinemaScrSelTotal() {
         // 根据【院线】或【影院】预告长度判断是否有实际选中项
-        return true
+        let length2 = 0
+        this.cinemaCheckedList.forEach(({theatreItemList}) => {
+          if (!theatreItemList.length) return false
+          // 银幕尚未被加载
+          theatreItemList.forEach(({checkItemList, acquired, checkAll, screenLength}) => {
+            // 银幕已加载
+            if (acquired) length2 += checkItemList.length
+            // 银幕尚未被加载 且已被全部选中
+            else if (checkAll) length2 += screenLength
+          })
+        })
+        return length2
       }
     }
   }

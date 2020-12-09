@@ -285,7 +285,7 @@
           'aspect_ratio': proportionList.find(curr => curr.value == item.aspectRatio)['label'],
           'film_type': this.technologyList[item.filmType - 1]['text'],
           'resolution': this.resolutionList[item.resolution]['text'],
-          'is_encrypt': item.is_encrypt ? '加密' : '未加密',
+          'is_encrypt': item.isEncrypt == 1 ? '加密' : '未加密',
           'createTime': createDateFun(new Date(item.createTime)),
           'validPeriod': new Date().getTime() >= item.expireTime ? 0 : 1
         }))

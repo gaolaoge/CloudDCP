@@ -246,7 +246,7 @@
     methods: {
       //
       localWinStatus(status) {
-        if(status == 'inputName' && this.selectBy == 'local') this.LSIS = true
+        if (status == 'inputName' && this.selectBy == 'local') this.LSIS = true
         else this.LSIS = false
       },
       // 1.关闭新建项目窗口
@@ -282,7 +282,7 @@
       // 3.创建KDM
       async createKDMF() {
         if (!this.setParameters.form.kdmTaskName.trim()) return false
-        let {cinemaName, theatreName, screenList, certificateSource} = this.selectScreen,
+        let {cinemaName, theatreName, screenUuidList, screenList, certificateSource} = this.selectScreen,
           {projectUuid, kdmTaskName, theatreTimeZone, kdmFilenameTemplateUuid, kdmCreateDate} = this.setParameters.form,
           {zoneUuid, movieStartTime, movieEndTime} = this,
           {taskUuid} = this.selectedDCPUTask,
@@ -295,7 +295,7 @@
             theatreTimeZone,                    // 影院时区
             movieStartTime,                     // 播放起始时间
             movieEndTime,                       // 播放结束时间
-            // 'screenUuidList': certificateSource == 1 ? [] : screenUuidList,        // 单选银幕Uuid列表
+            'screenUuidList': certificateSource == 1 ? [] : screenUuidList,        // 单选银幕Uuid列表
             // 'theatreUuidList': certificateSource == 1 ? null : theatreUuidList,    // 全选银幕Uuid列表
             'cinemaUuidList': certificateSource == 1 ? null : [],     // 院线uuid列表(只有下面的影院全选是才传)
             zoneUuid,                           // 分区uuid
@@ -331,6 +331,9 @@
               }
             })
           })
+        } else if (data.code == 201) {
+          messageFun('success', '创建成功')
+          this.$emit('closeDialogFun', 'createKDMDialog')
         } else messageFun('error', '报错')
       }
     },

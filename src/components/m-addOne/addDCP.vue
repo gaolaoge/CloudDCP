@@ -184,6 +184,7 @@
             <div class="fileItem item">
               <label class="farm-label">{{ setUnpackBase.label.mode }}：</label>
               <el-select v-model="setUnpackBase.form.filmType"
+                         :disabled="createType == 3"
                          class="farm-input farm-select">
                 <el-option
                   v-for="(item,index) in modeList"
@@ -197,6 +198,7 @@
             <div class="fileItem item">
               <label class="farm-label">{{ setUnpackBase.label.channelType }}：</label>
               <el-select v-model="setUnpackBase.form.soundtrack"
+                         :disabled="createType == 3"
                          class="farm-input farm-select">
                 <el-option
                   v-for="(item,index) in channelTypeList"
@@ -228,8 +230,12 @@
                  v-for="(item,index) in selectFileBase.imgFileList"
                  :key="'imgFile-' + index">
               <label>{{ item.label }}：</label>
-              <input type="text" disabled v-model="item.localPath">
-              <div class="btn" @click="selectFile(item)"><span>{{ $t('public.browse') }}</span></div>
+              <input type="text" disabled v-model="item.localPath"
+                     :class="[{'disabled': item.tag == 'image' && createType == 3}]">
+              <div :class="[{'disabled': item.tag == 'image' && createType == 3}, 'btn']"
+                   @click="selectFile(item, true)">
+                <span>{{ $t('public.browse') }}</span>
+              </div>
             </div>
             <!--声音目录-->
             <div class="fileTitle">{{ selectFileBase.directory[1] }}</div>
@@ -428,7 +434,8 @@
     areaList,
     messageFun,
     throwInfoFun,
-    normList
+    normList,
+    transformParameterS
   } from '@/assets/common'
   import addProject from '@/components/public-module/add_project'
   import setName from './components/setDCPFileName'
@@ -437,6 +444,7 @@
     name: 'addDCP',
     data() {
       return {
+        createType: 1,               // 新建1 拷贝2 农场选择3
         title: '新建DCP打包',
         navL: [
           '选择打包模板',
@@ -666,6 +674,7 @@
         setFileNameDialog: {
           visible: false
         }
+
       }
     },
     computed: {
@@ -903,8 +912,9 @@
         let {isEncrypt, patternUuid, captionType, packageDate, productor, presenter, packageType, region, soundtrack, captionLanguage, soundLanguage, sourceColor, taskName, projectUuid, filmName, filmCategory, filmVersion, aspectRatio, resolution, filmType} = this.setUnpackBase.form
           , {renderTList, renderTListActive, checked} = this.selectUnpackBase
           , {imgFileList, mp3FileList, subtitleFileList} = this.selectFileBase
-          , {zoneUuid, user, packageName} = this
+          , {zoneUuid, user, packageName, createType} = this
           , {data} = await createNewDCP({
+          createType,                // 新建1 拷贝2 农场选择3
           checked,                   // 记住模板选项
           taskName,                  // 任务名
           packageName,               // dcp文件名
@@ -950,7 +960,10 @@
           return false
         }
         let {pathPrefix} = data.data,
-          list = [
+          list = createType == 3 ?  [
+            ...mp3FileList.filter(item => item.localPath),
+            ...subtitleFileList.filter(item => item.localPath)
+          ] : [
             ...imgFileList.filter(item => item.localPath),
             ...mp3FileList.filter(item => item.localPath),
             ...subtitleFileList.filter(item => item.localPath)
@@ -974,7 +987,8 @@
         })
       },
       // 3.选择文件
-      selectFile(data) {
+      selectFile(data, disabled) {
+        if (disabled) return false
         let {localPath, key, type} = data
         this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
           code: 201,
@@ -1002,6 +1016,17 @@
         normList
       })
       this.getList()  // 1.选择打包模板 - 获取渲染模板列表
+      let obj = transformParameterS(window.location.search)
+      if ('token' in obj) {
+        // 从农场平台跳转至此
+        // 选定为【2D】，【2.1立体音】不可修改
+        // 已选中图像地址
+        this.createType = 3
+        this.selectFileBase.imgFileList[0]['localPath'] = obj.imagePath
+
+
+        console.log(obj.imagePath)
+      }
     },
     components: {
       addProject,
@@ -1323,5 +1348,12 @@
     position: absolute;
     right: 20px;
     top: 14px;
+  }
+
+  .fileItem {
+    input.disabled {
+      background-color: #F5F7FA;
+      color: #C0C4CC;
+    }
   }
 </style>

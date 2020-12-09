@@ -268,17 +268,6 @@
           this.getList(this.tableFilerCondition)
           this.editSDialog.visible = false
           if (editPath) this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
-<<<<<<< HEAD
-            code: 211,
-            userID: this.user.id,
-            files: [{
-              taskUuid: data.data['screenUuid'],
-              ID: data.data['screenId'],
-              localPath: filePath,
-              networkPath: {
-                front: data.data['pathPrefix'],
-                back: data.data['certificatePath']
-=======
             'code': 211,
             'userID': this.user.id,
             'files': [{
@@ -289,7 +278,6 @@
               'networkPath': {
                 'front': data.data['pathPrefix'],
                 'back': data.data['certificatePath']
->>>>>>> dev
               }
             }]
           })

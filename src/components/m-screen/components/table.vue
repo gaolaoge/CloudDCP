@@ -268,7 +268,7 @@
           this.getList(this.tableFilerCondition)
           this.editSDialog.visible = false
           if (editPath) this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
-            'code': 211,
+            'code': 221,
             'userID': this.user.id,
             'files': [{
               'taskUuid': data.data['screenUuid'],

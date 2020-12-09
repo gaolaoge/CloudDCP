@@ -1023,6 +1023,7 @@
         // 已选中图像地址
         this.createType = 3
         this.selectFileBase.imgFileList[0]['localPath'] = obj.imagePath
+        history.pushState(null, null, '/dcp')
       }
     },
     components: {

@@ -400,32 +400,30 @@
         if (this.screenType == 'internalScreen' && !this.internalScrSelTotal) return false
         if (this.screenType == 'theaterScreen' && !this.cinemaScrSelTotal) return false
         let screenUuidList = []
-        let promise = new Promise(resolve => {
+        let promise = new Promise(async resolve => {
           // 内部银幕
           if (this.screenType == 'internalScreen') {
             this.checkedList.forEach(item => screenUuidList = [...screenUuidList, ...item.checkItemList])
             resolve()
-          }
-          else {
-            // 院线银幕
-            this.cinemaCheckedList.forEach(({theatreItemList}) => {
-              theatreItemList.forEach(async ({theatreUuid, acquired, checkItemList}) => {
+          } else {
+            // 院线银幕 (需要同步执行)
+            for (let i = 0; i < this.cinemaCheckedList.length; i++) {
+              let {theatreItemList} = this.cinemaCheckedList[i]
+              for (let z = 0; z < theatreItemList.length; z++) {
+                let {theatreUuid, acquired, checkItemList} = theatreItemList[z]
                 // 银幕列表已被加载
-                if(acquired) screenUuidList = [...screenUuidList, ...checkItemList]
+                if (acquired) screenUuidList = [...screenUuidList, ...checkItemList]
                 else {
                   // 银幕列表尚未加载
                   let {data} = await getInternalScrList(theatreUuid)
                   screenUuidList = [...screenUuidList, ...data.data.map(screen => screen['screenUuid'])]
-                  console.log(screenUuidList)
                 }
-              })
-              console.log(screenUuidList)
-              resolve()
-            })
+              }
+            }
+            resolve()
           }
         })
         promise.then(() => {
-          console.log(screenUuidList)
           this.$emit('selectedAndNext', {
             screenUuidList,
             'certificateSource': this.screenType == 'internalScreen' ? 3 : 2

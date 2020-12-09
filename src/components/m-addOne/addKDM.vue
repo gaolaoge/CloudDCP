@@ -297,7 +297,7 @@
             movieEndTime,                       // 播放结束时间
             'screenUuidList': certificateSource == 1 ? [] : screenUuidList,        // 单选银幕Uuid列表
             // 'theatreUuidList': certificateSource == 1 ? null : theatreUuidList,    // 全选银幕Uuid列表
-            'cinemaUuidList': certificateSource == 1 ? null : [],     // 院线uuid列表(只有下面的影院全选是才传)
+            // 'cinemaUuidList': certificateSource == 1 ? null : [],     // 院线uuid列表(只有下面的影院全选是才传)
             zoneUuid,                           // 分区uuid
             'operateSource': 1,                 // 操作来源, 1,网页端 2客户端
             certificateSource,                  // 证书来源 1我的电脑, 2银幕列表-院线银幕, 3银幕列表-内部银幕

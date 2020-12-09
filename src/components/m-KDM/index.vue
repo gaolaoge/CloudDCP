@@ -225,6 +225,7 @@
     right: -924px;
     transition: all 0.2s;
     border-radius: 8px;
+    z-index: 1;
 
     &.showMe {
       right: -20px;

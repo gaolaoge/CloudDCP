@@ -88,13 +88,13 @@
               :filters="statusList"
               width="160">
               <template slot-scope="scope">
-                <span v-if="[101, 201, 610, 620].some(item => item == scope.row.kdmStatus)"
+                <span v-if="[101, 102, 201].some(item => item == scope.row.kdmStatus)"
                       style="color: rgba(22, 29, 37, 0.8)">{{ scope.row.taskStatusText }}</span>
-                <span v-if="[301, 302, 630].some(item => item == scope.row.kdmStatus)"
+                <span v-if="[301, 302].some(item => item == scope.row.kdmStatus)"
                       style="color: rgba(255, 191, 0, 1)">{{ scope.row.taskStatusText }}</span>
-                <span v-if="[400, 640].some(item => item == scope.row.kdmStatus)"
+                <span v-if="[400].some(item => item == scope.row.kdmStatus)"
                       style="color: rgba(255, 62, 77, 1)">{{ scope.row.taskStatusText }}</span>
-                <span v-if="[500, 650].some(item => item == scope.row.kdmStatus)"
+                <span v-if="[500].some(item => item == scope.row.kdmStatus)"
                       style="color: rgba(70, 203, 93, 1)">{{ scope.row.taskStatusText }}</span>
               </template>
             </el-table-column>
@@ -124,7 +124,8 @@
   } from '@/api/kdm-api'
   import {mapState} from 'vuex'
   import {
-    KDMmainStatusList
+    KDMmainStatusList,
+    KDMFrameStatusList
   } from '@/assets/common'
 
   export default {
@@ -226,7 +227,7 @@
             pageSize: 999
           })
         if (data.code == 200) tab.tableData = data.data.map(item => Object.assign(item, {
-          'taskStatusText': KDMmainStatusList.find(curr => curr.code == item.kdmStatus)['status']
+          'taskStatusText': KDMFrameStatusList.find(curr => curr.code == item.kdmStatus)['status']
         }))
       },
       // table 行样式
@@ -280,7 +281,8 @@
     },
     mounted() {
       this.$nextTick(() => Object.assign(this, {
-        KDMmainStatusList
+        KDMmainStatusList,
+        KDMFrameStatusList
       }))
     }
   }

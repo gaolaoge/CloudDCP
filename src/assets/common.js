@@ -1171,6 +1171,45 @@ const KDMmainStatusList = [
   }
 ]
 
+const KDMFrameStatusList = [
+  {
+    code: 101,
+    class: '等待',
+    status: '等待开始'
+  },
+  {
+    code: 102,
+    class: '等待',
+    status: '制作中'
+    // status: '等待分配节点机'
+  },
+  {
+    code: 201,
+    class: '进行中',
+    status: '制作中'
+  },
+  {
+    code: 301,
+    class: '暂停',
+    status: '手动暂停'
+  },
+  {
+    code: 302,
+    class: '暂停',
+    status: '欠费暂停'
+  },
+  {
+    code: 400,
+    class: '失败',
+    status: '压缩失败'
+  },
+  {
+    code: 500,
+    class: '成功',
+    status: '压缩成功'
+  }
+]
+
 // 时区
 const timeZone = [
   {
@@ -1289,6 +1328,7 @@ export {
   DCPmainStatusList,
   DCFrameStatusList,
   KDMmainStatusList,
+  KDMFrameStatusList,
   timeZone,
   normList,
   createCalendar,

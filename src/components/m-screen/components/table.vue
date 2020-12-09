@@ -256,7 +256,7 @@
       },
       // 操作 - 确认编辑
       async realEditScreen() {
-        let {nameV: screenName, filePath, statusV: screenStatus, screenUuid, editPath} = this.editSDialog,
+        let {nameV: screenName, filePath, statusV: screenStatus, certificateV, screenUuid, editPath} = this.editSDialog,
           {data} = await editScreen({
             screenUuid,
             screenName,
@@ -268,6 +268,7 @@
           this.getList(this.tableFilerCondition)
           this.editSDialog.visible = false
           if (editPath) this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
+<<<<<<< HEAD
             code: 211,
             userID: this.user.id,
             files: [{
@@ -277,6 +278,18 @@
               networkPath: {
                 front: data.data['pathPrefix'],
                 back: data.data['certificatePath']
+=======
+            'code': 211,
+            'userID': this.user.id,
+            'files': [{
+              'taskUuid': data.data['screenUuid'],
+              'taskName': certificateV,
+              'ID': data.data['screenId'],
+              'localPath': filePath,
+              'networkPath': {
+                'front': data.data['pathPrefix'],
+                'back': data.data['certificatePath']
+>>>>>>> dev
               }
             }]
           })
@@ -371,7 +384,6 @@
           let data = JSON.parse(e.data)
           if (data.code == 210) {
             if (data.result == 0) {
-              console.log(data)
               this.editSDialog.editPath = true
               this.editSDialog.certificateV = data.files[0]['name']
               this.editSDialog.filePath = data.files[0]['localPath']

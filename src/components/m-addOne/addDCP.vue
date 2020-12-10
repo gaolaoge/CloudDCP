@@ -487,11 +487,11 @@
             resolution: 1,           // 分辨率
             sourceColor: 0,          // 源色彩
             presenter: '',           // 出品方
-            packageDate: new Date(),    // 打包日期
+            packageDate: new Date(), // 打包日期
             filmType: 1,             // 2D/3D
             productor: '',           // 制作方
             packageType: 0,          // DCP类型
-            soundtrack: 0,           // 声道类型
+            soundtrack: 1,           // 声道类型
             patternUuid: 0,          // 任务模式
             isEncrypt: 1
           },
@@ -839,7 +839,10 @@
         dialogAdd.visible = true
         this.$nextTick(() => {
           this.$refs.templateName.focus()
-          if (type == 'editOne') format.name = true
+          if (type == 'editOne') {
+            format.name = true
+            dialogAdd.title = '编辑模板'
+          } else dialogAdd.title = '添加模板'
         })
         dialogAdd.editOrAdd = type
         if (type == 'editOne') {
@@ -1340,5 +1343,9 @@
       background-color: #F5F7FA;
       color: #C0C4CC;
     }
+  }
+
+  .form .item .warnInfo {
+    left: 74px;
   }
 </style>

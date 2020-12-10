@@ -428,12 +428,12 @@ const colorTypeList = [
   {
     label: 'REC 709',
     tag: 'REC',
-    value: 0
+    value: 1
   },
   {
     label: 'P3 DCI',
     tag: 'P3',
-    value: 1
+    value: 0
   },
   {
     label: 'REC 2020',
@@ -484,17 +484,17 @@ let speedList = [
 // 下拉框 - 声道类型
 const channelTypeList = [
   {
-    label: '2.1立体音',
+    label: '2.1立体声',
     tag: '21',
     value: 0
   },
   {
-    label: '5.1立体音',
+    label: '5.1立体声',
     tag: '51',
     value: 1
   },
   {
-    label: '7.1立体音',
+    label: '7.1立体声',
     tag: '71',
     value: 2
   }

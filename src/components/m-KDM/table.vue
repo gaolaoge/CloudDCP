@@ -44,7 +44,18 @@
         :filters="statusList"
         width="120">
         <template slot-scope="scope">
-          {{scope.row.taskStatusText}}
+          <span v-if="[101, 103, 201, 610, 620].some(item => item == scope.row.taskStatus)"
+                style="color: rgba(22, 29, 37, 0.8)">{{ scope.row.taskStatusText }}
+          </span>
+          <span v-if="[301, 302, 630].some(item => item == scope.row.taskStatus)"
+                style="color: rgba(255, 191, 0, 1)">{{ scope.row.taskStatusText }}
+          </span>
+          <span v-if="[400, 640].some(item => item == scope.row.taskStatus)"
+                style="color: rgba(255, 62, 77, 1)">{{ scope.row.taskStatusText }}
+          </span>
+          <span v-if="[500, 650].some(item => item == scope.row.taskStatus)"
+                style="color: rgba(70, 203, 93, 1)">{{ scope.row.taskStatusText }}
+          </span>
         </template>
       </el-table-column>
 

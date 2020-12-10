@@ -44,7 +44,7 @@
         :filters="statusList"
         width="120">
         <template slot-scope="scope">
-          <span v-if="[101, 201, 610, 620].some(item => item == scope.row.taskStatus)"
+          <span v-if="[101, 201, 900, 610, 620].some(item => item == scope.row.taskStatus)"
                 style="color: rgba(22, 29, 37, 0.8)">{{ scope.row.taskStatusText }}
           </span>
           <span v-if="[301, 302, 630].some(item => item == scope.row.taskStatus)"

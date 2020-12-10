@@ -56,10 +56,10 @@
         :filters="tabProjectList"
         width="200"/>
 
-      <!--电影名称-->
+      <!--影片名称-->
       <el-table-column
         prop="filmName"
-        label="电影名称"
+        label="影片名称"
         show-overflow-tooltip
         width="200"/>
 

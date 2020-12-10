@@ -25,9 +25,9 @@
         show-overflow-tooltip
         width="100"/>
 
-      <!--任务名-->
+      <!--任务名称-->
       <el-table-column
-        label="任务名"
+        label="任务名称"
         show-overflow-tooltip
         min-width="200">
         <template slot-scope="scope">
@@ -67,10 +67,10 @@
         :filters="tabProjectList"
         width="200"/>
 
-      <!--电影名称-->
+      <!--影片名称-->
       <el-table-column
         prop="filmName"
-        label="电影名称"
+        label="影片名称"
         show-overflow-tooltip
         width="200"/>
 

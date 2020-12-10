@@ -52,19 +52,17 @@
                          class="item-icon">
                     <!--删除-->
                     <img src="@/icons/set-renderTemplate-item-delete.png"
-                         @click="deleteTemplateF(item.templateUuid)"
+                         @click.stop="deleteTemplateF(item.templateUuid)"
                          class="item-icon">
                   </span>
                   <span v-show="selectUnpackBase.renderTListActive != index">
                     <!--编辑-->
                     <img src="@/icons/set-renderTemplate-item-edit-b.png"
-                         alt=""
                          @click.stop="addOrEditTemplate('editOne',index)"
                          class="item-icon">
                     <!--删除-->
                     <img src="@/icons/set-renderTemplate-item-delete-b.png"
-                         alt=""
-                         @click="deleteTemplateF(item.templateUuid)"
+                         @click.stop="deleteTemplateF(item.templateUuid)"
                          class="item-icon">
                   </span>
                 </span>
@@ -729,7 +727,6 @@
       'stepBtnActive': function (step) {
         if (step == 3 && !this.socket_plugin)
           this.$store.commit('WEBSOCKET_PLUGIN_INIT', true)
-
       },
       'projectList': {
         handler: function (list) {

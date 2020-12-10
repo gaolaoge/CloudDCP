@@ -75,7 +75,7 @@
                 </span>
                 <span class="software">{{ dialogAdd.internetSL }}： {{ item.codingRate }}Mb/s</span>
                 <span class="software">
-                  {{ dialogAdd.speedL }}： {{ dialogAdd['speedList'][item.frameRate]['label'] }}
+                  {{ dialogAdd.speedL }}： {{ speedList.find(curr => curr.val == item.frameRate)['label'] }}
                 </span>
                 <img src="@/icons/item-selected.png" class="item-selected">
               </div>
@@ -226,14 +226,14 @@
             <!--图像目录-->
             <div class="fileTitle">{{ selectFileBase.directory[0] }}</div>
             <div class="fileItem"
-                 v-show="setUnpackBase.form.filmType == 0 ? index == 0 : index != 0"
+                 v-show="setUnpackBase.form.filmType == 1 ? index == 0 : index != 0"
                  v-for="(item,index) in selectFileBase.imgFileList"
                  :key="'imgFile-' + index">
               <label>{{ item.label }}：</label>
               <input type="text" disabled v-model="item.localPath"
                      :class="[{'disabled': item.tag == 'image' && createType == 3}]">
               <div :class="[{'disabled': item.tag == 'image' && createType == 3}, 'btn']"
-                   @click="selectFile(item, true)">
+                   @click="selectFile(item, item.tag == 'image' && createType == 3 ? true : false)">
                 <span>{{ $t('public.browse') }}</span>
               </div>
             </div>
@@ -354,7 +354,7 @@
           <el-select v-model="dialogAdd.form.frameRate"
                      class="farm-select">
             <el-option
-              v-for="(item,index) in dialogAdd.speedList"
+              v-for="(item,index) in speedList"
               :key="index"
               :label="item.label"
               :value="item.val">
@@ -490,7 +490,7 @@
             sourceColor: 0,          // 源色彩
             presenter: '',           // 出品方
             packageDate: new Date(),    // 打包日期
-            filmType: 0,             // 2D/3D
+            filmType: 1,             // 2D/3D
             productor: '',           // 制作方
             packageType: 0,          // DCP类型
             soundtrack: 0,           // 声道类型
@@ -648,8 +648,22 @@
         // 设置DCP文件名
         setFileNameDialog: {
           visible: false
-        }
-
+        },
+        movieTypeList: [],
+        proportionList: [],
+        resolutionList: [],
+        colorTypeList: [],
+        modeList: [],
+        channelTypeList: [],
+        APList: [],
+        DCPTypeList: [],
+        soundtrackList: [],
+        versionList: [],
+        mp3LanguageList: [],
+        textLanguageList: [],
+        areaList: [],
+        speedList: [],
+        normList: []
       }
     },
     computed: {
@@ -659,17 +673,17 @@
           , {renderTList, renderTListActive} = this.selectUnpackBase
           , name = [
           filmName
-          , movieTypeList ? movieTypeList[filmCategory]['tag'] + '-' + filmVersion : null
-          , proportionList ? proportionList[aspectRatio]['tag'] : null
-          , mp3LanguageList ? mp3LanguageList.find(curr => curr.val == soundLanguage)['label'].split(' ')[1] + '-' + '字幕语言-AP' : null
+          , movieTypeList.length ? movieTypeList.find(curr => curr.value == filmCategory)['tag'] + '-' + filmVersion : null
+          , proportionList.length ? proportionList.find(curr => curr.value == aspectRatio)['tag'] : null
+          , mp3LanguageList.length ? mp3LanguageList.find(curr => curr.val == soundLanguage)['label'].split(' ')[1] + '-' + '字幕语言-AP' : null
           , areaList.length ? areaList.find(curr => curr.val == region)['label'].split(' ')[1] : null
-          , channelTypeList ? channelTypeList[soundtrack]['tag'] : null
-          , resolutionList.find(curr => curr.val == resolution)['tag']
+          , channelTypeList.length ? channelTypeList.find(curr => curr.value == soundtrack)['tag'] : null
+          , resolutionList.length ? resolutionList.find(curr => curr.value == resolution)['tag'] : null
           , presenter ? presenter : 'NULL'
           , packageDate.toLocaleDateString().split('/').join('')
           , productor ? productor : 'NULL'
-          , renderTList.length && renderTListActive != -1 ? (normList.find(curr => curr.val == renderTList[renderTListActive]['codingRule'])['label'] + modeList ? modeList[filmType]['label'] : '') : null
-          , DCPTypeList ? DCPTypeList[packageType]['tag'] : ''
+          , normList.length && renderTList.length && renderTListActive != -1 ? (normList.find(curr => curr.val == renderTList[renderTListActive]['codingRule'])['label'] + (modeList.length ? modeList.find(curr => curr.value == filmType)['label'] : '')) : null
+          , DCPTypeList.length ? DCPTypeList.find(curr => curr.val == packageType)['tag'] : ''
         ]
         return name.join('_')
       },

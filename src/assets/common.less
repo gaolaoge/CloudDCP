@@ -1314,6 +1314,46 @@ td {
   }
 }
 
+// 下拉框
+.el-select-dropdown {
+  border-radius: 5px;
+  border: 1px solid rgba(240, 240, 240, 1);
+  background-color: rgba(255, 255, 255, 1);
+  box-shadow: 0px 2px 6px 0px rgba(27, 83, 244, 0.16);
+  overflow: hidden;
+  //margin-left: -32px;
+  width: 219px;
+
+  .el-select-dropdown__list {
+    padding: 0px 0px 0px;
+
+    .el-select-dropdown__item {
+      height: 42px;
+
+      span {
+        line-height: 42px;
+        font-size: 13px;
+        color: rgba(22, 29, 37, 0.6);
+      }
+
+      &.selected {
+        span {
+          font-weight: 600;
+          color: rgba(22, 29, 37, 0.8);
+        }
+      }
+
+      &.hover {
+        background: rgba(0, 97, 255, 0.2);
+      }
+    }
+  }
+
+  .popper__arrow {
+    display: none;
+  }
+}
+
 // tree
 .custom-tree-node {
   position: relative;

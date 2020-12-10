@@ -44,12 +44,15 @@
               <p class="status" v-show="processTextStatus == 630">{{ statusTitText.baleUploadPause }}</p>
               <p class="status" v-show="processTextStatus == 640">{{ statusTitText.baleUploadError }}</p>
               <p class="status" v-show="processTextStatus == 101">{{ statusTitText.baleWait }}</p>
-              <p class="status" v-show="processTextStatus == 201 || processTextStatus == 900">{{ statusTitText.baleIng
-                }}</p>
-              <p class="status" v-show="processTextStatus == 301 || processTextStatus == 302">{{ statusTitText.balePause
-                }}</p>
-              <p class="status" v-show="processTextStatus == 400">{{ statusTitText.baleError[0] }}{{
-                statusTitText.baleError[1] }}</p>
+              <p class="status" v-show="processTextStatus == 201 || processTextStatus == 900">
+                {{ statusTitText.baleIng }}
+              </p>
+              <p class="status" v-show="processTextStatus == 301 || processTextStatus == 302">
+                {{ statusTitText.balePause }}
+              </p>
+              <p class="status" v-show="processTextStatus == 400">
+                {{ statusTitText.baleError[0] }}{{ statusTitText.baleError[1] }}
+              </p>
               <p class="status" v-show="processTextStatus == 500">{{ statusTitText.baleDone }}</p>
               <!--进度条-->
               <div class="progressItem"
@@ -60,7 +63,16 @@
                   <el-progress :percentage="item.percent"
                                :show-text="false"
                                :class="[setProgressColorF(item), 'progressColor']"/>
-                  <span class="info">{{ item.info1 }}{{ item.time }}{{ item.info2 }}</span>
+                  <span class="info">
+                    {{ item.type }}{{ item.info }}{{ item.time }}
+                    <!--总帧数-->
+                    <span class="x" v-show="item.processType == 2">总帧数：{{ total }}</span>
+                    <!--平均耗时-->
+                    <span class="x" v-show="item.processType == 2">{{ item.average }}</span>
+                    <!--总个数-->
+                    <span class="x" v-show="[3, 4, 5].some(curr => curr == item.processType)">总个数：1</span>
+                    <span v-show="[2, 3, 4, 5].some(curr => curr == item.processStatus)">)</span>
+                  </span>
                   <div class="iconB" v-show="item.status == 5">
                     <img src="@/icons/check-circle.png">
                     <span class="iconText">{{ $t('public.consummation') }}</span>
@@ -260,15 +272,14 @@
         },
         titleText: ['内容检查', '图像压缩', '图像MXF封装', '声音MXF封装', '字幕MXF封装', 'DCP打包'],
         titleText2: ['内容检查', '图像压缩', '图像MXF封装', '声音MXF封装', 'DCP打包'],
-        statusText: [null, '等待开始', '进行中（已耗时：', '暂停（已耗时：', '失败（已耗时：', '成功（共耗时：', null, null, null, '进行中（已耗时：'],
+        statusText: [null, '等待开始', '进行中（已耗时：', '暂停（已耗时：', '失败（已耗时：', '完成（共耗时：', null, null, null, '进行中（已耗时：'],
         compressList: [
           // {
           //   type: '内容检查',
           //   percent: 100,
           //   status: 0,       // 完成
           //   time: '0',
-          //   info1: '内容检查完成（共耗时：',
-          //   info2: '）'
+          //   info1: '内容检查完成（共耗时：'
           // }
         ],
         errorInfo: [
@@ -311,16 +322,16 @@
           realTitleText = PTR.processList.length == 5 ? titleText2 : titleText,
           compressList = PTR.processList.map((item, index) => {
             return {
+              'processStatus': item.processStatus,
+              'processType': item.processType,
               'type': realTitleText[index],
               'percent': Number((item.percent * 100).toFixed(2)),
               'status': item.processStatus,
               'time': item.processStatus > 1 ? consum(item.useTime) : null,
-              'info1': statusText[item.processStatus],
-              'info2': item.processStatus > 1 ? '）' : null
+              'info': statusText[item.processStatus],
+              'average': '平均耗时：' + consum(item.averageUseTime)
             }
           })
-        // if (PTR.processList.length == 5)
-
         // processType 1内容检查 2图像压缩 3图像MXF封装 4声音MXF封装 5字幕MXF封装 6DCP打包
         Object.assign(this, {
           'nameV': PTR.dcpPackageName,
@@ -329,6 +340,7 @@
           'processTextStatus': PTR.taskStatus,
           compressList
         })
+        this.getTableList()
       },
       //
       handleCurrentChange(pageIndex) {
@@ -554,6 +566,10 @@
                     justify-content: space-between;
                     color: rgba(22, 29, 37, 0.6);
                     font-size: 12px;
+
+                    .x {
+                      margin-left: 14px;
+                    }
                   }
 
                   .iconB {

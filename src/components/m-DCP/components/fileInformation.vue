@@ -238,6 +238,7 @@
           'taskStatus': DCPmainStatusList.find(item => item.code == data.taskStatus)['status'],
           'region': areaList.find(item => item.val == data.region)['label'],
           'frameRate': speedList.find(curr => curr.val == data.frameRate)['label'],
+          // 'frameRate': data.frameRate + 'FPS',
           'codingRate': data.codingRate + 'Mb/s',
           'filmVersion': versionList.find(item => item.val == data.filmVersion)['label'],            // 类型版本
           'soundLanguage': mp3LanguageList.find(item => item.val == data.soundLanguage)['label'],    // 声音语言

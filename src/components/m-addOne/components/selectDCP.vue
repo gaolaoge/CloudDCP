@@ -13,7 +13,7 @@
                  class="input"
                  v-model="keyword"
                  @keyup.enter="getList"
-                 placeholder="输入场景名、任务ID">
+                 placeholder="输入任务ID、任务名称、影片名称">
           <!--搜索按钮-->
           <img src="@/icons/global-search-icon.png"
                class="searchIcon"
@@ -46,37 +46,14 @@
           show-overflow-tooltip
           width="100"/>
 
-        <!--场景名-->
+        <!--任务名称-->
         <el-table-column
-          label="场景名"
+          label="任务名称"
           show-overflow-tooltip
           min-width="200">
           <template slot-scope="scope">
             <span v-show="scope.row.validPeriod == 0">(过期)</span>
             <span>{{ scope.row.taskName }}</span>
-          </template>
-        </el-table-column>
-
-        <!--状态-->
-        <el-table-column
-          label="状态"
-          show-overflow-tooltip
-          column-key="status"
-          :filters="statusList"
-          width="120">
-          <template slot-scope="scope">
-            <span v-if="[101, 201, 610, 620].some(item => item == scope.row.taskStatus)"
-                  style="color: rgba(22, 29, 37, 0.8)">{{ scope.row.taskStatusText }}
-            </span>
-            <span v-if="[301, 302, 630].some(item => item == scope.row.taskStatus)"
-                  style="color: rgba(255, 191, 0, 1)">{{ scope.row.taskStatusText }}
-            </span>
-            <span v-if="[400, 640].some(item => item == scope.row.taskStatus)"
-                  style="color: rgba(255, 62, 77, 1)">{{ scope.row.taskStatusText }}
-            </span>
-            <span v-if="[500, 650].some(item => item == scope.row.taskStatus)"
-                  style="color: rgba(70, 203, 93, 1)">{{ scope.row.taskStatusText }}
-            </span>
           </template>
         </el-table-column>
 
@@ -88,28 +65,12 @@
           :filters="tabProjectList"
           width="200"/>
 
-        <!--电影名称-->
+        <!--影片名称-->
         <el-table-column
           prop="filmName"
-          label="电影名称"
+          label="影片名称"
           show-overflow-tooltip
           width="200"/>
-
-        <!--费用-->
-        <el-table-column
-          prop="cost"
-          label="费用（金币）"
-          sortable
-          show-overflow-tooltip
-          width="120"/>
-
-        <!--打包时长-->
-        <el-table-column
-          prop="useTime"
-          label="打包时长"
-          sortable
-          show-overflow-tooltip
-          width="160"/>
 
         <!--内容类型-->
         <el-table-column
@@ -147,30 +108,13 @@
           :filters="resolutionList"
           width="100"/>
 
-        <!--是否加密-->
-        <el-table-column
-          prop="is_encrypt"
-          label="是否加密"
-          show-overflow-tooltip
-          column-key="encrypt"
-          :filters="encryptList"
-          width="100"/>
-
         <!--创建人-->
         <el-table-column
           prop="createName"
           label="创建人"
-          sortable
           show-overflow-tooltip
+          :filters="userList"
           width="120"/>
-
-        <!--创建时间-->
-        <el-table-column
-          prop="createTime"
-          label="创建时间"
-          sortable
-          show-overflow-tooltip
-          width="180"/>
 
       </el-table>
       <!--暂无数据-->
@@ -234,16 +178,6 @@
           //   // validPeriod,   1有效 0过期
           // }
         ],
-        statusList: [
-          {text: '上传中', value: '上传中...'},
-          {text: '上传暂停', value: '上传暂停'},
-          {text: '上传失败', value: '上传失败'},
-          {text: '进行中', value: '进行中'},
-          {text: '暂停', value: '暂停'},
-          {text: '暂停（欠费）', value: '暂停（欠费）'},
-          {text: '失败', value: '失败'},
-          {text: '已完成', value: '已完成'}
-        ],
         typeList: [
           {text: '广告片ADV', value: '广告片ADV'},
           {text: '正片FTR', value: '正片FTR'},
@@ -273,6 +207,7 @@
           {text: '加密', value: '加密'},
           {text: '未加密', value: '未加密'}
         ],
+        userList: [],
         total: 0,
         pageIndex: 0,
         keyword: '',
@@ -290,7 +225,6 @@
             pageIndex: this.pageIndex,
             pageSize: this.setting.pageSize,
             keyword: this.keyword,
-            statusList: [],
             projectUuidList: [],
             aspectRatioList: [],     // 宽高比
             filmTypeList: [],        // 2d/3d 1:2d, 2:3d
@@ -391,7 +325,7 @@
       }
 
       /deep/ .el-table__body-wrapper {
-        height: calc(80vh - 28px - 20px - 28px - 35px - 47px - 14px - 32px - 40px);
+        height: calc(80vh - 28px - 20px - 28px - 35px - 47px - 14px - 32px - 5px);
       }
 
       /deep/ .el-radio__label {

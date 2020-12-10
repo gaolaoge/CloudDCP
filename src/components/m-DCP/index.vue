@@ -27,7 +27,7 @@
                class="input"
                v-model="searchInput"
                @keyup.enter="$refs.dcptable.getList()"
-               placeholder="输入场景名、任务ID">
+               placeholder="输入任务ID、任务名称、影片名称">
         <!--搜索按钮-->
         <img src="@/icons/global-search-icon.png"
              class="searchIcon"

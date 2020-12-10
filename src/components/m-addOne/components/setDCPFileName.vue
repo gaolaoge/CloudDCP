@@ -17,17 +17,17 @@
             <span class="fns">_</span>
             <!--影片类型-类型版本-->
             <span class="fns" style="color: #FA6400">
-              {{ movieTypeList ? movieTypeList[form.filmCategory]['tag'] + '-' + versionList[form.filmVersion]['label'] : null }}
+              {{ movieTypeList ? movieTypeList.find(curr => curr.value == form.filmCategory)['tag'] + '-' + versionList.find(curr => curr.val == form.filmVersion)['label'] : null }}
             </span>
             <span class="fns">_</span>
             <!--宽高比-->
             <span class="fns" style="color: #F7B500">
-              {{ proportionList ? proportionList[form.aspectRatio]['tag'] : null }}
+              {{ proportionList ? proportionList.find(curr => curr.value == form.aspectRatio)['tag'] : null }}
             </span>
             <span class="fns">_</span>
             <!--声音语言-字幕语言-->
             <span class="fns" style="color: #6DD400">
-              {{ mp3LanguageList ? mp3LanguageList[form.soundLanguage]['label'].split(' ')[1] : null }}{{ textLanguageList ? '-' + textLanguageList[form.captionLanguage]['label'].split(' ')[1] : null }}
+              {{ mp3LanguageList ? mp3LanguageList.find(curr => curr.val == form.soundLanguage)['label'].split(' ')[1] : null }}{{ textLanguageList ? '-' + textLanguageList.find(curr => curr.val == form.captionLanguage)['label'].split(' ')[1] : null }}
             </span>
             <span class="fns">_</span>
             <!--地区-->
@@ -37,12 +37,12 @@
             <span class="fns">_</span>
             <!--声道类型-补充声道-->
             <span class="fns" style="color: #0091FF">
-              {{ channelTypeList ? channelTypeList[form.soundtrack]['tag'] : null }}
+              {{ channelTypeList ? channelTypeList.find(curr => curr.value == form.soundtrack)['tag'] : null }}
             </span>
             <span class="fns">_</span>
             <!--分辨率-->
             <span class="fns" style="color: #6236FF">
-              {{ resolutionList ? resolutionList[form.resolution]['tag'] : null }}
+              {{ resolutionList ? resolutionList.find(curr => curr.value == form.resolution)['tag'] : null }}
             </span>
             <span class="fns">_</span>
             <!--出品单位-->
@@ -62,12 +62,12 @@
             <span class="fns">_</span>
             <!--任务模板-打包标准-->
             <span class="fns" style="color: #29AD40">
-              {{ codingRule + '-' + modeList[form.type]['label'] }}
+              {{ codingRule + '-' + modeList.find(curr => curr.value == form.filmType)['label'] }}
             </span>
             <span class="fns">_</span>
             <!--DCP类型-->
             <span class="fns" style="color: #E5C78A">
-              {{ DCPTypeList ? DCPTypeList[form.packageType]['tag'] : '' }}
+              {{ DCPTypeList ? DCPTypeList.find(curr => curr.val == form.packageType)['tag'] : '' }}
             </span>
           </p>
         </div>
@@ -220,7 +220,7 @@
         <!--2D/3D-->
         <div class="item mini">
           <label class="farm-label">{{ label.type }}</label>
-          <el-select v-model="form.type"
+          <el-select v-model="form.filmType"
                      class="farm-select">
             <el-option
               v-for="(item,index) in modeList"
@@ -313,7 +313,7 @@
           presenter: '',         // 出品方
           packageDate: new Date(),              // 打包日期
           productor: '',         // 制作方
-          type: 0,               // 2D/3D
+          filmType: 1,               // 2D/3D
           packageType: 0         // DCP类型
         },
         movieTypeList: [],

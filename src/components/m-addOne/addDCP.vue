@@ -52,19 +52,17 @@
                          class="item-icon">
                     <!--删除-->
                     <img src="@/icons/set-renderTemplate-item-delete.png"
-                         @click="deleteTemplateF(item.templateUuid)"
+                         @click.stop="deleteTemplateF(item.templateUuid)"
                          class="item-icon">
                   </span>
                   <span v-show="selectUnpackBase.renderTListActive != index">
                     <!--编辑-->
                     <img src="@/icons/set-renderTemplate-item-edit-b.png"
-                         alt=""
                          @click.stop="addOrEditTemplate('editOne',index)"
                          class="item-icon">
                     <!--删除-->
                     <img src="@/icons/set-renderTemplate-item-delete-b.png"
-                         alt=""
-                         @click="deleteTemplateF(item.templateUuid)"
+                         @click.stop="deleteTemplateF(item.templateUuid)"
                          class="item-icon">
                   </span>
                 </span>
@@ -489,11 +487,11 @@
             resolution: 1,           // 分辨率
             sourceColor: 0,          // 源色彩
             presenter: '',           // 出品方
-            packageDate: new Date(),    // 打包日期
+            packageDate: new Date(), // 打包日期
             filmType: 1,             // 2D/3D
             productor: '',           // 制作方
             packageType: 0,          // DCP类型
-            soundtrack: 0,           // 声道类型
+            soundtrack: 1,           // 声道类型
             patternUuid: 0,          // 任务模式
             isEncrypt: 1
           },
@@ -729,7 +727,6 @@
       'stepBtnActive': function (step) {
         if (step == 3 && !this.socket_plugin)
           this.$store.commit('WEBSOCKET_PLUGIN_INIT', true)
-
       },
       'projectList': {
         handler: function (list) {
@@ -842,7 +839,10 @@
         dialogAdd.visible = true
         this.$nextTick(() => {
           this.$refs.templateName.focus()
-          if (type == 'editOne') format.name = true
+          if (type == 'editOne') {
+            format.name = true
+            dialogAdd.title = '编辑模板'
+          } else dialogAdd.title = '添加模板'
         })
         dialogAdd.editOrAdd = type
         if (type == 'editOne') {
@@ -1343,5 +1343,9 @@
       background-color: #F5F7FA;
       color: #C0C4CC;
     }
+  }
+
+  .form .item .warnInfo {
+    left: 74px;
   }
 </style>

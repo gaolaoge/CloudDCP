@@ -446,11 +446,38 @@ const colorTypeList = [
 const modeList = [
   {
     label: '2D',
-    value: 0
+    value: 1
   },
   {
     label: '3D',
-    value: 1
+    value: 2
+  }
+]
+
+let speedList = [
+  {
+    label: '24FPS',
+    val: 0
+  },
+  {
+    label: '48FPS',
+    val: 1
+  },
+  {
+    label: '60FPS',
+    val: 2
+  },
+  {
+    label: '72FPS',
+    val: 3
+  },
+  {
+    label: '96FPS',
+    val: 4
+  },
+  {
+    label: '120FPS',
+    val: 5
   }
 ]
 
@@ -1331,6 +1358,7 @@ export {
   KDMFrameStatusList,
   timeZone,
   normList,
+  speedList,
   createCalendar,
   createDateFun,
   getDate,

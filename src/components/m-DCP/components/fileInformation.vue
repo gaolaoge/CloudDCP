@@ -151,7 +151,8 @@
     textLanguageList,
     areaList,
     DCPmainStatusList,
-    normList
+    normList,
+    speedList
   } from '@/assets/common'
   export default {
     name: 'fileInfo',
@@ -226,21 +227,21 @@
         if(data) Object.assign(this, data, {
           'packageDate': createDateFun(data.packageDate),
           'codingRule': normList.find(item => item.val == data.codingRule)['label'],                 // 打包标准
-          'resolution': resolutionList[data.resolution]['label'],
-          'sourceColor': colorTypeList[data.sourceColor]['label'],
-          'aspectRatio': proportionList[data.aspectRatio]['label'],
-          'captionLanguage': textLanguageList[data.captionLanguage]['label'],
-          'filmCategory': movieTypeList[data.filmCategory]['label'],
+          'resolution': resolutionList.find(curr => curr.value == data.resolution)['label'],
+          'sourceColor': colorTypeList.find(curr => curr.value == data.sourceColor)['label'],
+          'aspectRatio': proportionList.find(curr => curr.value == data.aspectRatio)['label'],
+          'captionLanguage': textLanguageList.find(curr => curr.val == data.captionLanguage)['label'],
+          'filmCategory': movieTypeList.find(curr => curr.value == data.filmCategory)['label'],
           'filmType': modeList.find(item => item.value == data.filmType)['label'],
-          'soundtrack': channelTypeList[data.soundtrack]['label'],
-          'captionType': APList[data.captionType]['label'],
+          'soundtrack': channelTypeList.find(curr => curr.value == data.soundtrack)['label'],
+          'captionType': APList.find(curr => curr.val == data.captionType)['label'],
           'taskStatus': DCPmainStatusList.find(item => item.code == data.taskStatus)['status'],
-          'region': areaList[data.region]['label'],
-          'frameRate': data.frameRate + 'fps',
+          'region': areaList.find(item => item.val == data.region)['label'],
+          'frameRate': speedList.find(curr => curr.val == data.frameRate)['label'],
           'codingRate': data.codingRate + 'Mb/s',
-          'filmVersion': versionList[data.filmVersion]['label'],            // 类型版本
-          'soundLanguage': mp3LanguageList[data.soundLanguage]['label'],    // 声音语言
-          'packageType': DCPTypeList[data.packageType]['label'],            // DCP类型
+          'filmVersion': versionList.find(item => item.val == data.filmVersion)['label'],            // 类型版本
+          'soundLanguage': mp3LanguageList.find(item => item.val == data.soundLanguage)['label'],    // 声音语言
+          'packageType': DCPTypeList.find(item => item.val == data.packageType)['label'],            // DCP类型
           'createTime':createDateFun(data.createTime)                       // 创建时间
         })
       }
@@ -260,7 +261,8 @@
         textLanguageList,
         areaList,
         DCPmainStatusList,
-        normList
+        normList,
+        speedList
       }))
     }
   }

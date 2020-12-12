@@ -370,8 +370,8 @@
         addMineScreen: {
           addOrEdit: null,   // 'add' or 'edit'
           visible: false,
-          titleA: '添加分组',
-          titleE: '重命名分组',
+          titleA: '添加',
+          titleE: '重命名',
           addCinema: '添加院线',
           addTheatre: '添加影院',
           selectFromTem: '从模板库中选择',

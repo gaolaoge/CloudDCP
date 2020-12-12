@@ -29,10 +29,11 @@ export function getObjectList(data) {
 }
 
 // 项目设置 - 删除项目
-export function deleteTask(projectUuid) {
+export function deleteTask(data) {
   return http({
-    url: `/dcpProfessional/project/setDefaultProject/${projectUuid}`,
-    method: 'DELETE'
+    url: `/dcpProfessional/project/deleteDefaultProject`,
+    method: 'DELETE',
+    data
   })
 }
 
@@ -48,7 +49,7 @@ export function setDefault(data) {
 export function editTask(data) {
   return http({
     url: `/dcpProfessional/project/updateProject`,
-    method: 'POST',
+    method: 'PUT',
     data
   })
 }

@@ -237,8 +237,8 @@
   import {
     getMessageList,
     getBulletin,
-    homeSelect
-    // putNewZoneID
+    homeSelect,
+    getZoneList
   } from '@/api/header-api'
   import {
     messageFun
@@ -316,6 +316,7 @@
       // this.getList()
       // this.getUserInfo()
       // this.haveUnread()
+      this.getZoneListF()
     },
     watch: {
       login: {
@@ -377,6 +378,16 @@
       }
     },
     methods: {
+      // 获取分区列表
+      async getZoneListF() {
+        let {data} = await getZoneList()
+        if (data.code == 200 ) this.workBenchList = data.data.map(curr => {
+          return {
+            name: curr.zoneName,
+            val: curr.zoneUuid
+          }
+        })
+      },
       // 是否有未读
       async haveUnread() {
         let v = `isRead=0&noticeType=1&keyword=&pageIndex=1&pageSize=10`,
@@ -434,21 +445,6 @@
             this.$store.commit('reset')
           })
           .catch(() => messageFun('ino', this.$t('message.cancelExit')))
-      },
-      // 工作台 下拉框
-      getList() {
-        homeSelect()
-          .then(data => {
-            let d = data.data
-            if (d.code !== 200) return false
-            this.workBenchList = d.data.map(curr => {
-              return {
-                name: curr.zoneName,
-                val: curr.zoneUuid
-              }
-            })
-          })
-          .catch(error => console.log(`工作台下拉框获取报错，${error}`))
       },
       changeIsGpu() {
         this.$store.commit('changeIsGpu', this.workBenchList.find(curr => curr.val === this.workBenchVal)['isGpu'])

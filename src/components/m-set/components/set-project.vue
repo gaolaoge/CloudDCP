@@ -12,15 +12,15 @@
         </div>
       </div>
       <div class="searchInput">
-          <input type="text"
-                 class="input"
-                 v-model="searchInputVal"
-                 @keyup.enter="getData"
-                 :placeholder="placeholder">
-          <!--搜索按钮-->
-          <img src="@/icons/global-search-icon.png"
-               class="searchIcon"
-               @click="getData">
+        <input type="text"
+               class="input"
+               v-model="searchInputVal"
+               @keyup.enter="getData"
+               :placeholder="placeholder">
+        <!--搜索按钮-->
+        <img src="@/icons/global-search-icon.png"
+             class="searchIcon"
+             @click="getData">
       </div>
     </div>
 
@@ -106,11 +106,11 @@
                  v-model="createProject.name"
                  :placeholder="createProject.placeholder">
           <el-checkbox v-model="createProject.checked" true-label='1' false-label='0' label="设为当前项目"/>
-          <div class="btn-group">
-            <div class="farm-btn cancel" @click="createCancelBtnFun">
+          <div class="dialog-btn-group">
+            <div class="dialog-btn cancel" @click="createCancelBtnFun">
               <span>{{ btnCancel }}</span>
             </div>
-            <div class="farm-btn save" :class="[{'cannotBeGo': verif}]" @click="createSaveBtnFun">
+            <div class="dialog-btn save" :class="[{'cannotBeGo': verif}]" @click="createSaveBtnFun">
               <span>{{ btnSave }}</span>
             </div>
           </div>
@@ -163,11 +163,11 @@
               </el-option>
             </el-select>
           </div>
-          <div class="btn-group">
-            <div class="farm-btn cancel" @click="editCancelBtnFun">
+          <div class="dialog-btn-group">
+            <div class="dialog-btn cancel" @click="editCancelBtnFun">
               <span>{{ btnCancel }}</span>
             </div>
-            <div class="farm-btn save"
+            <div class="dialog-btn save"
                  :class="[{'cannotBeGo': editVerif}]"
                  @click="editSaveBtnFun">
               <span>{{ btnSave }}</span>
@@ -353,13 +353,13 @@
       },
       // 编辑项目 - 保存
       async editSaveBtnFun() {
-        let {nameV, statusV, screenUuid, thumbnail} = this.editProject
+        let {nameV, statusV, projectUuid, thumbnail} = this.editProject
         if (this.editVerif) return false
         let {data} = await editTask({
           'projectName': nameV,
           'projectStatus': statusV,
-          'screenUuid': screenUuid,
-          'thumbnail': thumbnail
+          projectUuid,
+          thumbnail
         })
         if (data.code == 201) {
           messageFun('success', '编辑成功')
@@ -385,12 +385,12 @@
       // 项目 - 编辑
       editItem(index) {
         this.editBaseShow = true
-        let {screenUuid, thumbnail, projectName, projectStatus} = this.tableData[index]
+        let {projectUuid, thumbnail, projectName, projectStatus} = this.tableData[index]
         Object.assign(this.editProject, {
           nameV: projectName,
           statusV: projectStatus == '禁用' ? 0 : 1,
           thumbnail,
-          screenUuid
+          projectUuid
         })
       },
       // 项目 - 设为当前项目
@@ -409,7 +409,7 @@
           type: 'warning'
         })
           .then(async () => {
-            let {data} = await deleteTask(this.selectionList.map(curr => curr.screenUuid))
+            let {data} = await deleteTask({'projectUuidList': this.selectionList.map(curr => curr.projectUuid)})
             if (data.code == 201) {
               messageFun('success', '操作成功')
               this.getList(this.searchInputVal, this.page.index, this.page.size)
@@ -446,7 +446,7 @@
     margin: 0px;
   }
 
-  hr{
+  hr {
     margin: 20px 0px;
   }
 
@@ -521,6 +521,9 @@
       height: 220px;
 
       .con {
+        position: relative;
+        height: 184px;
+
         .name {
           width: 100%;
 
@@ -536,10 +539,12 @@
       height: 455px;
 
       .con {
+        position: relative;
         padding: 0px 30px;
         display: flex;
         flex-direction: column;
         align-items: center;
+        height: 419px;
 
         .imgB {
           position: relative;
@@ -630,7 +635,7 @@
     padding-left: 20px;
   }
 
-  /deep/.el-table__body-wrapper {
+  /deep/ .el-table__body-wrapper {
     height: calc(100vh - 80px - 42px - 20px - 47px - 20px - 52px - 52px - 20px);
   }
 

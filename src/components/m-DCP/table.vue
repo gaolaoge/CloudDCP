@@ -44,7 +44,7 @@
         :filters="statusList"
         width="120">
         <template slot-scope="scope">
-          <span v-if="[101, 201, 610, 620].some(item => item == scope.row.taskStatus)"
+          <span v-if="[101, 201, 900, 610, 620].some(item => item == scope.row.taskStatus)"
                 style="color: rgba(22, 29, 37, 0.8)">{{ scope.row.taskStatusText }}
           </span>
           <span v-if="[301, 302, 630].some(item => item == scope.row.taskStatus)"
@@ -343,14 +343,16 @@
           return false
         }
         let cb = () => {
-          data.data.forEach((item, index) => {
-            this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
-              'code': 300,
-              'userID': this.user.id,
-              'ID': item.taskId,
-              'filmName': selectionList[index]['filmName'],
-              'taskName': selectionList[index]['taskName'],
-              'path': [{'front': item.pathPrefix, 'back': item.relativePath}]
+          this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
+            'code': 300,
+            'userID': this.user.id,
+            'tasks': data.data.map((item, index) => {
+              return {
+                'ID': item['taskId'],
+                'filmName': selectionList[index]['filmName'],
+                'taskName': selectionList[index]['taskName'],
+                'path': [{'front': item.pathPrefix, 'back': item.relativePath}]
+              }
             })
           })
         }

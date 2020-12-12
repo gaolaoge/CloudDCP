@@ -27,9 +27,9 @@ export function readMessages(data) {
 }
 
 // 获取分区列表
-export function homeSelect() {
+export function getZoneList() {
   return http({
-    url: `/professional/dcp/getZoneList`,
+    url: `/dcpProfessional/project/getZoneList`,
     method: 'GET'
   })
 }

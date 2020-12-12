@@ -1063,32 +1063,32 @@ const DCPmainStatusList = [
   {
     code: 201,
     class: '进行中',
-    status: '进行打包'
+    status: '进行中'
   },
   {
     code: 900,
     class: '进行中',
-    status: '进行打包'
+    status: '进行中'
   },
   {
     code: 301,
     class: '暂停',
-    status: '手动暂停'
+    status: '暂停'
   },
   {
     code: 302,
     class: '暂停',
-    status: '欠费暂停'
+    status: '暂停（欠费）'
   },
   {
     code: 400,
     class: '失败',
-    status: '打包失败'
+    status: '失败'
   },
   {
     code: 500,
     class: '成功',
-    status: '打包成功'
+    status: '已完成'
   }
 ]
 
@@ -1096,12 +1096,12 @@ const DCFrameStatusList = [
   {
     code: 101,
     class: '等待',
-    status: '等待开始'
+    status: '等待'
   },
   {
     code: 102,
     class: '等待',
-    status: '等待分配节点机'
+    status: '等待'
   },
   {
     code: 201,
@@ -1111,27 +1111,27 @@ const DCFrameStatusList = [
   {
     code: 301,
     class: '暂停',
-    status: '手动暂停'
+    status: '暂停'
   },
   {
     code: 302,
     class: '暂停',
-    status: '欠费暂停'
+    status: '暂停（欠费）'
   },
   {
     code: 303,
     class: '暂停',
-    status: '失败暂停'
+    status: '暂停'
   },
   {
     code: 400,
     class: '失败',
-    status: '压缩失败'
+    status: '失败'
   },
   {
     code: 500,
     class: '成功',
-    status: '压缩成功'
+    status: '完成'
   }
 ]
 
@@ -1169,32 +1169,32 @@ const KDMmainStatusList = [
   {
     code: 103,
     class: '等待',
-    status: '等待DCP打包完成'
+    status: '待打包完成'
   },
   {
     code: 201,
     class: '进行中',
-    status: '进行制作'
+    status: '进行中'
   },
   {
     code: 301,
     class: '暂停',
-    status: '手动暂停'
+    status: '暂停'
   },
   {
     code: 302,
     class: '暂停',
-    status: '欠费暂停'
+    status: '暂停（欠费）'
   },
   {
     code: 400,
     class: '失败',
-    status: '制作失败'
+    status: '失败'
   },
   {
     code: 500,
     class: '成功',
-    status: '制作成功'
+    status: '已完成'
   }
 ]
 
@@ -1202,12 +1202,12 @@ const KDMFrameStatusList = [
   {
     code: 101,
     class: '等待',
-    status: '等待开始'
+    status: '等待'
   },
   {
     code: 102,
     class: '等待',
-    status: '制作中'
+    status: '等待'
     // status: '等待分配节点机'
   },
   {
@@ -1218,22 +1218,22 @@ const KDMFrameStatusList = [
   {
     code: 301,
     class: '暂停',
-    status: '手动暂停'
+    status: '暂停'
   },
   {
     code: 302,
     class: '暂停',
-    status: '欠费暂停'
+    status: '暂停（欠费）'
   },
   {
     code: 400,
     class: '失败',
-    status: '压缩失败'
+    status: '失败'
   },
   {
     code: 500,
     class: '成功',
-    status: '压缩成功'
+    status: '完成'
   }
 ]
 

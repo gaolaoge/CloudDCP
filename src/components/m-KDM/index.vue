@@ -146,24 +146,23 @@
       startBtn() {
         if (!this.selectionList.length) return false
         else if (this.selectionList.some(item => item.validPeriod == 0)) return false
-        else if (this.selectionList.every(item => String('56').includes(item.taskStatus))) return true
+        else if (this.selectionList.every(item => item.taskStatus == 301)) return true
         else return false
       },
       pauseBtn() {
         if (!this.selectionList.length) return false
         else if (this.selectionList.some(item => item.validPeriod == 0)) return false
-        else if (this.selectionList.every(item => item.taskStatus == 4)) return true
+        else if (this.selectionList.every(item => item.taskStatus == 201)) return true
         else return false
       },
       deleteBtn() {
         if (!this.selectionList.length) return false
-        else if (this.selectionList.some(item => item.validPeriod == 4)) return false
+        else if (this.selectionList.some(item => item.taskStatus == 201)) return false
         else return true
       },
       downloadBtn() {
         if (!this.selectionList.length) return false
-        else if (this.selectionList.some(item => item.validPeriod == 0)) return false
-        else if (this.selectionList.every(item => String('458').includes(item.taskStatus))) return true
+        else if (this.selectionList.every(item => item.taskStatus == 500)) return true
         else return false
       },
       copyBtn() {

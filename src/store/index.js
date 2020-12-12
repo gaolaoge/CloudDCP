@@ -149,6 +149,10 @@ export default new Vuex.Store({
     change_websocket_back_message(state, msg) {
       state.socket_backS_msg = msg
     },
+    // 下载插件
+    downloadPlugin() {
+      window.open(process.env.DOWNLOAD_PLUGIN_PATH, '_blank')
+    },
     // vuex 数据复位
     reset(s) {
       Object.assign(s.user, {

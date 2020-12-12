@@ -130,7 +130,9 @@
 
 <script>
   import {
-    getKDMTableList
+    getKDMTableList,
+    downLoadKDM,
+    KDMTabOperating
   } from '@/api/kdm-api'
   import {
     KDMmainStatusList,
@@ -202,19 +204,40 @@
         }))
       },
       // 操作 - 开始
-      startFun() {
+      async startFun() {
         // 所选记录都为"暂停"“暂停（欠费）且"未过期"才可以点击
-
+        let {data} = await KDMTabOperating({
+          'taskUuidList': this.selectionList.map(item => item.kdmTaskUuid),
+          'operateType': 1
+        })
+        if(data.code == 200) {
+          messageFun('success', '操作成功')
+          this.getList()
+        }
       },
       // 操作 - 暂停
-      pauseFun() {
+      async pauseFun() {
         // 所选记录都为"进行中"且"未过期"才可以点击
-        messageFun('success', '暂停')
+        let {data} = await KDMTabOperating({
+          'taskUuidList': this.selectionList.map(item => item.kdmTaskUuid),
+          'operateType': 2
+        })
+        if(data.code == 200) {
+          messageFun('success', '操作成功')
+          this.getList()
+        }
       },
       // 操作 - 删除
-      deleteFun() {
+      async deleteFun() {
         // 当选中项中存在「进行中」状态时不可使用
-
+        let {data} = await KDMTabOperating({
+          'taskUuidList': this.selectionList.map(item => item.kdmTaskUuid),
+          'operateType': 3
+        })
+        if(data.code == 200) {
+          messageFun('success', '操作成功')
+          this.getList()
+        }
       },
       // 操作 - 拷贝
       copyFun() {
@@ -227,8 +250,44 @@
 
       },
       // 操作 - 下载KDM
-      downloadFun() {
+      async downloadFun() {
         // 状态为「已完成」且未过期
+        let kdmTaskUuidList = this.selectionList.map(item => item.kdmTaskUuid),
+          {data} = await downLoadKDM({kdmTaskUuidList})
+        if (data.code != 200) {
+          messageFun('info', '下载失败')
+          return false
+        }
+        let cb = () => {
+          // data.data.forEach((item, index) => {
+          //   item.kdmDetailList.forEach((mini, in_) => {
+          //     this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
+          //       'code': 301,
+          //       'userID': this.user.id,
+          //       'ID': item.taskId,
+          //       'filmName': this.selectionList[index]['filmName'],
+          //       'taskName': this.selectionList[index]['kdmTaskName'],
+          //       'path': [{'front': item.pathPrefix, 'back': mini.certificatePath}]
+          //     })
+          //   })
+          // })
+          this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
+            'code': 301,
+            'userID': this.user.id,
+            'tasks': data.data.map((item, index) => {
+              return {
+                'ID': item.taskId,
+                'filmName': this.selectionList[index]['filmName'],
+                'taskName': this.selectionList[index]['kdmTaskName'],
+                'path': item.kdmDetailList.map(curr => {
+                  return {'front': item.pathPrefix, 'back': curr.certificatePath}
+                })
+              }
+            })
+          })
+        }
+        if (this.socket_plugin) cb()
+        else this.$store.dispatch('WEBSOCKET_PLUGIN_INIT', true).then(() => cb())
 
       },
       // 操作 - 创建KDM
@@ -275,7 +334,7 @@
       })
     },
     computed: {
-      ...mapState(['setting', 'zoneUuid', 'projectList']),
+      ...mapState(['setting', 'zoneUuid', 'projectList', 'socket_plugin', 'user']),
       'tabProjectList': function () {
         return this.projectList.map(project => {
           return {
@@ -287,8 +346,8 @@
     },
     watch: {
       'zoneUuid': {
-        handler: function(id) {
-          if(id) this.getList()
+        handler: function (id) {
+          if (id) this.getList()
         }
       },
       // 'selectionList': {

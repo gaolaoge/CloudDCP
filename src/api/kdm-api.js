@@ -27,3 +27,21 @@ export function getKDMInfo(kdmTaskUuid) {
     method: 'GET'
   })
 }
+
+// 获取KDM 子项 info
+export function downLoadKDM(data) {
+  return http({
+    url: `/dcpProfessional/kdm/kdmDownload`,
+    method: 'POST',
+    data
+  })
+}
+
+// KDM 操作
+export function KDMTabOperating(data) {
+  return http({
+    url: `/dcpProfessional/kdm/buttonOperate`,
+    method: 'POST',
+    data
+  })
+}

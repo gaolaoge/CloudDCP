@@ -343,14 +343,16 @@
           return false
         }
         let cb = () => {
-          data.data.forEach((item, index) => {
-            this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
-              'code': 300,
-              'userID': this.user.id,
-              'ID': item.taskId,
-              'filmName': selectionList[index]['filmName'],
-              'taskName': selectionList[index]['taskName'],
-              'path': [{'front': item.pathPrefix, 'back': item.relativePath}]
+          this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
+            'code': 300,
+            'userID': this.user.id,
+            'tasks': data.data.map((item, index) => {
+              return {
+                'ID': item['taskId'],
+                'filmName': selectionList[index]['filmName'],
+                'taskName': selectionList[index]['taskName'],
+                'path': [{'front': item.pathPrefix, 'back': item.relativePath}]
+              }
             })
           })
         }

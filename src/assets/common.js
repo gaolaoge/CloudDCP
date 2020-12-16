@@ -1065,11 +1065,11 @@ const DCPmainStatusList = [
     class: '进行中',
     status: '进行中'
   },
-  {
-    code: 900,
-    class: '进行中',
-    status: '进行中'
-  },
+  // {
+  //   code: 900,
+  //   class: '进行中',
+  //   status: '进行中'
+  // },
   {
     code: 301,
     class: '暂停',
@@ -1127,6 +1127,11 @@ const DCFrameStatusList = [
     code: 400,
     class: '失败',
     status: '失败'
+  },
+  {
+    code: 900,
+    class: '进行中',
+    status: '进行中'
   },
   {
     code: 500,

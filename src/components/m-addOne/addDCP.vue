@@ -674,14 +674,14 @@
             filmName,
             movieTypeList.length ? movieTypeList.find(curr => curr.value == filmCategory)['tag'] + '-' + filmVersion : null,
             proportionList.length ? proportionList.find(curr => curr.value == aspectRatio)['tag'] : null,
-            mp3LanguageList.length ? mp3LanguageList.find(curr => curr.val == soundLanguage)['label'].split(' ')[1] + '-' + (textLanguageList ? textLanguageList.find(curr => curr.val == captionLanguage)['label'] : null) + '-' + (APList ? APList.find(curr => curr.val == captionType)['tag'] : null) : null,
+            mp3LanguageList.length ? mp3LanguageList.find(curr => curr.val == soundLanguage)['label'].split(' ')[1] + '-' + (textLanguageList ? textLanguageList.find(curr => curr.val == captionLanguage)['val'] : null) + '-' + (APList ? APList.find(curr => curr.val == captionType)['tag'] : null) : null,
             areaList.length ? areaList.find(curr => curr.val == region)['label'].split(' ')[1] : null,
             channelTypeList.length ? channelTypeList.find(curr => curr.value == soundtrack)['tag'] : null,
             resolutionList.length ? resolutionList.find(curr => curr.value == resolution)['tag'] : null,
             presenter || 'NULL',
             packageDate.toLocaleDateString().split('/').join(''),
             productor || 'NULL',
-            normList.length && renderTList.length && renderTListActive != -1 ? (normList.find(curr => curr.val == renderTList[renderTListActive]['codingRule'])['label'] + (modeList.length ? modeList.find(curr => curr.value == filmType)['label'] : '')) : null,
+            normList.length && renderTList.length && renderTListActive != -1 ? (normList.find(curr => curr.val == renderTList[renderTListActive]['codingRule'])['label'] + '-' + (modeList.length ? modeList.find(curr => curr.value == filmType)['label'] : '')) : null,
             DCPTypeList.length ? DCPTypeList.find(curr => curr.val == packageType)['tag'] : ''
           ]
         return name.join('_')
@@ -962,6 +962,7 @@
           code: 202,
           userID: user.id,
           TaskUUid: data.data.packageTaskUuid,
+          'DCPFileName': packageName,
           taskName,
           ID: data.data.taskId,
           files: list.map(item => {

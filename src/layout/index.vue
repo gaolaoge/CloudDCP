@@ -6,7 +6,7 @@
             @createKDM="selectDCODialog = true"/>
     <div class="main">
       <Header v-show="!login"/>
-      <AppMain/>
+      <AppMain v-if="refresh"/>
     </div>
     <!--右下角【传输插件】按钮-->
     <div class="gz" v-show="showGZ" @click="openPlugin">
@@ -122,6 +122,7 @@
     name: 'layout-wrapper',
     data() {
       return {
+        refresh: true,
         inHome: false,
         showGZ: true,
         pluginDialog_: {
@@ -184,6 +185,11 @@
       // 关闭新建项目窗口
       closeDialogFun(win) {
         this[win] = false
+        // 刷新
+        if((win == 'createDCPDialog' && this.$route.name == 'dcp') || (win == 'createKDMDialog' && this.$route.name == 'kdm')) {
+          this.refresh = false
+          this.$nextTick(() => this.refresh = true)
+        }
       },
       shutRemoteLogin(editPS) {
         this.remoteLoginDialog.show = false
@@ -211,6 +217,7 @@
     },
     mounted() {
       getUserInfoF()
+      console.log(this.$route)
     }
   }
 </script>

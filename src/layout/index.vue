@@ -107,12 +107,11 @@
   } from './components'
   import {
     createDateFun,
-    getUserInfoF,
-    throwInfoFun
+    getUserInfoF
   } from '@/assets/common'
   import addDCP from '@/components/m-addOne/addDCP.vue'
   import addKDM from '@/components/m-addOne/addKDM.vue'
-  import selectDCP from "../components/m-addOne/components/selectDCP"
+  import selectDCP from '../components/m-addOne/components/selectDCP'
 
   import {
     mapState
@@ -186,14 +185,19 @@
       closeDialogFun(win) {
         this[win] = false
         // 刷新
-        if((win == 'createDCPDialog' && this.$route.name == 'dcp') || (win == 'createKDMDialog' && this.$route.name == 'kdm')) {
+        if ((win == 'createDCPDialog' && this.$route.name == 'dcp') || (win == 'createKDMDialog' && this.$route.name == 'kdm')) {
           this.refresh = false
-          this.$nextTick(() => this.refresh = true)
+          this.$nextTick(function () {
+            this.refresh = true
+          })
         }
       },
       shutRemoteLogin(editPS) {
         this.remoteLoginDialog.show = false
-        editPS ? this.$router.push({name: 'login', params: {modify: true}}) : this.$router.push({
+        editPS ? this.$router.push({
+            name: 'login',
+            params: {modify: true}
+          }) : this.$router.push({
           name: 'login',
           params: {modify: false}
         })
@@ -206,7 +210,7 @@
       triggerPlugin() {
         let son = document.createElement('IFRAME')
         document.body.appendChild(son)
-        son.src = 'cloudtransfer://'
+        son.src = `cloudtransfer://`
         son.contentDocument.open()
       },
       // 打开【传输列表】
@@ -217,7 +221,6 @@
     },
     mounted() {
       getUserInfoF()
-      console.log(this.$route)
     }
   }
 </script>

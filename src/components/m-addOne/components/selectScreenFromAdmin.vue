@@ -20,10 +20,11 @@
       </div>
       <div class="treeTabs">
         <!--内部银幕-->
-        <div class="internalScreenTab" v-show="screenType == 'internalScreen'">
+        <div class="internalScreenTab" v-if="refreshInternalST" v-show="screenType == 'internalScreen'">
           <el-tree
             :props="props"
             :load="loadNode"
+            :default-expand-all="expandInternalST"
             lazy>
             <span class="custom-tree-node" slot-scope="{ node, data }">
               <!--分组-->
@@ -52,10 +53,11 @@
           </el-tree>
         </div>
         <!--院线银幕-->
-        <div class="theaterScreenTab" v-show="screenType == 'theaterScreen'">
+        <div class="theaterScreenTab" v-if="refreshCinemaST" v-show="screenType == 'theaterScreen'">
           <el-tree
             :props="props"
             :load="loadTNode"
+            :default-expand-all="expandCinemaST"
             lazy>
             <span class="custom-tree-node" slot-scope="{ node, data }">
               <!--院线-->
@@ -135,14 +137,18 @@
     getTheatreList
   } from '@/api/addOne-api'
   import {
-    messageFun,
-    throwInfoFun
+    throwInfoFun,
+    transformParameterT
   } from '../../../assets/common'
 
   export default {
     name: 'selectScreenFromAdmin',
     data() {
       return {
+        refreshInternalST: true,    // 用于内部tree刷新
+        refreshCinemaST: true,      // 用于院线tree刷新
+        expandInternalST: false,    // 默认展开内部tree
+        expandCinemaST: false,      // 默认展开院线tree
         internalScreen: '内部银幕',
         theaterScreen: '院线银幕',
         screenType: 'internalScreen',
@@ -182,7 +188,7 @@
         checkAll_ing: false,       // 内部银幕 - 全选指令（加载并展开分组时是否需要全选动作）
         btn: '去选择',
         backText: {
-          fromLocal: '从我的电脑选择',
+          fromLocal: '从我的电脑选择'
         },
         bottomOperate: {
           selectedText1: '已选择',
@@ -221,7 +227,7 @@
           let {index} = node.data   // 院线的索引
           // 创建 Promise 以预备【获取影院列表】事件触发在对【影院】的全选动作
           // 对每一个tree影院节点预留 Promise 事件位置，确保如此以防止回调触发混乱
-          this.cinemaCheckedList[index]['callback'] = new Promise(async canBeSelectAllF => {
+          this.cinemaCheckedList[index]['callback'] = new Promise(async resolve => {
             let {data} = await getTheatreList(keyword, node.data.cinemaUuid)
             this.cinemaCheckedList[index]['acquired'] = true   // 标记此tree院线节点下【影院列表】已被获取
             // 进行tree结构进行备份
@@ -247,13 +253,13 @@
                 selfIndex
               })
             }))
-            canBeSelectAllF()    // 准备好触发全选操作
+            resolve()    // 准备好触发全选操作
           })
         } else {
           // 获取银幕列表
           let {fromCinemaIndex, selfIndex} = node.data,   // 所在院线索引 and 所在影院索引
             {theatreItemList} = this.cinemaCheckedList[fromCinemaIndex]   // 所在影院的备份OBJ
-          theatreItemList[selfIndex]['callback'] = new Promise(async canBeSelectAllF => {
+          theatreItemList[selfIndex]['callback'] = new Promise(async resolve => {
             let {data} = await getInternalScrList(node.data.theatreUuid)
             theatreItemList[selfIndex]['acquired'] = true
             theatreItemList[selfIndex]['screenList'] = new Array(data.data.length).fill(undefined).map(() => new Object({
@@ -273,18 +279,19 @@
             // 且此时要确保对应 Promise 已经声明，所以放在了 Promise 内
             if (theatreItemList[selfIndex]['checkAll']) this.cinemaCheckAllScreen({
               'type': 'theatre',
-              fromCinemaIndex, selfIndex
+              fromCinemaIndex,
+              selfIndex
             })
-            canBeSelectAllF()   // 节点已经准备好进行全选操作
+            resolve()   // 节点已经准备好进行全选操作
           })
         }
       },
       // 获取【内部银幕】
       async loadNode(node, resolve) {
-        let {checkedList} = this
+        let {checkedList, keyword} = this
         if (node.level == 0) {
           this.adminTreeResolve = resolve
-          let {data} = await getInternalScrGroup()
+          let {data} = await getInternalScrGroup(transformParameterT({keyword}))
           if (data.code == 200) {
             this.checkedList = new Array(data.total).fill(undefined).map(() => new Object({
               theatreUuid: null,
@@ -321,8 +328,26 @@
           } else throwInfoFun('获取内部银幕分组内列表报错', 'selectScreenFromAdmin-172', data)
         }
       },
+      // 使用关键字检索tree
       getList() {
-        this.screenType == 'internalScreen'
+        let {keyword, screenType} = this
+        if (screenType == 'internalScreen') {
+          // 内部银幕
+          this.refreshInternalST = false
+          if (keyword) this.expandInternalST = true
+          else this.expandInternalST = false
+          this.$nextTick(function () {
+            this.refreshInternalST = true
+          })
+        } else {
+          // 院线银幕
+          this.refreshCinemaST = false
+          if (keyword) this.expandCinemaST = true
+          else this.expandCinemaST = false
+          this.$nextTick(function () {
+            this.refreshCinemaST = true
+          })
+        }
       },
       // 【内部银幕】银幕选中
       checkItemScreen(group) {
@@ -343,7 +368,7 @@
         let {cinemaCheckedList: list} = this
         if (type == 'cinema') {
           if (list[val.index]['checkAll']) {
-            function doing() {
+            let doing = function () {
               list[val.index]['checkItemList'] = list[val.index]['theatreItemList'].map(theatre => theatre.theatreUuid)
               // 遍历内部影院 全部选中
               list[val.index]['theatreItemList'].forEach(item => {
@@ -351,7 +376,6 @@
                 item.checkItemList = item.screenList.map(t => t.screenUuid)
               })
             }
-
             if (!list[val.index]['acquired']) list[val.index]['callback'].then(() => doing())
             else doing()
           } else {
@@ -367,12 +391,11 @@
             theatreObj = list[fromCinemaIndex]['theatreItemList'][selfIndex],
             {checkAll, checkItemList, screenList, acquired, callback} = theatreObj
           if (checkAll) {
-            function doing() {
+            let doing = function () {
               screenList.forEach(screen => {
                 if (!checkItemList.find(Uuid => Uuid == screen.screenUuid)) checkItemList.push(screen.screenUuid)
               })
             }
-
             if (!acquired) callback.then(() => doing())
             else doing()
           } else checkItemList.splice(0)  // 清空
@@ -403,7 +426,7 @@
         let promise = new Promise(async resolve => {
           // 内部银幕
           if (this.screenType == 'internalScreen') {
-            this.checkedList.forEach(item => screenUuidList = [...screenUuidList, ...item.checkItemList])
+            this.checkedList.forEach(item => (screenUuidList = [...screenUuidList, ...item.checkItemList]))
             resolve()
           } else {
             // 院线银幕 (需要同步执行)

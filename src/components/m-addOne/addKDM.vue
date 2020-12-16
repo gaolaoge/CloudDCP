@@ -206,13 +206,13 @@
           form: {
             projectUuid: '',
             kdmTaskName: '',
-            theatreTimeZone: 0,
+            theatreTimeZone: 20,
             fileName: '',
             movieName: '',
             startTime: [new Date(), new Date()],
             endTime: [new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000), new Date()],
             kdmCreateDate: new Date().getTime(),          // kdm制作时间
-            kdmFilenameTemplateUuid: null,                // kdm文件名格式uuid
+            kdmFilenameTemplateUuid: null                 // kdm文件名格式uuid
           },
           label: {
             project: '所属项目',

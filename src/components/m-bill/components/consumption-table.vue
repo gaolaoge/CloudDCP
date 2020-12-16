@@ -368,9 +368,7 @@
             'taskName': scenesVal,
             'projectName': projectVal,
             'filmName': fileNameVal,
-            patternOfConsumption,
-            // 'actualPaymentSort': '',
-            // 'timeSort': ''
+            patternOfConsumption
           })
         this.table.rechargeData = data.data.map(curr => {
           let tableType = ''

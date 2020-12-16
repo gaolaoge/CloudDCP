@@ -318,7 +318,7 @@
             'taskUuidList': selectionList.map(item => item.taskUuid),
             'operateType': 3
           })
-        if (data.code == 200){
+        if (data.code == 200) {
           messageFun('success', '操作成功')
           this.getList()
         }
@@ -409,7 +409,7 @@
             value: project.projectUuid
           }
         }) : []
-      },
+      }
     },
     watch: {
       'selectionList': {

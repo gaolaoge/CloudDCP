@@ -237,7 +237,6 @@
   import {
     getMessageList,
     getBulletin,
-    homeSelect,
     getZoneList
   } from '@/api/header-api'
   import {
@@ -381,7 +380,7 @@
       // 获取分区列表
       async getZoneListF() {
         let {data} = await getZoneList()
-        if (data.code == 200 ) this.workBenchList = data.data.map(curr => {
+        if (data.code == 200) this.workBenchList = data.data.map(curr => {
           return {
             name: curr.zoneName,
             val: curr.zoneUuid

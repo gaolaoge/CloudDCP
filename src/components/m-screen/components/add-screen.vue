@@ -77,7 +77,7 @@
     addMineScreen,
     addCinemaScreen
   } from '@/api/screen-api'
-  import {messageFun} from "../../../assets/common";
+  import {messageFun} from '../../../assets/common'
 
   export default {
     name: 'addScreen',
@@ -130,7 +130,7 @@
             }
           }
         }
-      },
+      }
     },
     props: {
       'nowSite': Object

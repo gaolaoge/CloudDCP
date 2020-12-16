@@ -93,13 +93,6 @@
           }
         ],
         systemList: [
-          // {
-          //   link: '/statisticsM',
-          //   iconUrl: require('@/icons/console-icon-statistics-h.png'),
-          //   iconsUrlDefault: require('@/icons/console-icon-statistics.png'),
-          //   text: this.$t('navbar')[4],
-          //   align: 'bottom'
-          // },
           {
             link: '/set',
             iconUrl: require('@/icons/console-icon-set-h.png'),
@@ -115,7 +108,7 @@
     },
     methods: {
       createFun(type) {
-        setTimeout(() => this.selectCreateDialogVisible = false, 500)
+        setTimeout(() => (this.selectCreateDialogVisible = false), 500)
         this.$emit(type)
       },
       // 跳转
@@ -156,8 +149,8 @@
         immediate: true
       },
       'openCDCPW': {
-        handler: function(boolean) {
-          if(boolean) this.createFun('createDCP')
+        handler: function (boolean) {
+          if (boolean) this.createFun('createDCP')
         },
         immediate: true
       }

@@ -380,6 +380,7 @@
       @close="closesetFileNameDialog"
       append-to-body>
       <setName @shutMe="shutSetNameDialog"
+               :formData="setUnpackBase.form"
                :codingRule="selectUnpackBase.renderTList.length && selectUnpackBase.renderTListActive != -1 ? normList.find(item => item.val == selectUnpackBase.renderTList[selectUnpackBase.renderTListActive]['codingRule'])['label'] : null"/>
     </el-dialog>
     <!--新建项目-->
@@ -666,26 +667,26 @@
     },
     computed: {
       packageName() {
-        let {filmName, filmCategory, filmVersion, packageDate, aspectRatio, soundLanguage, region, resolution, presenter, productor, filmType, packageType, soundtrack} = this.setUnpackBase.form
-          , {dialogAdd, movieTypeList, proportionList, mp3LanguageList, areaList, resolutionList, modeList, DCPTypeList, channelTypeList} = this
-          , {renderTList, renderTListActive} = this.selectUnpackBase
-          , name = [
-          filmName
-          , movieTypeList.length ? movieTypeList.find(curr => curr.value == filmCategory)['tag'] + '-' + filmVersion : null
-          , proportionList.length ? proportionList.find(curr => curr.value == aspectRatio)['tag'] : null
-          , mp3LanguageList.length ? mp3LanguageList.find(curr => curr.val == soundLanguage)['label'].split(' ')[1] + '-' + '字幕语言-AP' : null
-          , areaList.length ? areaList.find(curr => curr.val == region)['label'].split(' ')[1] : null
-          , channelTypeList.length ? channelTypeList.find(curr => curr.value == soundtrack)['tag'] : null
-          , resolutionList.length ? resolutionList.find(curr => curr.value == resolution)['tag'] : null
-          , presenter ? presenter : 'NULL'
-          , packageDate.toLocaleDateString().split('/').join('')
-          , productor ? productor : 'NULL'
-          , normList.length && renderTList.length && renderTListActive != -1 ? (normList.find(curr => curr.val == renderTList[renderTListActive]['codingRule'])['label'] + (modeList.length ? modeList.find(curr => curr.value == filmType)['label'] : '')) : null
-          , DCPTypeList.length ? DCPTypeList.find(curr => curr.val == packageType)['tag'] : ''
-        ]
+        let {filmName, filmCategory, filmVersion, packageDate, aspectRatio, soundLanguage, region, resolution, presenter, productor, filmType, packageType, soundtrack, captionLanguage, captionType} = this.setUnpackBase.form,
+          {movieTypeList, proportionList, mp3LanguageList, areaList, resolutionList, modeList, DCPTypeList, channelTypeList, textLanguageList, APList} = this,
+          {renderTList, renderTListActive} = this.selectUnpackBase,
+          name = [
+            filmName,
+            movieTypeList.length ? movieTypeList.find(curr => curr.value == filmCategory)['tag'] + '-' + filmVersion : null,
+            proportionList.length ? proportionList.find(curr => curr.value == aspectRatio)['tag'] : null,
+            mp3LanguageList.length ? mp3LanguageList.find(curr => curr.val == soundLanguage)['label'].split(' ')[1] + '-' + (textLanguageList ? textLanguageList.find(curr => curr.val == captionLanguage)['label'] : null) + '-' + (APList ? APList.find(curr => curr.val == captionType)['tag'] : null) : null,
+            areaList.length ? areaList.find(curr => curr.val == region)['label'].split(' ')[1] : null,
+            channelTypeList.length ? channelTypeList.find(curr => curr.value == soundtrack)['tag'] : null,
+            resolutionList.length ? resolutionList.find(curr => curr.value == resolution)['tag'] : null,
+            presenter || 'NULL',
+            packageDate.toLocaleDateString().split('/').join(''),
+            productor || 'NULL',
+            normList.length && renderTList.length && renderTListActive != -1 ? (normList.find(curr => curr.val == renderTList[renderTListActive]['codingRule'])['label'] + (modeList.length ? modeList.find(curr => curr.value == filmType)['label'] : '')) : null,
+            DCPTypeList.length ? DCPTypeList.find(curr => curr.val == packageType)['tag'] : ''
+          ]
         return name.join('_')
       },
-      ...mapState(['zone', 'zoneUuid', 'user', 'socket_backS', 'socket_backS_msg', 'socket_plugin', 'socket_plugin_msg', 'projectList']),
+      ...mapState(['zone', 'zoneUuid', 'user', 'socket_backS', 'socket_backS_msg', 'socket_plugin', 'socket_plugin_msg', 'projectList'])
     },
     watch: {
       'socket_backS_msg': {
@@ -898,58 +899,58 @@
       },
       // 3.保存
       async confirmFun() {
-        let {isEncrypt, patternUuid, captionType, packageDate, productor, presenter, packageType, region, soundtrack, captionLanguage, soundLanguage, sourceColor, taskName, projectUuid, filmName, filmCategory, filmVersion, aspectRatio, resolution, filmType} = this.setUnpackBase.form
-          , {renderTList, renderTListActive, checked} = this.selectUnpackBase
-          , {imgFileList, mp3FileList, subtitleFileList} = this.selectFileBase
-          , {zoneUuid, user, packageName, createType} = this
-          , {data} = await createNewDCP({
-          createType,                // 新建1 拷贝2 农场选择3
-          checked,                   // 记住模板选项
-          taskName,                  // 任务名
-          packageName,               // dcp文件名
-          projectUuid,               // 项uuid
-          filmName,                  // 影片名称
-          filmCategory,              // 影片类型
-          filmVersion,               // 类型版本
-          aspectRatio,               // 宽高比
-          resolution,                // 分辨率
-          filmType,                  // 2d/3d 1:2d, 2:3d
-          sourceColor,               // 源色彩
-          soundLanguage,             // 声音语言
-          captionLanguage,           // 字幕语言
-          soundtrack,                // 声道类型
-          captionType,               // 字幕类型 AP
-          region,                    // 地区
-          packageType,               // DCP类型
-          presenter,                 // 出品方
-          productor,                 // 制作方
-          'packageDate': packageDate.getTime(),               // 打包日期
-          patternUuid,               // 打包模式uuid  【任务模式】
-          'packageTemplateUuid': renderTList[renderTListActive]['templateUuid'],  // 模板uuid
-          zoneUuid,                  // 分区uuid
-          'operateSource': 1,        // 网页端: 1,客户端: 2
-          isEncrypt,                 // 是否加密 0不加密, 1加密
-          'inputFileIndex': {
-            'image': imgFileList[0]['localPath'],                   // 图像
-            'leftImage': imgFileList[1]['localPath'],               // 图像(左)
-            'rightImage': imgFileList[2]['localPath'],              // 图像(右)
-            'leftSound': mp3FileList[0]['localPath'],               // 左声道
-            'rightSound': mp3FileList[1]['localPath'],              // 右声道
-            'centerSound': mp3FileList[2]['localPath'],             // 中置声道
-            'leftRoundSound': mp3FileList[3]['localPath'],          // 左环绕
-            'rightRoundSound': mp3FileList[4]['localPath'],         // 右环绕
-            'leftBackRoundSound': mp3FileList[5]['localPath'],      // 左后环绕
-            'rightBackRoundSound': mp3FileList[6]['localPath'],     // 右后环绕
-            'subWoofer': mp3FileList[7]['localPath'],               // 低音炮
-            'subtitle': subtitleFileList[0]['localPath']            // 字幕文件
-          }    // 上传文件本地路径
-        })
+        let {isEncrypt, patternUuid, captionType, packageDate, productor, presenter, packageType, region, soundtrack, captionLanguage, soundLanguage, sourceColor, taskName, projectUuid, filmName, filmCategory, filmVersion, aspectRatio, resolution, filmType} = this.setUnpackBase.form,
+          {renderTList, renderTListActive, checked} = this.selectUnpackBase,
+          {imgFileList, mp3FileList, subtitleFileList} = this.selectFileBase,
+          {zoneUuid, user, packageName, createType} = this,
+          {data} = await createNewDCP({
+            createType,                // 新建1 拷贝2 农场选择3
+            checked,                   // 记住模板选项
+            taskName,                  // 任务名
+            packageName,               // dcp文件名
+            projectUuid,               // 项uuid
+            filmName,                  // 影片名称
+            filmCategory,              // 影片类型
+            filmVersion,               // 类型版本
+            aspectRatio,               // 宽高比
+            resolution,                // 分辨率
+            filmType,                  // 2d/3d 1:2d, 2:3d
+            sourceColor,               // 源色彩
+            soundLanguage,             // 声音语言
+            captionLanguage,           // 字幕语言
+            soundtrack,                // 声道类型
+            captionType,               // 字幕类型 AP
+            region,                    // 地区
+            packageType,               // DCP类型
+            presenter,                 // 出品方
+            productor,                 // 制作方
+            'packageDate': packageDate.getTime(),               // 打包日期
+            patternUuid,               // 打包模式uuid  【任务模式】
+            'packageTemplateUuid': renderTList[renderTListActive]['templateUuid'],  // 模板uuid
+            zoneUuid,                  // 分区uuid
+            'operateSource': 1,        // 网页端: 1,客户端: 2
+            isEncrypt,                 // 是否加密 0不加密, 1加密
+            'inputFileIndex': {
+              'image': imgFileList[0]['localPath'],                   // 图像
+              'leftImage': imgFileList[1]['localPath'],               // 图像(左)
+              'rightImage': imgFileList[2]['localPath'],              // 图像(右)
+              'leftSound': mp3FileList[0]['localPath'],               // 左声道
+              'rightSound': mp3FileList[1]['localPath'],              // 右声道
+              'centerSound': mp3FileList[2]['localPath'],             // 中置声道
+              'leftRoundSound': mp3FileList[3]['localPath'],          // 左环绕
+              'rightRoundSound': mp3FileList[4]['localPath'],         // 右环绕
+              'leftBackRoundSound': mp3FileList[5]['localPath'],      // 左后环绕
+              'rightBackRoundSound': mp3FileList[6]['localPath'],     // 右后环绕
+              'subWoofer': mp3FileList[7]['localPath'],               // 低音炮
+              'subtitle': subtitleFileList[0]['localPath']            // 字幕文件
+            }    // 上传文件本地路径
+          })
         if (data.code != 200) {
           throwInfoFun('新建DCP失败（信息传递到JAVA报错）', 'm-addOne/addDCP-953', data.data)
           return false
         }
         let {pathPrefix} = data.data,
-          list = createType == 3 ?  [
+          list = createType == 3 ? [
             ...mp3FileList.filter(item => item.localPath),
             ...subtitleFileList.filter(item => item.localPath)
           ] : [

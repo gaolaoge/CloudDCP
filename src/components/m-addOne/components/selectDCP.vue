@@ -158,7 +158,6 @@
     consum,
     createDateFun,
     createTableIconList,
-    messageFun,
     movieTypeList,
     proportionList,
     DCPmainStatusList

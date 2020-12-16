@@ -332,7 +332,8 @@
       }
     },
     props: {
-      codingRule: String
+      codingRule: String,
+      formData: Object
     },
     methods: {
       // 关闭
@@ -342,6 +343,15 @@
       // 保存
       saveFun() {
         this.$emit('shutMe', this.form)
+      }
+    },
+    watch: {
+      'formData': {
+        handler(obj) {
+          Object.assign(this.form, obj)
+        },
+        deep: true,
+        immediate: true
       }
     },
     mounted() {

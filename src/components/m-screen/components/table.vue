@@ -319,12 +319,6 @@
         let cb = async () => {
           let screenUuidList = this.selectionList.map(item => item.screenUuid),
             {data} = await downloadScreen({screenUuidList})
-          // if (data.code == 200) data.data.forEach(item => this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
-          //   code: 302,
-          //   userID: this.user.id,
-          //   ID: item.screenId,
-          //   path: [{'front': item.pathPrefix, 'back': item.certificatePath}]
-          // }))
           if (data.code == 200) this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
             code: 302,
             userID: this.user.id,
@@ -336,7 +330,6 @@
               }
             })
           })
-
         }
         if (this.socket_plugin) cb()
         else this.$store.dispatch('WEBSOCKET_PLUGIN_INIT', true).then(() => cb())

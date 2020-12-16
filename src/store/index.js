@@ -1,8 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import {
-  messageFun,
-  createDateFun
+  messageFun
 } from '../assets/common'
 import {
   getObjectList
@@ -339,7 +338,7 @@ export default new Vuex.Store({
         'sortBy': null,
         'sortType': 0
       })
-      if(data.data.length) context.commit('setProjectList', data.data)
-    },
+      if (data.data.length) context.commit('setProjectList', data.data)
+    }
   }
 })

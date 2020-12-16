@@ -210,7 +210,7 @@
           'taskUuidList': this.selectionList.map(item => item.kdmTaskUuid),
           'operateType': 1
         })
-        if(data.code == 200) {
+        if (data.code == 200) {
           messageFun('success', '操作成功')
           this.getList()
         }
@@ -222,7 +222,7 @@
           'taskUuidList': this.selectionList.map(item => item.kdmTaskUuid),
           'operateType': 2
         })
-        if(data.code == 200) {
+        if (data.code == 200) {
           messageFun('success', '操作成功')
           this.getList()
         }
@@ -234,7 +234,7 @@
           'taskUuidList': this.selectionList.map(item => item.kdmTaskUuid),
           'operateType': 3
         })
-        if(data.code == 200) {
+        if (data.code == 200) {
           messageFun('success', '操作成功')
           this.getList()
         }
@@ -288,7 +288,6 @@
         }
         if (this.socket_plugin) cb()
         else this.$store.dispatch('WEBSOCKET_PLUGIN_INIT', true).then(() => cb())
-
       },
       // 操作 - 创建KDM
       createKDMFun() {

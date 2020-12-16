@@ -21,15 +21,15 @@ let getCustomerTemplateList = {
       total: 12
     }
   }
-}  // DCP 设置渲染模板-获取已存在记录
-  , checkPackageTemplateName = {
+},  // DCP 设置渲染模板-获取已存在记录
+  checkPackageTemplateName = {
   url: /\/dcpProfessional\/dcp\/checkPackageTemplateName\?templateName=/,
   type: 'get',
   response: () => {
     return {code: 200}
   }
-} // DCP 设置渲染模板-创建模板-判断模板名是否已存在
-  , getSoftList = {
+}, // DCP 设置渲染模板-创建模板-判断模板名是否已存在
+  getSoftList = {
   url: /\/dcpProfessional\/template\/getSoftList/,
   type: 'get',
   response: () => {
@@ -45,8 +45,8 @@ let getCustomerTemplateList = {
       ]
     }
   }
-}              // DCP 设置渲染模板-获取所有软件名和版本号
-  , getInnerScreenGroupList = {
+},              // DCP 设置渲染模板-获取所有软件名和版本号
+  getInnerScreenGroupList = {
   url: /\/dcpProfessional\/kdm\/getInnerScreenGroupList/,
   type: 'get',
   response: () => {
@@ -63,15 +63,15 @@ let getCustomerTemplateList = {
       total: 4
     })
   }
-}  // KDM 获取内部银幕分组列表
-  , addKdmTask = {
+},  // KDM 获取内部银幕分组列表
+  addKdmTask = {
     url: /\/dcpProfessional\/kdm\/addKdmTask/,
     type: 'POST',
     response: () => {
       return {}
     }
-  }              // KDM 新建KDM任务
-  , getTheatreList = {
+  },              // KDM 新建KDM任务
+  getTheatreList = {
     url: /\/dcpProfessional\/kdm\/getTheatreList\?keyword=/,
     type: 'get',
     response: () => {
@@ -88,8 +88,8 @@ let getCustomerTemplateList = {
         })
       }
     }
-  }           // KDM 获取影院列表
-  , getScreenList = {
+  },           // KDM 获取影院列表
+  getScreenList = {
   url: /\/dcpProfessional\/kdm\/getScreenList\?theatreUuid=/,
   type: 'get',
   response: () => {

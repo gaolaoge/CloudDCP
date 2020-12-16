@@ -50,7 +50,7 @@
           @change="changeBirthdayDate"
           :picker-options="pickerOptions"
           :clearable="false"
-          placeholder="选择日期" />
+          placeholder="选择日期"/>
         <span class="remarks" v-show="info.birthdayVal == null">{{ info.birthdayRemarks }}</span>
         <img src="@/icons/star.png" v-show="info.birthdayVal == null">
       </div>
@@ -135,8 +135,8 @@
       return {
         pickerOptions: {
           disabledDate(time) {
-            return time.getTime() > new Date();
-          },
+            return time.getTime() > new Date()
+          }
         },
         value1: new Date(),
         editBtn: '修改',
@@ -163,7 +163,7 @@
         editEmailMoudle: false,
         editPasswordMoudle: false,
         editPhoneMoudle: false,
-        editNameMoudle: false,
+        editNameMoudle: false
       }
     },
     methods: {
@@ -173,7 +173,7 @@
           'nickname': null,
           'headImg': null,
           'sex': null,
-          'birthday': this.info.birthdayVal.getTime(),
+          'birthday': this.info.birthdayVal.getTime()
         })
         if (data.data.code == 200) {
           this.$store.commit('changeBirthday', this.info.birthdayVal.getTime())
@@ -186,7 +186,7 @@
           'nickname': null,
           'headImg': null,
           'sex': this.info.sexVal,
-          'birthday': null,
+          'birthday': null
         })
         if (data.data.code == 200) {
           this.$store.commit('changeSex', this.info.sexVal)
@@ -200,7 +200,7 @@
           'nickname': null,
           'headImg': src,
           'sex': null,
-          'birthday': null,
+          'birthday': null
         })
         if (data.data.code == 200) {
           this.$store.commit('changeAvatar', src)
@@ -228,18 +228,18 @@
       editName
     },
     computed: {
-      ...mapState(['user']),
+      ...mapState(['user'])
     },
     watch: {
       'user': {
-        handler: function(user){
+        handler: function (user) {
           this.info.sexVal = user.sex
           this.info.birthdayVal = user.birthday ? new Date(user.birthday) : null
         },
         deep: true,
         immediate: true
       }
-    },
+    }
   }
 </script>
 

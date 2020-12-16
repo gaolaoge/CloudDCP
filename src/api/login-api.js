@@ -19,7 +19,7 @@ export function verifAccountIsRegister(data) {
 }
 
 // 短信登录 获取code
-export function phoneVerifFun(phone){
+export function phoneVerifFun(phone) {
   return http({
     url: `/dcpAuth/sendPhoneCode4Login/${phone}`,
     method: 'GET'
@@ -63,10 +63,9 @@ export function registerAccount(data) {
 }
 
 // 注册 获取手机验证码
-export function registerGetphoneCode(phone){
+export function registerGetphoneCode(phone) {
   return http({
     url: `/dcpAuth/sendPhoneCode4CheckOwn/${phone}`,
     method: 'GET'
   })
 }
-

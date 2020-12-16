@@ -56,10 +56,10 @@
       async enterFun() {
         if (!this.status) return false
         let data = await editBasicInfo({
-          "nickname": this.name,
-          "headImg": null,
-          "sex": null,
-          "birthday": null,
+          'nickname': this.name,
+          'headImg': null,
+          'sex': null,
+          'birthday': null
         })
         if (data.data.code == 200) {
           this.$store.commit('changeName', this.name)
@@ -77,7 +77,9 @@
       ...mapState(['user'])
     },
     mounted() {
-      this.$nextTick(() => this.name = this.user.name)
+      this.$nextTick(function () {
+        this.name = this.user.name
+      })
     }
   }
 </script>
@@ -86,7 +88,6 @@
   .editName {
     width: 574px;
     height: 207px;
-
 
     .content {
       position: relative;

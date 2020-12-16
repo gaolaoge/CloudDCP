@@ -145,18 +145,18 @@ const createTableIconList = function () {
   // if (!document.getElementsByClassName('kkkk').length) {
   let q = [...document.getElementsByClassName('ascending')]
   q.forEach(curr => {
-    if (curr.querySelector('.kkkk')) return false
+    if (curr.querySelector('.selfIcon')) return false
     let i = document.createElement('I')
     i.classList.add('el-icons-arrow-up')
-    i.classList.add('kkkk')
+    i.classList.add('selfIcon')
     curr.appendChild(i)
   })
   let w = [...document.getElementsByClassName('descending')]
   w.forEach(curr => {
-    if (curr.querySelector('.kkkk')) return false
+    if (curr.querySelector('.selfIcon')) return false
     let i = document.createElement('I')
     i.classList.add('el-icons-arrow-down')
-    i.classList.add('kkkk')
+    i.classList.add('selfIcon')
     curr.appendChild(i)
   })
   // }
@@ -1217,6 +1217,11 @@ const KDMFrameStatusList = [
   },
   {
     code: 201,
+    class: '进行中',
+    status: '制作中'
+  },
+  {
+    code: 900,
     class: '进行中',
     status: '制作中'
   },

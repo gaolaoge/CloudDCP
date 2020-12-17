@@ -150,9 +150,7 @@
       return {
         selectionList: [],     // 多选结果
         tableData: [
-          // {
-          //   // validPeriod,   1有效 0过期
-          // }
+          // { validPeriod,   1有效 0过期 }
         ],
         statusList: [
           {text: '上传中', value: '上传中...'},
@@ -259,18 +257,6 @@
           return false
         }
         let cb = () => {
-          // data.data.forEach((item, index) => {
-          //   item.kdmDetailList.forEach((mini, in_) => {
-          //     this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
-          //       'code': 301,
-          //       'userID': this.user.id,
-          //       'ID': item.taskId,
-          //       'filmName': this.selectionList[index]['filmName'],
-          //       'taskName': this.selectionList[index]['kdmTaskName'],
-          //       'path': [{'front': item.pathPrefix, 'back': mini.certificatePath}]
-          //     })
-          //   })
-          // })
           this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
             'code': 301,
             'userID': this.user.id,

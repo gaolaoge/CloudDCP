@@ -127,7 +127,6 @@ const sortF = function (a, b) {
 // table 筛选icon样式
 const createTableIconList = function () {
   // 筛选图标
-  // if (!document.getElementsByClassName('iconshaixuan2').length) {
   let t = [...document.getElementsByClassName('el-icon-arrow-down')]
   t.forEach(curr => {
     if (curr.querySelector('.farmIconFont')) return false
@@ -140,23 +139,22 @@ const createTableIconList = function () {
     curr.appendChild(i)
     curr.appendChild(ii)
   })
-  // }
   // 排序图标
   // if (!document.getElementsByClassName('kkkk').length) {
   let q = [...document.getElementsByClassName('ascending')]
   q.forEach(curr => {
-    if (curr.querySelector('.selfIcon')) return false
+    if (curr.querySelector('.kkkk')) return false
     let i = document.createElement('I')
-    i.classList.add('el-icons-arrow-up')
-    i.classList.add('selfIcon')
+    i.classList.add('el-icon-arrow-up')
+    i.classList.add('kkkk')
     curr.appendChild(i)
   })
   let w = [...document.getElementsByClassName('descending')]
   w.forEach(curr => {
-    if (curr.querySelector('.selfIcon')) return false
+    if (curr.querySelector('.kkkk')) return false
     let i = document.createElement('I')
-    i.classList.add('el-icons-arrow-down')
-    i.classList.add('selfIcon')
+    i.classList.add('el-icon-arrow-up')
+    i.classList.add('kkkk')
     curr.appendChild(i)
   })
   // }

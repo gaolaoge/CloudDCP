@@ -317,12 +317,12 @@
           this.$emit('closeDialogFun', 'createKDMDialog')
           this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
             userID: this.user.id,
+            ID: 'ID',
             code: 211,
             files: data.data.map(item => {
               return {
                 'taskUuid': item.taskUuid,
                 'taskName': kdmTaskName,
-                'ID': item.taskId,
                 'localPath': item.localPath,
                 'networkPath': {
                   'front': item.pathPrefix,

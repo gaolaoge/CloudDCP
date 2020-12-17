@@ -1129,7 +1129,7 @@ const DCFrameStatusList = [
   {
     code: 900,
     class: '进行中',
-    status: '进行中'
+    status: '压缩中'
   },
   {
     code: 500,
@@ -1202,6 +1202,31 @@ const KDMmainStatusList = [
 ]
 
 const KDMFrameStatusList = [
+  {
+    code: 610,
+    class: '上传',
+    status: '等待上传'
+  },
+  {
+    code: 620,
+    class: '上传',
+    status: '上传中'
+  },
+  {
+    code: 630,
+    class: '上传',
+    status: '上传暂停'
+  },
+  {
+    code: 640,
+    class: '上传',
+    status: '上传失败'
+  },
+  {
+    code: 650,
+    class: '上传',
+    status: '上传成功'
+  },
   {
     code: 101,
     class: '等待',

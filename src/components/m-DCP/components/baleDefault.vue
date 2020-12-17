@@ -397,12 +397,17 @@
             sortBy: null,
             sortType: 0
           })
-        if (data.code == 200) this.tableData = data.data.map(item => Object.assign(item, {
-          'frameTaskStatus': DCFrameStatusList.find(curr => curr.code == item.frameTaskStatus)['status'],
-          'compressEndTime': createDateFun(item.compressEndTime),
-          'compressStartTime': createDateFun(item.compressStartTime),
-          'compressUseTime': consum(item.compressUseTime, true)
-        }))
+        if (data.code == 200) this.tableData = data.data.map(item => {
+          let t = null
+          if (item.frameTaskStatus == 101) t = ' '
+          if (item.frameTaskStatus == 102) t = '-'
+          return Object.assign(item, {
+            'frameTaskStatus': DCFrameStatusList.find(curr => curr.code == item.frameTaskStatus)['status'],
+            'compressEndTime': t || createDateFun(item.compressEndTime),
+            'compressStartTime': t || createDateFun(item.compressStartTime),
+            'compressUseTime': t || consum(item.compressUseTime, true)
+          })
+        })
         this.total = data.total
       }
     },

@@ -962,7 +962,7 @@
           code: 202,
           userID: user.id,
           TaskUUid: data.data.packageTaskUuid,
-          'DCPFileName': packageName,
+          // 'DCPFileName': packageName,
           taskName,
           ID: data.data.taskId,
           files: list.map(item => {

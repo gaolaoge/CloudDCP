@@ -17,7 +17,7 @@
             <span class="fns">_</span>
             <!--影片类型-类型版本-->
             <span class="fns" style="color: #FA6400">
-              {{ movieTypeList ? movieTypeList.find(curr => curr.value == form.filmCategory)['tag'] + '-' + versionList.find(curr => curr.val == form.filmVersion)['label'] : null }}
+              {{ movieTypeList ? movieTypeList.find(curr => curr.value == form.filmCategory)['tag'] + '-' + versionList.find(curr => curr.val == form.filmVersion)['val'] : null }}
             </span>
             <span class="fns">_</span>
             <!--宽高比-->
@@ -27,7 +27,7 @@
             <span class="fns">_</span>
             <!--声音语言-字幕语言-->
             <span class="fns" style="color: #6DD400">
-              {{ mp3LanguageList ? mp3LanguageList.find(curr => curr.val == form.soundLanguage)['label'].split(' ')[1] : null }}{{ textLanguageList ? '-' + textLanguageList.find(curr => curr.val == form.captionLanguage)['label'].split(' ')[1] : null }}
+              {{ mp3LanguageList.length ? mp3LanguageList.find(curr => curr.val == form.soundLanguage)['label'].split(' ')[1] + '-' + (textLanguageList ? textLanguageList.find(curr => curr.val == form.captionLanguage)['val'] : null) + '-' + (APList ? APList.find(curr => curr.val == form.captionType)['tag'] : null) : null }}
             </span>
             <span class="fns">_</span>
             <!--地区-->
@@ -332,7 +332,8 @@
       }
     },
     props: {
-      codingRule: String
+      codingRule: String,
+      formData: Object
     },
     methods: {
       // 关闭
@@ -342,6 +343,15 @@
       // 保存
       saveFun() {
         this.$emit('shutMe', this.form)
+      }
+    },
+    watch: {
+      'formData': {
+        handler(obj) {
+          Object.assign(this.form, obj)
+        },
+        deep: true,
+        immediate: true
       }
     },
     mounted() {

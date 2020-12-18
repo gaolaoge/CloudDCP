@@ -100,16 +100,16 @@
         getPhoneCodeD: {
           showCountdown: false,
           setF: null,
-          time: 60,
+          time: 60
         },
         getEmailCodeD: {
           showCountdown: false,
           setF: null,
-          time: 60,
+          time: 60
         },
         verif: {
           phoneCode: null,
-          emailCode: null,
+          emailCode: null
         },
         errorInfo: {
           code: '验证码格式错误'
@@ -154,9 +154,9 @@
           return false
         }
         let data = await editEmail({
-          "phoneCode": this.codeVal,
-          "email": this.emailVal,
-          "emailCode": this.emailCodeVal
+          'phoneCode': this.codeVal,
+          'email': this.emailVal,
+          'emailCode': this.emailCodeVal
         })
         if (data.data.code == 200) {
           messageFun('success', '修改成功')
@@ -165,7 +165,6 @@
           this.reset()
         } else if (data.data.msg == '邮箱验证码无效') messageFun('error', '邮箱验证码无效')
         else if (data.data.msg == '手机号验证码无效') messageFun('error', '手机号验证码无效')
-
       },
       // 复位
       reset() {
@@ -237,7 +236,7 @@
             d.setF = null
           }
         }, 1000)
-      },
+      }
     },
     computed: {
       ...mapState(['user'])

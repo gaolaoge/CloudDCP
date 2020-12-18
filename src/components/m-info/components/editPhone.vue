@@ -295,7 +295,7 @@
           countdown: 60,
           btn: '获取验证码',
           oldPhoneCodeError: null,
-          oldPhoneCodeErrorInfo: null,
+          oldPhoneCodeErrorInfo: null
         },
         newPhoneVeri: {
           ing: false,
@@ -305,7 +305,7 @@
           phoneCodeError: null,
           phoneError: null,
           phoneErrorInfo: null,
-          phoneCodeErrorInfo: null,
+          phoneCodeErrorInfo: null
         },
         emailVeri: {
           btn: '获取验证码',
@@ -315,13 +315,13 @@
           newPhoneError: null,
           emailCodeErrorInfo: null,
           newPhoneCodeErrorInfo: null,
-          newPhoneErrorInfo: null,
+          newPhoneErrorInfo: null
         },
         emailPhoneVeri: {
           ing: false,
           phoneCodeError: null,
           btn: '获取验证码',
-          countdown: 60,
+          countdown: 60
         },
         passwordVeri: {
           btn: '获取验证码',
@@ -335,7 +335,7 @@
           newPhoneCodeError: null,
           passWordErrorInfo: null,
           newPhoneErrorInfo: null,
-          newPhoneCodeErrorInfo: null,
+          newPhoneCodeErrorInfo: null
         },
         phoneFrom: {
           oldPhoneCode: null,
@@ -371,7 +371,7 @@
           countdown: 60,
           btn: '获取验证码',
           oldPhoneCodeError: null,
-          oldPhoneCodeErrorInfo: null,
+          oldPhoneCodeErrorInfo: null
         }
         this.newPhoneVeri = Object.assign(this.newPhoneVeri, {
           ing: false,
@@ -380,7 +380,7 @@
           phoneCodeError: null,
           phoneError: null,
           phoneErrorInfo: null,
-          phoneCodeErrorInfo: null,
+          phoneCodeErrorInfo: null
         })
         this.phoneFrom = {
           oldPhoneCode: null,
@@ -404,13 +404,13 @@
           newPhoneError: null,
           emailCodeErrorInfo: null,
           newPhoneCodeErrorInfo: null,
-          newPhoneErrorInfo: null,
+          newPhoneErrorInfo: null
         })
         this.emailPhoneVeri = Object.assign(this.emailPhoneVeri, {
           ing: false,
           phoneCodeError: null,
           btn: '获取验证码',
-          countdown: 60,
+          countdown: 60
         })
         this.passwordVeri = Object.assign(this.passwordVeri, {
           btn: '获取验证码',
@@ -421,7 +421,7 @@
           newPhoneCodeError: null,
           passWordErrorInfo: null,
           newPhoneErrorInfo: null,
-          newPhoneCodeErrorInfo: null,
+          newPhoneCodeErrorInfo: null
         })
         this.success = {
           tit: '更换手机号成功',
@@ -459,7 +459,6 @@
         else if (type == 'email') setTimeout(() => this.minusOneSecond(this.emailVeri), 1000)
         else if (type == 'emailNewPhone') setTimeout(() => this.minusOneSecond(this.emailPhoneVeri), 1000)
         else if (type == 'psNewPhone') setTimeout(() => this.minusOneSecond(this.passwordVeri), 1000)
-
       },
       // 通用 - 倒计时Fun 减一秒
       minusOneSecond(item) {
@@ -549,7 +548,7 @@
             newPhoneError: null,
             oldPhoneCodeErrorInfo: null,
             newPhoneCodeErrorInfo: null,
-            newPhoneErrorInfo: null,
+            newPhoneErrorInfo: null
           })
           this.step = 'success'
         }
@@ -590,8 +589,8 @@
           }
         } else {
           let data = await verifPhoneIsRegister(this.phoneFrom.newPhone)
-          //code:200   手机号已存在
-          //code:4031  手机号未注册
+          // code:200   手机号已存在
+          // code:4031  手机号未注册
           if (data.data.code == 4031) v.phoneError = true
           else {
             v.phoneErrorInfo = '手机号码已被注册'
@@ -635,8 +634,8 @@
           }
         } else {
           let data = await verifPhoneIsRegister(this.emailFrom.newPhone)
-          //code:200   手机号已存在
-          //code:4031  手机号未注册
+          // code:200   手机号已存在
+          // code:4031  手机号未注册
           if (data.data.code == 4031) v.newPhoneError = true
           else {
             v.newPhoneErrorInfo = '手机号码已被注册'
@@ -683,7 +682,7 @@
             newPhoneError: null,
             emailCodeErrorInfo: null,
             newPhoneCodeErrorInfo: null,
-            newPhoneErrorInfo: null,
+            newPhoneErrorInfo: null
           })
           this.step = 'success'
         }
@@ -712,8 +711,8 @@
           }
         } else {
           let data = await verifPhoneIsRegister(this.psFrom.newPhone)
-          //code:200   手机号已存在
-          //code:4031  手机号未注册
+          // code:200   手机号已存在
+          // code:4031  手机号未注册
           if (data.data.code == 4031) v.newPhoneError = true
           else {
             v.newPhoneErrorInfo = '手机号码已被注册'
@@ -762,7 +761,7 @@
             newPhoneError: null,
             emailCodeErrorInfo: null,
             newPhoneCodeErrorInfo: null,
-            newPhoneErrorInfo: null,
+            newPhoneErrorInfo: null
           })
           this.step = 'success'
         }

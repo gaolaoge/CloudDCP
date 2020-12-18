@@ -28,7 +28,7 @@ export function editPS(data) {
 }
 
 // 找回密码 获取手机号验证码
-export function getPhoneVeriFG(data){
+export function getPhoneVeriFG(data) {
   return http({
     url: `/dcpAuth/sendPhoneCode4ChangePassword/${data}`,
     method: 'GET'
@@ -36,13 +36,14 @@ export function getPhoneVeriFG(data){
 }
 
 // 修改个人信息
-export function editBasicInfo(data){
+export function editBasicInfo(data) {
   return http({
     url: '/customer/updateCustomerInfo',
     method: 'PUT',
     data
   })
 }
+
 // 修改手机号 - 通过验证手机号 - 获取旧手机号验证码
 export function editPhoneGetOC() {
   return http({

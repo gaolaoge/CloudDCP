@@ -186,8 +186,8 @@
     watch: {
       'ChineseYuan': function (val) {
         let reg = /^\d+$/,
-          {ChineseYuan, ChineseYuanVerif} = this
-        if (!ChineseYuan) ChineseYuanVerif = null
+          {ChineseYuan} = this
+        if (!ChineseYuan) this.ChineseYuanVerif = null
         else this.ChineseYuanVerif = reg.test(ChineseYuan)
         if (val == 100) this.realVal = '160.000'
         else if (val == 500) this.realVal = '900.000'

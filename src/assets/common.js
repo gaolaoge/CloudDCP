@@ -21,7 +21,7 @@ const transformParameterS = function (json) {
 
 // get请求转换参数为字符串
 const transformParameterT = function (obj) {
-  if (!obj instanceof Object) return false
+  if (!(obj instanceof Object)) return false
   let default_ = []
   Object.keys(obj).forEach(key => default_.push(`${key}=${obj[key]}`))
   return default_.join('&')
@@ -127,7 +127,6 @@ const sortF = function (a, b) {
 // table 筛选icon样式
 const createTableIconList = function () {
   // 筛选图标
-  // if (!document.getElementsByClassName('iconshaixuan2').length) {
   let t = [...document.getElementsByClassName('el-icon-arrow-down')]
   t.forEach(curr => {
     if (curr.querySelector('.farmIconFont')) return false
@@ -140,14 +139,13 @@ const createTableIconList = function () {
     curr.appendChild(i)
     curr.appendChild(ii)
   })
-  // }
   // 排序图标
   // if (!document.getElementsByClassName('kkkk').length) {
   let q = [...document.getElementsByClassName('ascending')]
   q.forEach(curr => {
     if (curr.querySelector('.kkkk')) return false
     let i = document.createElement('I')
-    i.classList.add('el-icons-arrow-up')
+    i.classList.add('el-icon-arrow-up')
     i.classList.add('kkkk')
     curr.appendChild(i)
   })
@@ -155,7 +153,7 @@ const createTableIconList = function () {
   w.forEach(curr => {
     if (curr.querySelector('.kkkk')) return false
     let i = document.createElement('I')
-    i.classList.add('el-icons-arrow-down')
+    i.classList.add('el-icon-arrow-up')
     i.classList.add('kkkk')
     curr.appendChild(i)
   })
@@ -226,16 +224,16 @@ const itemDownloadStatus = function (num) {
 
 // Uuid
 const UuidFun = function () {
-  var s = []
-  var hexDigits = '0123456789abcdef'
-  for (var i = 0; i < 36; i++) {
+  let s = [],
+    hexDigits = '0123456789abcdef'
+  for (let i = 0; i < 36; i++) {
     s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1)
   }
   s[14] = '4'                                                        // bits 12-15 of the time_hi_and_version field to 0010
   s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1)       // bits 6-7 of the clock_seq_hi_and_reserved to 01
   s[8] = s[13] = s[18] = s[23] = '-'
 
-  var uuid = s.join('')
+  let uuid = s.join('')
   return uuid
 }
 
@@ -339,53 +337,53 @@ const openPlugin = function () {
 // 下拉框 - 影片类型
 const movieTypeList = [
   {
-    label: '正片FTR（Feature）',
-    tag: 'FTR',
+    label: '广告片ADV（Advertisement）',
+    tag: 'ADV',
     value: 0
   },
   {
-    label: '预告片TLR（Trailer）',
-    tag: 'TLR',
+    label: '正片FTR（Feature）',
+    tag: 'FTR',
     value: 1
-  },
-  {
-    label: '短版本预告片TSR（Teaser）',
-    tag: 'TSR',
-    value: 2
-  },
-  {
-    label: '分级RTG（Rating）',
-    tag: 'RTG',
-    value: 3
   },
   {
     label: '政策相关POL（Policy）',
     tag: 'POL',
-    value: 4
+    value: 2
   },
   {
-    label: '公告服务或公告PSA（Public Service Announcement）',
+    label: '推广片PRO（Rromo）',
+    tag: 'PRO',
+    value: 3
+  },
+  {
+    label: '公告PSA（Public）',
     tag: 'PSA',
-    value: 5
-  },
-  {
-    label: '广告片ADV（Advertisement）',
-    tag: 'ADV',
-    value: 6
+    value: 4
   },
   {
     label: '短片SHR（Short）',
     tag: 'SHR',
-    value: 7
+    value: 5
   },
   {
-    label: '过度片XSN（Transitional）',
-    tag: 'XSN',
-    value: 8
+    label: '预告片TLR（Trailer）',
+    tag: 'TLR',
+    value: 6
+  },
+  {
+    label: '样片TSR（Teaser）',
+    tag: 'TSR',
+    value: 7
   },
   {
     label: '测试片TST（Test）',
     tag: 'TST',
+    value: 8
+  },
+  {
+    label: '过度片XSN（Transitional）',
+    tag: 'XSN',
     value: 9
   }
 ]
@@ -1131,7 +1129,7 @@ const DCFrameStatusList = [
   {
     code: 900,
     class: '进行中',
-    status: '进行中'
+    status: '压缩中'
   },
   {
     code: 500,
@@ -1205,6 +1203,31 @@ const KDMmainStatusList = [
 
 const KDMFrameStatusList = [
   {
+    code: 610,
+    class: '上传',
+    status: '等待上传'
+  },
+  {
+    code: 620,
+    class: '上传',
+    status: '上传中'
+  },
+  {
+    code: 630,
+    class: '上传',
+    status: '上传暂停'
+  },
+  {
+    code: 640,
+    class: '上传',
+    status: '上传失败'
+  },
+  {
+    code: 650,
+    class: '上传',
+    status: '上传成功'
+  },
+  {
     code: 101,
     class: '等待',
     status: '等待'
@@ -1217,6 +1240,11 @@ const KDMFrameStatusList = [
   },
   {
     code: 201,
+    class: '进行中',
+    status: '制作中'
+  },
+  {
+    code: 900,
     class: '进行中',
     status: '制作中'
   },
@@ -1339,8 +1367,7 @@ const timeZone = [
   {
     label: 'UTC+11',
     val: 23
-  },
-
+  }
 ]
 
 export {

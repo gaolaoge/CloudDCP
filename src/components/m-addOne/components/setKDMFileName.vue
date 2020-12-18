@@ -91,15 +91,15 @@
     },
     watch: {
       Uuid(val) {
-        if(val) this.form.uuid = val
+        if (val) this.form.uuid = val
       }
     },
     computed: {
       name() {
         let index = this.typeList.length ? this.typeList.find(item => item['filenameTemplateUuid'] == this.typeUuid)['index'] : null
-        if(index == 0) return 'KDM_' + this.fileName + '_<银幕名称>'
-        else if(index == 1) return 'KDM_' + this.fileName + '_<影院名称>_<银幕名称>'
-        else if(index == 2) return 'KDM_' + this.fileName + '_<影院名称>_<银幕名称>_' + createDateFun(this.form.date, true)
+        if (index == 0) return 'KDM_' + this.fileName + `_<银幕名称>`
+        else if (index == 1) return 'KDM_' + this.fileName + `_<影院名称>_<银幕名称>`
+        else if (index == 2) return 'KDM_' + this.fileName + `_<影院名称>_<银幕名称>_` + createDateFun(this.form.date, true)
       }
     }
   }

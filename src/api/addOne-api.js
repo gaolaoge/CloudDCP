@@ -54,9 +54,9 @@ export function createNewDCP(data) {
 }
 
 // KDM 获取内部银幕分组列表
-export function getInternalScrGroup() {
+export function getInternalScrGroup(data) {
   return http({
-    url: `/dcpProfessional/kdm/getInnerScreenGroupList`,
+    url: `/dcpProfessional/kdm/getInnerScreenGroupList?${data}`,
     method: 'GET'
   })
 }

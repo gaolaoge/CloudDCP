@@ -3,6 +3,7 @@
     <!--表格-->
     <el-table
       :data="tableData"
+      @sort-change="changeSort"
       @selection-change="selectionFun"
       @filter-change="filterChangeF"
       @row-click="showDetails"
@@ -20,7 +21,7 @@
       <el-table-column
         prop="screenId"
         label="银幕ID"
-        sortable
+        sortable="custom"
         show-overflow-tooltip
         width="100"/>
 
@@ -36,7 +37,7 @@
         prop="screenStatus"
         label="状态"
         show-overflow-tooltip
-        column-key="status"
+        column-key="screenStatusList"
         :filters="statusList"
         width="100"/>
 
@@ -51,15 +52,15 @@
       <el-table-column
         prop="updateBy"
         label="更新人"
-        sortable
+        sortable="custom"
         show-overflow-tooltip
         width="100"/>
 
-      <!--创建时间-->
+      <!--更新时间-->
       <el-table-column
-        prop="longUpdateTime"
+        prop="updateTime"
         label="更新时间"
-        sortable
+        sortable="custom"
         show-overflow-tooltip
         width="180"/>
 
@@ -179,12 +180,15 @@
           // }
         ],
         statusList: [
-          {text: '启用', value: '启用'},
-          {text: '停用', value: '停用'}
+          {text: '启用', value: 1},
+          {text: '停用', value: 0}
         ],
+        screenStatusList: [],  //
         projectList: [],
         total: 0,
         pageIndex: 0,
+        sortBy: 'screenId',
+        sortType: 0,
         tableFilerCondition: null      // tab筛选条件 用于刷新
       }
     },
@@ -201,7 +205,7 @@
         this.getList(this.tableFilerCondition)
       },
       // 获取表格数据
-      async getList(obj, keyword) {
+      async getList(obj) {
         if (obj) this.tableFilerCondition = obj
         // else {
         //   return false
@@ -210,36 +214,36 @@
           .then(({data}) => {
             this.total = data.total
             this.tableData = data.data.map(item => Object.assign(item, {
-              'longUpdateTime': createDateFun(new Date(item.longUpdateTime)),
+              'updateTime': createDateFun(new Date(item.longUpdateTime)),
               'screenStatus': item.screenStatus == 0 ? '停用' : '启用'
             }))
           })
       },
       // 获取内部银幕Tab
       getMineTab({data}) {
-        let {keyword, pageIndex, setting} = this
+        let {sortBy, sortType, keyword, pageIndex, setting, screenStatusList} = this
         return getMineScreenTabList({
           pageIndex,
-          pageSize: setting.pageSize,
-          screenStatusList: [],             // 银幕状态
-          theatreUuid: data.theatreUuid,    // 影院uuid
-          sortBy: null,                     // 排序字段
-          sortType: 0,                      // 0降序,1升序
+          'pageSize': setting.pageSize,
+          screenStatusList,                 // 银幕状态
+          'theatreUuid': data.theatreUuid,  // 影院uuid
+          sortBy,                           // 排序字段
+          sortType,                         // 0降序,1升序
           keyword
         })
       },
       // 获取院线银幕Tab
       getTab({data}) {
-        let {keyword, pageIndex, setting} = this,
+        let {sortBy, sortType, keyword, pageIndex, setting, screenStatusList} = this,
           {cinemaUuid, theatreUuid} = data
         return getScreenList({
           pageIndex,
           'pageSize': setting.pageSize,
-          'screenStatusList': [],    // 银幕状态
+          screenStatusList,          // 银幕状态
           cinemaUuid,                // 院线uuid
           theatreUuid,               // 影院uuid
-          'sortBy': null,            // 排序字段
-          'sortType': 0,             // 0降序,1升序
+          sortBy,                    // 排序字段
+          sortType,                  // 0降序,1升序
           keyword
         })
       },
@@ -334,9 +338,10 @@
         if (this.socket_plugin) cb()
         else this.$store.dispatch('WEBSOCKET_PLUGIN_INIT', true).then(() => cb())
       },
-      //
-      filterChangeF() {
-
+      // 筛选
+      filterChangeF(obj) {
+        Object.assign(this, obj)
+        this.getList(this.tableFilerCondition)
       },
       //
       showDetails() {
@@ -346,6 +351,17 @@
       selectionFun(list) {
         this.selectionList = list
         this.$emit('tableSelectionF', list)
+      },
+      // 排序
+      changeSort({prop, order}) {
+        if (!order) {
+          this.sortBy = 'screenId'
+          this.sortType = 0
+        } else {
+          this.sortBy = prop
+          this.sortType = order == 'ascending' ? 1 : 0
+        }
+        this.getList(this.tableFilerCondition)
       }
     },
     mounted() {

@@ -97,7 +97,7 @@
   import {
     mapState
   } from 'vuex'
-  import {messageFun} from "../../../assets/common"
+  import {messageFun} from '../../../assets/common'
 
   export default {
     name: 'selectScreenFromLocal',

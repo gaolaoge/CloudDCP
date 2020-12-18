@@ -3,6 +3,7 @@
     <!--表格-->
     <el-table
       :data="tableData"
+      @sort-change="changeSort"
       @selection-change="selectionFun"
       @filter-change="filterChangeF"
       @row-click="showDetails"
@@ -21,7 +22,7 @@
       <el-table-column
         prop="kdmTaskId"
         label="任务ID"
-        sortable
+        sortable="custom"
         show-overflow-tooltip
         width="100"/>
 
@@ -40,7 +41,7 @@
       <el-table-column
         label="状态"
         show-overflow-tooltip
-        column-key="status"
+        column-key="kdmTaskStatusList"
         :filters="statusList"
         width="120">
         <template slot-scope="scope">
@@ -64,6 +65,7 @@
         prop="projectName"
         label="所属项目"
         show-overflow-tooltip
+        column-key="projectUuidList"
         :filters="tabProjectList"
         width="200"/>
 
@@ -78,7 +80,7 @@
       <el-table-column
         prop="cost"
         label="费用（金币）"
-        sortable
+        sortable="custom"
         show-overflow-tooltip
         width="120"/>
 
@@ -86,7 +88,7 @@
       <el-table-column
         prop="kdmCount"
         label="KDM个数"
-        sortable
+        sortable="custom"
         show-overflow-tooltip
         width="120"/>
 
@@ -95,7 +97,7 @@
         prop="movieStartTime"
         label="播放起始时间"
         show-overflow-tooltip
-        sortable
+        sortable="custom"
         width="200"/>
 
       <!--播放结束时间-->
@@ -103,7 +105,7 @@
         prop="movieEndTime"
         label="播放结束时间"
         show-overflow-tooltip
-        sortable
+        sortable="custom"
         width="200"/>
 
     </el-table>
@@ -150,23 +152,26 @@
       return {
         selectionList: [],     // 多选结果
         tableData: [
-          // {
-          //   // validPeriod,   1有效 0过期
-          // }
+          // { validPeriod,   1有效 0过期 }
         ],
         statusList: [
-          {text: '上传中', value: '上传中...'},
-          {text: '上传暂停', value: '上传暂停'},
-          {text: '上传失败', value: '上传失败'},
-          {text: '进行中', value: '进行中'},
-          {text: '暂停', value: '暂停'},
-          {text: '暂停（欠费）', value: '暂停（欠费）'},
-          {text: '失败', value: '失败'},
-          {text: '已完成', value: '已完成'},
-          {text: '待打包完成', value: '待打包完成'}
+          {text: '等待上传', value: 610},
+          {text: '上传中', value: 620},
+          {text: '上传暂停', value: 630},
+          {text: '上传失败', value: 640},
+          {text: '待打包完成', value: 103},
+          {text: '进行中', value: 201},
+          {text: '暂停', value: 301},
+          {text: '暂停（欠费）', value: 302},
+          {text: '失败', value: 400},
+          {text: '已完成', value: 500}
         ],
+        kdmTaskStatusList: [],
+        projectUuidList: [],
         total: 0,
-        pageIndex: 0
+        pageIndex: 0,
+        sortBy: 'kdmTaskId',   // 排序字段 默认为【任务ID】
+        sortType: 0            // 0降序,1升序
       }
     },
     props: {
@@ -184,15 +189,15 @@
       },
       // 获取表格数据
       async getList() {
-        let {zoneUuid} = this,
+        let {zoneUuid, sortBy, sortType, kdmTaskStatusList, projectUuidList} = this,
           {data} = await getKDMTableList({
             pageIndex: this.pageIndex,
             pageSize: this.setting.pageSize,
             keyword: this.keyword,
-            kdmTaskStatusList: [],
-            projectUuidList: [],
-            sortBy: null,            // 排序字段
-            sortType: 0,             // 0降序,1升序
+            kdmTaskStatusList,
+            projectUuidList,
+            sortBy,
+            sortType,
             zoneUuid
           })
         this.total = data.total
@@ -210,7 +215,7 @@
           'taskUuidList': this.selectionList.map(item => item.kdmTaskUuid),
           'operateType': 1
         })
-        if(data.code == 200) {
+        if (data.code == 200) {
           messageFun('success', '操作成功')
           this.getList()
         }
@@ -222,7 +227,7 @@
           'taskUuidList': this.selectionList.map(item => item.kdmTaskUuid),
           'operateType': 2
         })
-        if(data.code == 200) {
+        if (data.code == 200) {
           messageFun('success', '操作成功')
           this.getList()
         }
@@ -234,7 +239,7 @@
           'taskUuidList': this.selectionList.map(item => item.kdmTaskUuid),
           'operateType': 3
         })
-        if(data.code == 200) {
+        if (data.code == 200) {
           messageFun('success', '操作成功')
           this.getList()
         }
@@ -259,18 +264,6 @@
           return false
         }
         let cb = () => {
-          // data.data.forEach((item, index) => {
-          //   item.kdmDetailList.forEach((mini, in_) => {
-          //     this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
-          //       'code': 301,
-          //       'userID': this.user.id,
-          //       'ID': item.taskId,
-          //       'filmName': this.selectionList[index]['filmName'],
-          //       'taskName': this.selectionList[index]['kdmTaskName'],
-          //       'path': [{'front': item.pathPrefix, 'back': mini.certificatePath}]
-          //     })
-          //   })
-          // })
           this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
             'code': 301,
             'userID': this.user.id,
@@ -279,6 +272,7 @@
                 'ID': item.taskId,
                 'filmName': this.selectionList[index]['filmName'],
                 'taskName': this.selectionList[index]['kdmTaskName'],
+                'DCPFileName': this.selectionList[index]['packageName'],
                 'path': item.kdmDetailList.map(curr => {
                   return {'front': item.pathPrefix, 'back': curr.certificatePath}
                 })
@@ -288,18 +282,18 @@
         }
         if (this.socket_plugin) cb()
         else this.$store.dispatch('WEBSOCKET_PLUGIN_INIT', true).then(() => cb())
-
       },
       // 操作 - 创建KDM
       createKDMFun() {
         // 单选，状态为「已完成」且未过期
 
       },
-      //
-      filterChangeF() {
-
+      // 筛选
+      filterChangeF(obj) {
+        Object.assign(this, obj)
+        this.getList()
       },
-      //
+      // 展开详情
       showDetails(row) {
         this.$emit('tableRowClick', row)
       },
@@ -322,6 +316,17 @@
       selectionFun(list) {
         this.selectionList = list
         this.$emit('tableSelectionF', list)
+      },
+      // 排序
+      changeSort({prop, order}) {
+        if (!order) {
+          this.sortBy = 'kdmTaskId'
+          this.sortType = 0
+        } else {
+          this.sortBy = prop
+          this.sortType = order == 'ascending' ? 1 : 0
+        }
+        this.getList()
       }
     },
     mounted() {

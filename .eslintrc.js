@@ -34,6 +34,8 @@ module.exports = {
     'comma-spacing': 'off',
     'new-cap': 'off',
     'curly': 'off',
-    'eqeqeq': 'off'
+    'eqeqeq': 'off',
+    'no-unused-vars': 'off',
+    'no-new-object': 'off'
   }
 }

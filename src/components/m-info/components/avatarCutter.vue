@@ -88,16 +88,16 @@
         minWidth: 20, // 选择框最小宽度
         containerBoxData: {
           width: 0,
-          height: 0,
+          height: 0
         },
         selectData: {
           top: 0,
           left: 0,
           width: 0,
-          action: '', // 当前进行的操作
-          originPoint: {}, // 点击时所在位置
-          selectLine: '', // 选择那一条边进行拉伸，为空则不是在拉伸
-        },
+          action: '',         // 当前进行的操作
+          originPoint: {},    // 点击时所在位置
+          selectLine: ''      // 选择那一条边进行拉伸，为空则不是在拉伸
+        }
       }
     },
     created() {
@@ -123,7 +123,7 @@
           $img.addEventListener('load', () => {
             const data = {
               width: $img.naturalWidth,
-              height: $img.naturalHeight,
+              height: $img.naturalHeight
             }
             document.body.removeChild($img)
             resolve(data)
@@ -163,7 +163,7 @@
         selectData.direction = direction || ''
         selectData.originPoint = {
           x: event.clientX > 0 ? event.clientX : 0,
-          y: event.clientY > 0 ? event.clientY : 0,
+          y: event.clientY > 0 ? event.clientY : 0
         }
       },
 
@@ -190,7 +190,7 @@
 
         selectData.originPoint = {
           x: event.clientX > 0 ? event.clientX : 0,
-          y: event.clientY > 0 ? event.clientY : 0,
+          y: event.clientY > 0 ? event.clientY : 0
         }
 
         this.setPreview()
@@ -295,7 +295,7 @@
           doStretchTopLeft,
           doStretchTopRight,
           doStretchBottomLeft,
-          doStretchBottomRight,
+          doStretchBottomRight
         }[`doStretch${this.getWord(this.getCamelCase(selectData.direction))}`]
 
         doStretchFun('preDo')
@@ -319,7 +319,7 @@
           0,
           0,
           190,
-          190,
+          190
         )
       },
       fileImage() {
@@ -374,8 +374,8 @@
       // 取消
       onCancel() {
         this.$emit('cancel')
-      },
-    },
+      }
+    }
   }
 </script>
 

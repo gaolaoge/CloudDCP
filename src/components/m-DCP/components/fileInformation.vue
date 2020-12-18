@@ -154,6 +154,7 @@
     normList,
     speedList
   } from '@/assets/common'
+
   export default {
     name: 'fileInfo',
     data() {
@@ -223,8 +224,8 @@
       infoData: Object
     },
     watch: {
-      'infoData': function(data) {
-        if(data) Object.assign(this, data, {
+      'infoData': function (data) {
+        if (data) Object.assign(this, data, {
           'packageDate': createDateFun(data.packageDate),
           'codingRule': normList.find(item => item.val == data.codingRule)['label'],                 // 打包标准
           'resolution': resolutionList.find(curr => curr.value == data.resolution)['label'],
@@ -243,7 +244,7 @@
           'filmVersion': versionList.find(item => item.val == data.filmVersion)['label'],            // 类型版本
           'soundLanguage': mp3LanguageList.find(item => item.val == data.soundLanguage)['label'],    // 声音语言
           'packageType': DCPTypeList.find(item => item.val == data.packageType)['label'],            // DCP类型
-          'createTime':createDateFun(data.createTime)                       // 创建时间
+          'createTime': createDateFun(data.createTime)                       // 创建时间
         })
       }
     },

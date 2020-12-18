@@ -42,7 +42,10 @@
              @tableSelectionF="result => selectionList = result"/>
     </div>
     <!--详情窗口-->
-    <Win ref="win" :class="['win', {showMe: showWin}]" @shutMe="showWin = false"/>
+    <Win ref="win"
+         :class="['win', {showMe: showWin}]"
+         :effective="effective"
+         @shutMe="showWin = false"/>
   </div>
 </template>
 
@@ -110,6 +113,7 @@
           }
         ],
         searchInput: '',
+        effective: false,     // 当前项目是否在有效期内
         selectionList: []     // 多选结果
       }
     },
@@ -117,8 +121,9 @@
       // 打开详情窗口
       showDetails(data) {
         this.showWin = true
-        this.$refs.win.getData(data.taskUuid)
-        this.$refs.win.getPackTheResult(data.taskUuid)
+        this.$refs.win.getData(data['taskUuid'])
+        this.$refs.win.getPackTheResult(data['taskUuid'])
+        this.effective = (new Date().getTime() >= data['expireTime']) ? true : false
       },
       // 操作
       operating(action) {

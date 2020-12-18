@@ -89,6 +89,7 @@
     KDMmainStatusList,
     timeZone
   } from '@/assets/common'
+
   export default {
     name: 'fileInfo',
     data() {
@@ -119,8 +120,7 @@
         movieEndTimeL: '播放结束时间',
         movieEndTime: '',
         fileNameTemplateL: '文件名格式',
-        fileNameTemplate: '',
-
+        fileNameTemplate: ''
       }
     },
     methods: {},
@@ -128,8 +128,8 @@
       infoData: Object
     },
     watch: {
-      'infoData': function(data) {
-        if(data) Object.assign(this, data, {
+      'infoData': function (data) {
+        if (data) Object.assign(this, data, {
           'packageDate': createDateFun(data.packageDate),
           'taskId': data.kdmTaskId,
           'taskName': data.kdmTaskName,

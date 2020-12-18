@@ -206,13 +206,13 @@
           form: {
             projectUuid: '',
             kdmTaskName: '',
-            theatreTimeZone: 0,
+            theatreTimeZone: 20,
             fileName: '',
             movieName: '',
             startTime: [new Date(), new Date()],
             endTime: [new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000), new Date()],
             kdmCreateDate: new Date().getTime(),          // kdm制作时间
-            kdmFilenameTemplateUuid: null,                // kdm文件名格式uuid
+            kdmFilenameTemplateUuid: null                 // kdm文件名格式uuid
           },
           label: {
             project: '所属项目',
@@ -316,17 +316,17 @@
           messageFun('success', '创建成功')
           this.$emit('closeDialogFun', 'createKDMDialog')
           this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
-            userID: this.user.id,
-            code: 211,
-            files: data.data.map(item => {
+            'userID': this.user.id,
+            'ID': data.data.taskId,
+            'taskUuid': data.data.taskUuid,
+            'taskName': kdmTaskName,
+            'code': 211,
+            'files': data.data.uploadPathList.map((item, index) => {
               return {
-                'taskUuid': item.taskUuid,
-                'taskName': kdmTaskName,
-                'ID': item.taskId,
-                'localPath': item.localPath,
+                'localPath': screenList[index]['localPath'],
                 'networkPath': {
-                  'front': item.pathPrefix,
-                  'back': item.certificateName
+                  'front': data.data.pathPrefix,
+                  'back': item.certificatePath
                 }
               }
             })

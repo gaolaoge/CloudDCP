@@ -397,12 +397,17 @@
             sortBy: null,
             sortType: 0
           })
-        if (data.code == 200) this.tableData = data.data.map(item => Object.assign(item, {
-          'frameTaskStatus': DCFrameStatusList.find(curr => curr.code == item.frameTaskStatus)['status'],
-          'compressEndTime': createDateFun(item.compressEndTime),
-          'compressStartTime': createDateFun(item.compressStartTime),
-          'compressUseTime': consum(item.compressUseTime, true)
-        }))
+        if (data.code == 200) this.tableData = data.data.map(item => {
+          let t = null
+          if (item.frameTaskStatus == 101) t = ' '
+          if (item.frameTaskStatus == 102) t = '-'
+          return Object.assign(item, {
+            'frameTaskStatus': DCFrameStatusList.find(curr => curr.code == item.frameTaskStatus)['status'],
+            'compressEndTime': t || createDateFun(item.compressEndTime),
+            'compressStartTime': t || createDateFun(item.compressStartTime),
+            'compressUseTime': t || consum(item.compressUseTime, true)
+          })
+        })
         this.total = data.total
       }
     },
@@ -477,7 +482,30 @@
         &.cannotPause .btn.pause,
         &.cannotDownload .btn.download,
         &.cannotAgain .btn.zipAgain {
-          display: none;
+          cursor: no-drop;
+          border: 1px solid rgba(22, 29, 37, 0.19);
+          background-color: rgba(255, 255, 255, 1);
+          line-height: 30px;
+
+          .btnIcon.default {
+            opacity: 0.19;
+          }
+
+          span {
+            color: rgba(22, 29, 37, 0.19);
+          }
+
+          &:hover {
+            .btnIcon {
+              &.default {
+                display: inline-block;
+              }
+
+              &.hover {
+                display: none;
+              }
+            }
+          }
         }
       }
 

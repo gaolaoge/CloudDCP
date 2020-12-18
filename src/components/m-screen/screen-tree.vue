@@ -492,7 +492,9 @@
       // 【院线银幕】刷新
       refreshTree() {
         this.refresh = false
-        this.$nextTick(() => this.refresh = true)
+        this.$nextTick(function () {
+          this.refresh = true
+        })
       },
       // 【院线银幕】添加院线
       async addNewCinemaFun() {
@@ -514,7 +516,8 @@
       // 【院线银幕】获取银幕tab
       getThreateTab(data, node) {
         this.$emit('selectMineScreen', {
-          'type': 'threateScreen', 'data': {
+          'type': 'threateScreen',
+          'data': {
             'cinemaUuid': node.data.cinemaUuid,
             'theatreUuid': node.data.theatreUuid || null
           }
@@ -604,7 +607,7 @@
           addMineScreen.visible = false
           this.mineScreenKeyword = ''
           addMineScreen.input = ''
-          activeName == 0 ? this.getMineScreenListNode() : null
+          if (activeName == 0) this.getMineScreenListNode()
         } else if (data.code == 1000) {
           messageFun('info', '分组名已存在，请重新输入')
           addMineScreen.status = false
@@ -625,7 +628,6 @@
               this.activeName == 0 ? this.getMineScreenListNode() : this.refreshTree()
             } else if (data.code == 1000) messageFun('info', data.msg)
           })
-
       },
       // 【内部银幕】显示【重命名分组】窗口
       showRenameInnerTreeG(data) {
@@ -705,7 +707,7 @@
             this.addNewTheatre.status = null
           }
         }
-      },
+      }
     }
   }
 </script>

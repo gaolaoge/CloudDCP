@@ -12,7 +12,12 @@
       <!--table-->
       <div class="tableList">
         <!--DCP打包结果-->
-        <bale-default ref="baleDefault" v-show="activeIndex == 0" :packTheResult="packTheResult" :infoData="infoData"/>
+        <bale-default
+          ref="baleDefault"
+          v-show="activeIndex == 0"
+          :packTheResult="packTheResult"
+          :effective="effective"
+          :infoData="infoData"/>
         <!--DCP文件信息-->
         <file-information ref="fileInformation" v-show="activeIndex == 1" :infoData="infoData"/>
       </div>
@@ -82,6 +87,12 @@
     },
     computed: {
       ...mapState(['socket_backS_msg', 'user'])
+    },
+    props: {
+      'effective': {
+        type: Boolean,
+        default: false
+      }
     }
   }
 </script>

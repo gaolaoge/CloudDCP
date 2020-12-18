@@ -36,7 +36,7 @@
   } from '@/api/set-api'
   import {
     messageFun
-  } from "../../assets/common"
+  } from '../../assets/common'
 
   export default {
     name: 'add-project',

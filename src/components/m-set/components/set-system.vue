@@ -99,15 +99,15 @@
           maxLengthList: [
             {
               value: 10,
-              label: '10条',
+              label: '10条'
             },
             {
               value: 20,
-              label: '20条',
+              label: '20条'
             },
             {
               value: 50,
-              label: '50条',
+              label: '50条'
             }
           ]
         },
@@ -118,7 +118,7 @@
           mechanismVal: '国家电影云',
           certificateLabel: ' 数值证书：',
           certificateVal: 'CloudDCP_Public_kdm.pem'
-        },
+        }
       }
     },
     methods: {},

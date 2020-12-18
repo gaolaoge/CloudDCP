@@ -33,8 +33,8 @@
                  @click="operating(item['action'])"
                  v-for="(item,index) in btnGroup"
                  :key="'renderBtn-' + index">
-              <img :src="item.iconDefault" v-if="item.iconDefault" class="btnIcon default">
-              <img :src="item.iconHover" v-if="item.iconHover" class="btnIcon hover">
+              <img :src="item.iconDefault" class="btnIcon default">
+              <img :src="item.iconHover" class="btnIcon hover">
               <span>{{ item['action'] }}</span>
             </div>
           </div>
@@ -54,6 +54,7 @@
           <!--表格-->
           <el-table
             :data="tab.tableData"
+            @sort-change="changeSort"
             @selection-change="selectionFun"
             @filter-change="filterChangeF"
             :row-class-name="tableRowStyle"
@@ -71,11 +72,12 @@
             <el-table-column
               prop="taskDetailNo"
               label="序号"
-              sortable
-              width="100"/>
+              sortable="custom"
+              width="60"/>
 
             <!--KDM文件名-->
             <el-table-column
+              show-overflow-tooltip
               prop="kdmFileName"
               label="KDM文件名"
               sortable/>
@@ -84,9 +86,9 @@
             <el-table-column
               label="KDM状态"
               show-overflow-tooltip
-              column-key="status"
+              column-key="kdmStatusList"
               :filters="statusList"
-              width="160">
+              width="120">
               <template slot-scope="scope">
                 <span v-if="[101, 102, 201].some(item => item == scope.row.kdmStatus)"
                       style="color: rgba(22, 29, 37, 0.8)">{{ scope.row.taskStatusText }}</span>
@@ -96,6 +98,8 @@
                       style="color: rgba(255, 62, 77, 1)">{{ scope.row.taskStatusText }}</span>
                 <span v-if="[500].some(item => item == scope.row.kdmStatus)"
                       style="color: rgba(70, 203, 93, 1)">{{ scope.row.taskStatusText }}</span>
+                <span v-if="[610, 620, 630, 640, 650].some(item => item == scope.row.kdmStatus)">
+                  {{ scope.row.taskStatusText }}</span>
               </template>
             </el-table-column>
 
@@ -103,8 +107,8 @@
             <el-table-column
               prop="cost"
               label="费用（金币）"
-              sortable
-              width="160"/>
+              sortable="custom"
+              width="120"/>
 
           </el-table>
           <!--暂无数据-->
@@ -127,6 +131,7 @@
     KDMmainStatusList,
     KDMFrameStatusList
   } from '@/assets/common'
+  import {messageFun} from "../../../assets/common";
 
   export default {
     name: 'make-default',
@@ -180,46 +185,90 @@
           keyword: '',
           tableData: [],
           kdmStatusList: [],
-          sortBy: null,
+          sortBy: 'taskDetailNo',
           sortType: 0
         },
+        selectionList: [],
         statusList: [
-          {text: '上传中', value: '上传中...'},
-          {text: '上传暂停', value: '上传暂停'},
-          {text: '上传失败', value: '上传失败'},
-          {text: '进行中', value: '进行中'},
-          {text: '暂停', value: '暂停'},
-          {text: '暂停（欠费）', value: '暂停（欠费）'},
-          {text: '失败', value: '失败'},
-          {text: '已完成', value: '已完成'},
-          {text: '待打包完成', value: '待打包完成'}
+          {text: '等待上传', value: 610},
+          {text: '上传中', value: 620},
+          {text: '上传暂停', value: 630},
+          {text: '上传失败', value: 640},
+          {text: '上传成功', value: 650},
+          {text: '等待', value: 101},
+          {text: '制作中', value: 201},
+          {text: '暂停', value: 301},
+          {text: '暂停（欠费）', value: 302},
+          {text: '失败', value: 400},
+          {text: '完成', value: 500}
         ],
         KDMUuid: null
       }
     },
     props: {
-      'topWinInfo': Object
+      'topWinInfo': Object,
+      'effective': Boolean
     },
     methods: {
-      //
+      // 多选
       selectionFun(list) {
-
+        this.selectionList = list
       },
       //
       operating(action) {
+        switch (action) {
+          case '下载':
+            if (!this.downloadBtn) return false
+            else if (!this.effective) messageFun('info', '选中任务已过期，无法开始')
+            else this.downloadFun()
+            break
+          case '开始':
+            if (!this.startBtn) return false
 
+            break
+          case '暂停':
+            if (!this.pauseBtn) return false
+
+            break
+          case '重新制作':
+            if (!this.againBtn) return false
+
+            break
+          case '发送KDM':
+            if (!this.sendBtn) return false
+
+            break
+        }
+      },
+      // 下载
+      downloadFun() {
+
+      },
+      // 排序
+      changeSort({prop, order}) {
+        let {tab} = this
+        if (!order) {
+          tab.sortBy = 'taskDetailNo'
+          tab.sortType = 0
+        } else {
+          tab.sortBy = prop
+          tab.sortType = order == 'ascending' ? 1 : 0
+        }
+        this.getTabList(this.KDMUuid)
       },
       //
-      filterChangeF() {
-
+      filterChangeF(obj) {
+        Object.assign(this.tab, obj)
+        this.getTabList(this.KDMUuid)
       },
-      async getTabList(ID) {
-        this.KDMUuid = ID
+      // 获取tab
+      async getTabList(kdmTaskUuid) {
+        this.KDMUuid = kdmTaskUuid
         let {tab} = this,
           {keyword, sortBy, sortType, kdmStatusList} = tab,
           {data} = await getKDMSonTableList({
-            kdmTaskUuid: this.KDMUuid,
-            kdmStatusList,
+            kdmTaskUuid,
+            'kdmStatusList': kdmStatusList.find(curr => curr == 101) ? [102, ...kdmStatusList] : kdmStatusList,
             keyword,
             sortBy,
             sortType,
@@ -227,7 +276,7 @@
             pageSize: 999
           })
         if (data.code == 200) tab.tableData = data.data.map(item => Object.assign(item, {
-          'taskStatusText': KDMFrameStatusList.find(curr => curr.code == item.kdmStatus)['status']
+          'taskStatusText': KDMFrameStatusList.find(curr => curr.code == item['kdmStatus'])['status']
         }))
       },
       // table 行样式
@@ -248,24 +297,33 @@
     },
     computed: {
       ...mapState([]),
+      // 选中项的状态集合
+      sSList() {
+        return this.selectionList.map(item => item['kdmStatus'])
+      },
       startBtn() {
-        if (String('5').includes(this.baleStatus)) return true
+        if (!this.sSList.length) return false
+        else if (this.sSList.every(status => [301, 302].some(item => item == status))) return true
         else return false
       },
       pauseBtn() {
-        if (String('34').includes(this.baleStatus)) return true
+        if (!this.sSList.length) return false
+        else if (this.sSList.every(status => [101, 102, 201, 900].some(item => item == status))) return true
         else return false
       },
       downloadBtn() {
-        if (String('7').includes(this.baleStatus)) return true
+        if (!this.sSList.length) return false
+        else if (this.sSList.every(status => [500].some(item => item == status))) return true
         else return false
       },
       againBtn() {
-        if (String('6').includes(this.baleStatus)) return true
+        if (!this.sSList.length) return false
+        else if (this.sSList.every(status => [400, 500].some(item => item == status))) return true
         else return false
       },
       sendBtn() {
-        if (String('6').includes(this.baleStatus)) return true
+        if (!this.sSList.length) return false
+        else if (this.sSList.every(status => [500].some(item => item == status))) return true
         else return false
       }
     },
@@ -349,7 +407,30 @@
           &.cannotDownload .btn.download,
           &.cannotAgain .btn.makeAgain,
           &.cannotSend .btn.send {
-            display: none;
+            cursor: no-drop;
+            border: 1px solid rgba(22, 29, 37, 0.19);
+            background-color: rgba(255, 255, 255, 1);
+            line-height: 30px;
+
+            .btnIcon.default {
+              opacity: 0.19;
+            }
+
+            span {
+              color: rgba(22, 29, 37, 0.19);
+            }
+
+            &:hover {
+              .btnIcon {
+                &.default {
+                  display: inline-block;
+                }
+
+                &.hover {
+                  display: none;
+                }
+              }
+            }
           }
         }
 

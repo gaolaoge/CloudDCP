@@ -141,7 +141,6 @@
       <el-table-column
         prop="createName"
         label="创建人"
-        sortable="custom"
         show-overflow-tooltip
         width="120"/>
 

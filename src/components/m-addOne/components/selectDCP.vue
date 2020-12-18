@@ -229,7 +229,7 @@
             filmTypeList: [],        // 2d/3d 1:2d, 2:3d
             resolutionList: [],      // 分辨率 1:2k, 2:4k
             isEncryptList: [],       // 是否加密 0不加密,1加密
-            sortBy: null,            // 排序字段
+            sortBy: 'taskId',        // 排序字段
             sortType: 0,             // 0降序,1升序
             zoneUuid
           })

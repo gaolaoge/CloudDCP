@@ -288,7 +288,7 @@
         // 单选，状态为「已完成」且未过期
 
       },
-      // 筛选事件
+      // 筛选
       filterChangeF(obj) {
         Object.assign(this, obj)
         this.getList()

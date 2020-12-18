@@ -337,53 +337,53 @@ const openPlugin = function () {
 // 下拉框 - 影片类型
 const movieTypeList = [
   {
-    label: '正片FTR（Feature）',
-    tag: 'FTR',
+    label: '广告片ADV（Advertisement）',
+    tag: 'ADV',
     value: 0
   },
   {
-    label: '预告片TLR（Trailer）',
-    tag: 'TLR',
+    label: '正片FTR（Feature）',
+    tag: 'FTR',
     value: 1
-  },
-  {
-    label: '短版本预告片TSR（Teaser）',
-    tag: 'TSR',
-    value: 2
-  },
-  {
-    label: '分级RTG（Rating）',
-    tag: 'RTG',
-    value: 3
   },
   {
     label: '政策相关POL（Policy）',
     tag: 'POL',
-    value: 4
+    value: 2
   },
   {
-    label: '公告服务或公告PSA（Public Service Announcement）',
+    label: '推广片PRO（Rromo）',
+    tag: 'PRO',
+    value: 3
+  },
+  {
+    label: '公告PSA（Public）',
     tag: 'PSA',
-    value: 5
-  },
-  {
-    label: '广告片ADV（Advertisement）',
-    tag: 'ADV',
-    value: 6
+    value: 4
   },
   {
     label: '短片SHR（Short）',
     tag: 'SHR',
-    value: 7
+    value: 5
   },
   {
-    label: '过度片XSN（Transitional）',
-    tag: 'XSN',
-    value: 8
+    label: '预告片TLR（Trailer）',
+    tag: 'TLR',
+    value: 6
+  },
+  {
+    label: '样片TSR（Teaser）',
+    tag: 'TSR',
+    value: 7
   },
   {
     label: '测试片TST（Test）',
     tag: 'TST',
+    value: 8
+  },
+  {
+    label: '过度片XSN（Transitional）',
+    tag: 'XSN',
     value: 9
   }
 ]

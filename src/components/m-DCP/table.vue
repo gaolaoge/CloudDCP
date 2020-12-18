@@ -3,6 +3,7 @@
     <!--表格-->
     <el-table
       :data="tableData"
+      @sort-change="changeSort"
       @selection-change="selectionFun"
       @filter-change="filterChangeF"
       @row-click="j"
@@ -21,7 +22,7 @@
       <el-table-column
         prop="taskId"
         label="任务ID"
-        sortable
+        sortable="custom"
         show-overflow-tooltip
         width="100"/>
 
@@ -79,7 +80,7 @@
       <el-table-column
         prop="cost"
         label="费用（金币）"
-        sortable
+        sortable="custom"
         show-overflow-tooltip
         width="120"/>
 
@@ -87,7 +88,7 @@
       <el-table-column
         prop="useTime"
         label="打包时长"
-        sortable
+        sortable="custom"
         show-overflow-tooltip
         width="160"/>
 
@@ -96,7 +97,7 @@
         prop="film_category"
         label="内容类型"
         show-overflow-tooltip
-        column-key="type"
+        column-key="filmCategoryList"
         :filters="typeList"
         width="200"/>
 
@@ -105,7 +106,7 @@
         prop="aspect_ratio"
         label="宽高比"
         show-overflow-tooltip
-        column-key="ratio"
+        column-key="aspectRatioList"
         :filters="ratioList"
         width="224"/>
 
@@ -114,7 +115,7 @@
         prop="film_type"
         label="2D/3D"
         show-overflow-tooltip
-        column-key="technology"
+        column-key="filmTypeList"
         :filters="technologyList"
         width="100"/>
 
@@ -123,7 +124,7 @@
         prop="resolution"
         label="分辨率"
         show-overflow-tooltip
-        column-key="resolution"
+        column-key="resolutionList"
         :filters="resolutionRList"
         width="100"/>
 
@@ -132,7 +133,7 @@
         prop="is_encrypt"
         label="是否加密"
         show-overflow-tooltip
-        column-key="encrypt"
+        column-key="isEncryptList"
         :filters="encryptList"
         width="100"/>
 
@@ -140,7 +141,7 @@
       <el-table-column
         prop="createName"
         label="创建人"
-        sortable
+        sortable="custom"
         show-overflow-tooltip
         width="120"/>
 
@@ -148,7 +149,7 @@
       <el-table-column
         prop="createTime"
         label="创建时间"
-        sortable
+        sortable="custom"
         show-overflow-tooltip
         width="180"/>
 
@@ -214,37 +215,38 @@
           {text: '暂停（欠费）', value: 302},
           {text: '失败', value: 400},
           {text: '已完成', value: 500}
-        ],
+        ],    // 筛选条件 - 状态 list
         typeList: [
-          {text: '广告片ADV', value: 6},
-          {text: '正片FTR', value: 0},
-          {text: '政策相关POL', value: 4},
-          {text: '推广片PRO', value: '推广片PRO'},
-          {text: '广告PSA', value: '广告PSA'},
-          {text: '短片SHR', value: 7},
-          {text: '预告片TLR', value: 1},
-          {text: '样片TSR', value: '样片TSR'},
-          {text: '测试片TST', value: 9},
-          {text: '过渡片XSN', value: 8}
-        ],
+          {text: '广告片ADV', value: 0},
+          {text: '正片FTR', value: 1},
+          {text: '政策相关POL', value: 2},
+          {text: '推广片PRO', value: 3},
+          {text: '广告PSA', value: 4},
+          {text: '短片SHR', value: 5},
+          {text: '预告片TLR', value: 6},
+          {text: '样片TSR', value: 7},
+          {text: '测试片TST', value: 8},
+          {text: '过渡片XSN', value: 9}
+        ],       // 筛选条件 - 内容类型 list
         ratioList: [
-          {text: '全画幅C', value: '全画幅C'},
-          {text: '遮幅F', value: '遮幅F'},
-          {text: '宽银幕S', value: '宽银幕S'}
-        ],
+          {text: '遮幅F', value: 0},
+          {text: '宽银幕S', value: 1},
+          {text: '全画幅C', value: 2}
+        ],      // 筛选条件 - 宽高比 list
         technologyList: [
-          {text: '2D', value: '2D'},
-          {text: '3D', value: '3D'}
-        ],
+          {text: '2D', value: 1},
+          {text: '3D', value: 2}
+        ], // 筛选条件 - 2d/3d list
         resolutionRList: [
-          {text: '2K', value: '2K'},
-          {text: '4K', value: '4K'}
-        ],
+          {text: '2K', value: 0},
+          {text: '4K', value: 1}
+        ],// 筛选条件 - 分辨率 list
         encryptList: [
-          {text: '加密', value: '加密'},
-          {text: '未加密', value: '未加密'}
-        ],
+          {text: '加密', value: 1},
+          {text: '未加密', value: 0}
+        ],    // 筛选条件 - 是否加密 list
         statusList: [],        // 筛选条件 - 状态
+        filmCategoryList: [],  // 筛选条件 - 内容类型
         projectUuidList: [],   // 筛选条件 - 所属项目
         aspectRatioList: [],   // 筛选条件 - 宽高比
         filmTypeList: [],      // 筛选条件 - 2d/3d 1:2d, 2:3d
@@ -252,7 +254,7 @@
         isEncryptList: [],     // 筛选条件 - 是否加密 0不加密,1加密
         total: 0,
         pageIndex: 0,
-        sortBy: null,          // 排序字段
+        sortBy: 'taskId',      // 排序字段
         sortType: 0            // 0降序,1升序
       }
     },
@@ -275,12 +277,13 @@
       },
       // 获取表格数据
       async getList() {
-        let {isEncryptList, resolutionList, filmTypeList, aspectRatioList, statusList, projectUuidList, setting, sortBy, sortType, pageIndex, keyword, zoneUuid, DCPmainStatusList, movieTypeList, proportionList} = this,
+        let {filmCategoryList, isEncryptList, resolutionList, filmTypeList, aspectRatioList, statusList, projectUuidList, setting, sortBy, sortType, pageIndex, keyword, zoneUuid, DCPmainStatusList, movieTypeList, proportionList} = this,
           {data} = await getDCPTableList({
             pageIndex,
             pageSize: setting.pageSize,
             keyword,
             statusList,
+            filmCategoryList,
             projectUuidList,
             aspectRatioList,
             filmTypeList,
@@ -402,6 +405,17 @@
       selectionFun(list) {
         this.selectionList = list
         this.$emit('tableSelectionF', list)
+      },
+      // 排序
+      changeSort({prop, order}) {
+        if (!order) {
+          this.sortBy = 'taskId'
+          this.sortType = 0
+        } else {
+          this.sortBy = prop
+          this.sortType = order == 'ascending' ? 1 : 0
+        }
+        this.getList()
       }
     },
     mounted() {

@@ -316,17 +316,17 @@
           messageFun('success', '创建成功')
           this.$emit('closeDialogFun', 'createKDMDialog')
           this.$store.commit('WEBSOCKET_PLUGIN_SEND', {
-            userID: this.user.id,
-            ID: 'ID',
-            code: 211,
-            files: data.data.map(item => {
+            'userID': this.user.id,
+            'ID': data.data.taskId,
+            'taskUuid': data.data.taskUuid,
+            'taskName': kdmTaskName,
+            'code': 211,
+            'files': data.data.uploadPathList.map((item, index) => {
               return {
-                'taskUuid': item.taskUuid,
-                'taskName': kdmTaskName,
-                'localPath': item.localPath,
+                'localPath': screenList[index]['localPath'],
                 'networkPath': {
-                  'front': item.pathPrefix,
-                  'back': item.certificateName
+                  'front': data.data.pathPrefix,
+                  'back': item.certificatePath
                 }
               }
             })

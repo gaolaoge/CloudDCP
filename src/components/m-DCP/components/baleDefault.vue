@@ -482,7 +482,30 @@
         &.cannotPause .btn.pause,
         &.cannotDownload .btn.download,
         &.cannotAgain .btn.zipAgain {
-          display: none;
+          cursor: no-drop;
+          border: 1px solid rgba(22, 29, 37, 0.19);
+          background-color: rgba(255, 255, 255, 1);
+          line-height: 30px;
+
+          .btnIcon.default {
+            opacity: 0.19;
+          }
+
+          span {
+            color: rgba(22, 29, 37, 0.19);
+          }
+
+          &:hover {
+            .btnIcon {
+              &.default {
+                display: inline-block;
+              }
+
+              &.hover {
+                display: none;
+              }
+            }
+          }
         }
       }
 

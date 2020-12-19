@@ -625,7 +625,7 @@
           speedL: '帧速率',
           form: {
             'templateName': null,        // 模板名称
-            'codingRule': 0,             // 打包标准
+            'codingRule': 1,             // 打包标准
             'frameRate': 0,              // 帧速率
             'codingRate': 250,           // 码率
             'packageTemplateUuid': null
@@ -878,7 +878,7 @@
         let {dialogAdd} = this
         dialogAdd.form = {
           'templateName': null,        // 模板名称
-          'codingRule': 0,             // 打包标准
+          'codingRule': 1,             // 打包标准
           'frameRate': 0,              // 帧速率
           'codingRate': 250,           // 码率
           'packageTemplateUuid': null

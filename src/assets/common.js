@@ -502,7 +502,7 @@ const channelTypeList = [
 const APList = [
   {
     label: '无字幕',
-    tag: 'XX',
+    tag: null,
     val: 0
   },
   {

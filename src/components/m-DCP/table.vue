@@ -206,7 +206,6 @@
           {text: '上传中', value: 620},
           {text: '上传暂停', value: 630},
           {text: '上传失败', value: 640},
-          {text: '上传失败', value: 640},
           // {text: '上传成功', value: 650},
           // {text: '等待打包', value: 101},
           {text: '进行中', value: 201},

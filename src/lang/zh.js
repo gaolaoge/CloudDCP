@@ -162,7 +162,7 @@ export default {
     },
     // 字幕语言
     textLanguageList: {
-      XX: '无字幕',
+      XX: '无字幕 XX',
       QMS: '中文简体 QMS',
       QMT: '中文繁体 QMT',
       VI: '越南语 VI',

@@ -67,7 +67,8 @@ export default new Vuex.Store({
       pageSize: 10
     },
     projectList: [],        // 项目列表
-    openCDCPW: false
+    openCDCPW: false,       // 自【渲染农场】跳转，打开新建DCP窗口
+    encryptCNKDM: false     // 新建加密DCP成功后显示创建新KDM窗口
   },
   getter: {},
   mutations: {
@@ -89,7 +90,6 @@ export default new Vuex.Store({
         }
       })
       state.socket_backS.addEventListener('message', data => {
-        // state.socket_backS_msg = data
         this.commit('change_websocket_back_message', data)
       })
       state.socket_backS.addEventListener('close', e => {
@@ -176,6 +176,10 @@ export default new Vuex.Store({
         sex: null,
         id: null
       })
+    },
+    // 开关【新建加密DCP成功后显示创建新KDM窗口】
+    shutCNKDMW(state, boolean) {
+      state.encryptCNKDM = boolean
     },
     // 项目列表更新
     setProjectList(state, projectList) {

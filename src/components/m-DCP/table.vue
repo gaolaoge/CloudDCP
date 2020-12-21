@@ -206,7 +206,6 @@
           {text: '上传中', value: 620},
           {text: '上传暂停', value: 630},
           {text: '上传失败', value: 640},
-          {text: '上传失败', value: 640},
           // {text: '上传成功', value: 650},
           // {text: '等待打包', value: 101},
           {text: '进行中', value: 201},
@@ -237,8 +236,8 @@
           {text: '3D', value: 2}
         ], // 筛选条件 - 2d/3d list
         resolutionRList: [
-          {text: '2K', value: 0},
-          {text: '4K', value: 1}
+          {text: '2K', value: 1},
+          {text: '4K', value: 2}
         ],// 筛选条件 - 分辨率 list
         encryptList: [
           {text: '加密', value: 1},
@@ -299,7 +298,7 @@
           'useTime': consum(item.useTime),
           'aspect_ratio': proportionList ? proportionList.find(curr => curr.value == item.aspectRatio)['label'] : [],
           'film_type': this.technologyList[item.filmType - 1]['text'],
-          'resolution': this.resolutionRList[item.resolution]['text'],
+          'resolution': this.resolutionRList.find(curr => curr.value == item.resolution)['text'],
           'is_encrypt': item.isEncrypt == 1 ? '加密' : '未加密',
           'createTime': createDateFun(new Date(item.createTime)),
           'validPeriod': new Date().getTime() >= item.expireTime ? 0 : 1

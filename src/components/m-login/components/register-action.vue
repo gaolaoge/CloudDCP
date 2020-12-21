@@ -78,8 +78,10 @@
       <div class="item zone">
         <label>{{ $t('login_page.register.type') }}：</label>
         <el-radio-group v-model="form.zone" class="radio">
-          <el-radio :label=1>{{ $t('login_page.register.typeRadio')[0] }}</el-radio>
-          <el-radio :label=2>{{ $t('login_page.register.typeRadio')[1] }}</el-radio>
+          <!--院线版-->
+          <el-radio :label=1>{{ $t('login_page.register.typeRadio2')[0] }}</el-radio>
+          <!--网络版-->
+          <!--<el-radio :label=2>{{ $t('login_page.register.typeRadio2')[1] }}</el-radio>-->
         </el-radio-group>
       </div>
       <!--协议-->

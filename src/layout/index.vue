@@ -96,6 +96,30 @@
                style="maxWidth: 1412px; margin: 0px auto">
       <selectDCP @closeDialogFun="closeDialogFun" @didSelected="didSelected"/>
     </el-dialog>
+    <!--创建加密DCP后【新建KDM】窗口-->
+    <el-dialog :visible.sync="createNewKDMDialog.show"
+               :show-close="false"
+               top="0px"
+               width="380px">
+      <header class="dl_header">
+        <span>{{ createNewKDMDialog.title }}</span>
+        <img src="@/icons/shutDialogIcon.png" class="closeIcon" @click="createNewKDMDialog.show = false">
+      </header>
+      <div class="dl_wrapper newKDMW">
+        <img src="@/icons/createSuc.png">
+        <span class="span">{{ createNewKDMDialog.message }}</span>
+        <div class="farm-btnGroup">
+          <!--返回-->
+          <div class="btnGroup-btn previous">
+            <span>{{ $t('public.back') }}</span>
+          </div>
+          <!--新建KDM-->
+          <div class="btnGroup-btn confirm" @click="continueToCreateKDM">
+            <span>{{ createNewKDMDialog.btn }}</span>
+          </div>
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -153,6 +177,12 @@
           'packageTaskUuid': null,
           'packageName': null,
           'projectUuid': null
+        },
+        createNewKDMDialog: {
+          show: false,
+          title: '新建DCP打包',
+          message: '加密DCP打包任务新建成功！',
+          btn: '新建KDM'
         }
       }
     },
@@ -165,16 +195,29 @@
       selectDCP
     },
     computed: {
-      ...mapState(['login', 'user', 'thumb', 'socket_plugin', 'pluginDialog', 'remoteLoginDate', 'socket_backS_msg'])
+      ...mapState(['encryptCNKDM', 'login', 'user', 'thumb', 'socket_plugin', 'pluginDialog', 'remoteLoginDate', 'socket_backS_msg'])
     },
     watch: {
       'remoteLoginDate': function (date) {
         if (!date) return false
         this.remoteLoginDialog.date = createDateFun(new Date(date), null, true)
         this.remoteLoginDialog.show = true
+      },
+      'encryptCNKDM': function (obj) {
+        if (obj) {
+          this.createNewKDMDialog.show = true
+          this.createNewKDMDialog.obj = obj
+          this.$store.commit('shutCNKDMW', null)
+        }
       }
     },
     methods: {
+      // 创建加密DCP后创建KDM
+      continueToCreateKDM() {
+        this.selectedDCPUTask = this.createNewKDMDialog.obj
+        this.createKDMDialog = true
+        this.createNewKDMDialog.show = false
+      },
       // 已选择DCP文件，打开新建KDM窗口
       didSelected(obj) {
         this.closeDialogFun('selectDCODialog')
@@ -195,9 +238,9 @@
       shutRemoteLogin(editPS) {
         this.remoteLoginDialog.show = false
         editPS ? this.$router.push({
-            name: 'login',
-            params: {modify: true}
-          }) : this.$router.push({
+          name: 'login',
+          params: {modify: true}
+        }) : this.$router.push({
           name: 'login',
           params: {modify: false}
         })
@@ -410,6 +453,30 @@
         text-decoration: underline;
       }
     }
+
+    &.newKDMW {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      img {
+        width: 108px;
+        margin: 40px 0px 30px;
+      }
+
+      .span {
+        font-size: 14px;
+        color: rgba(22, 29, 37, 0.8);
+        margin-bottom: 18px;
+      }
+
+      .farm-btnGroup {
+        .btnGroup-btn:nth-of-type(1) {
+          margin-right: 0px;
+        }
+      }
+    }
+
   }
 
   /deep/ .el-dialog__body {
@@ -421,13 +488,6 @@
     border-radius: 8px;
     overflow: hidden;
   }
-
-  /*@media screen and (orientation: portrait) {*/
-  /*  .layout-wrapper {*/
-  /*    height: 100vw;*/
-  /*    width: 100vh;*/
-  /*  }*/
-  /*}*/
 </style>
 
 <style lang="less">

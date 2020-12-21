@@ -49,6 +49,7 @@ export default {
       text2: '《用户服务协议》',
       type: '类型',
       typeRadio: ['影视版', '效果图'],
+      typeRadio2: ['院线版', '网络版'],
       ac_placeholder: '请输入帐号',
       ps_placeholder: '请输入密码',
       ph_placeholder: '请输入手机号',
@@ -162,7 +163,7 @@ export default {
     },
     // 字幕语言
     textLanguageList: {
-      XX: '无字幕',
+      XX: '无字幕 XX',
       QMS: '中文简体 QMS',
       QMT: '中文繁体 QMT',
       VI: '越南语 VI',

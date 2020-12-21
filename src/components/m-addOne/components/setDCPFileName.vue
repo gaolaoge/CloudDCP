@@ -17,7 +17,7 @@
             <span class="fns">_</span>
             <!--影片类型-类型版本-->
             <span class="fns" style="color: #FA6400">
-              {{ movieTypeList ? movieTypeList.find(curr => curr.value == form.filmCategory)['tag'] + '-' + versionList.find(curr => curr.val == form.filmVersion)['val'] : null }}
+              {{ movieTypeList ? movieTypeList.find(curr => curr.value == form.filmCategory)['tag'] + (versionList.find(curr => curr.val == form.filmVersion)['val'] > 0 ? '-' + versionList.find(curr => curr.val == form.filmVersion)['val'] : '') : null }}
             </span>
             <span class="fns">_</span>
             <!--宽高比-->
@@ -27,7 +27,7 @@
             <span class="fns">_</span>
             <!--声音语言-字幕语言-->
             <span class="fns" style="color: #6DD400">
-              {{ mp3LanguageList.length ? mp3LanguageList.find(curr => curr.val == form.soundLanguage)['label'].split(' ')[1] + '-' + (textLanguageList ? textLanguageList.find(curr => curr.val == form.captionLanguage)['val'] : null) + '-' + (APList ? APList.find(curr => curr.val == form.captionType)['tag'] : null) : null }}
+              {{ (mp3LanguageList.length ? mp3LanguageList.find(curr => curr.val == form.soundLanguage)['label'].split(' ')[1] : null) + '-' + (textLanguageList ? textLanguageList.find(curr => curr.val == form.captionLanguage)['label'].split(' ')[1] : null) + (APList ? (APList.find(curr => curr.val == form.captionType)['tag'] ? '-' + APList.find(curr => curr.val == form.captionType)['tag'] : '' ) : '' ) }}
             </span>
             <span class="fns">_</span>
             <!--地区-->
@@ -62,7 +62,7 @@
             <span class="fns">_</span>
             <!--任务模板-打包标准-->
             <span class="fns" style="color: #29AD40">
-              {{ codingRule + '-' + modeList.find(curr => curr.value == form.filmType)['label'] }}
+              {{ codingRule + (modeList.find(curr => curr.value == form.filmType)['label'] == '2D' ? '' : ('-' + modeList.find(curr => curr.value == form.filmType)['label'])) }}
             </span>
             <span class="fns">_</span>
             <!--DCP类型-->

@@ -625,7 +625,7 @@
           speedL: '帧速率',
           form: {
             'templateName': null,        // 模板名称
-            'codingRule': 0,             // 打包标准
+            'codingRule': 1,             // 打包标准
             'frameRate': 0,              // 帧速率
             'codingRate': 250,           // 码率
             'packageTemplateUuid': null
@@ -715,9 +715,6 @@
               let index = team.findIndex(curr => curr.key == data.key)
               team[index]['localPath'] = data.localPath
             }
-          } else if (data.code == 202) {
-            messageFun('success', '创建成功')
-            this.closeDialogFun()
           }
         },
         immediate: true
@@ -878,7 +875,7 @@
         let {dialogAdd} = this
         dialogAdd.form = {
           'templateName': null,        // 模板名称
-          'codingRule': 0,             // 打包标准
+          'codingRule': 1,             // 打包标准
           'frameRate': 0,              // 帧速率
           'codingRate': 250,           // 码率
           'packageTemplateUuid': null
@@ -976,6 +973,12 @@
             }
           })
         })
+        this.closeDialogFun()
+        if (isEncrypt) this.$store.commit('shutCNKDMW', {
+          'taskUuid': data.data.packageTaskUuid,
+          filmName
+        })
+        else messageFun('success', '创建成功')
       },
       // 3.选择文件
       selectFile(data, disabled) {

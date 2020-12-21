@@ -176,7 +176,8 @@
   import {mapState} from 'vuex'
   import {
     messageFun,
-    timeZone
+    timeZone,
+    createDateFun
   } from '@/assets/common.js'
   import {
     createNewKDM,
@@ -259,7 +260,8 @@
         let {data} = await getTypeList()
         if (data.code == 200) {
           this.typeList = data.data.map((item, index) => Object.assign(item, {index}))
-          this.setParameters.form.kdmFilenameTemplateUuid = data.data[0]['filenameTemplateUuid']
+          this.setParameters.form.fileName = 'KDM_' + this.setParameters.form.movieName + '_<银幕名称>_' + createDateFun(new Date(), true)
+          this.setParameters.form.kdmFilenameTemplateUuid = data.data.find(curr => curr.isDefault == 1)['filenameTemplateUuid']
         }
       },
       // 关闭【设置KDM文件名】弹窗
@@ -344,7 +346,6 @@
         Object.assign(this, {
           timeZone
         })
-        this.setParameters.form.fileName = 'KDM_' + this.setParameters.form.movieName + '_<银幕名称>'
       })
     },
     watch: {

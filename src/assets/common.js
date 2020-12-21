@@ -1128,8 +1128,8 @@ const DCFrameStatusList = [
   },
   {
     code: 900,
-    class: '进行中',
-    status: '压缩中'
+    class: '等待',
+    status: '等待'
   },
   {
     code: 500,

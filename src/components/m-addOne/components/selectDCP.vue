@@ -23,6 +23,7 @@
       <!--表格-->
       <el-table
         :data="tableData"
+        @sort-change="changeSort"
         @filter-change="filterChangeF"
         @row-click="rowClick"
         :row-class-name="tableRowStyle"
@@ -62,6 +63,7 @@
           prop="projectName"
           label="所属项目"
           show-overflow-tooltip
+          column-key="projectUuidList"
           :filters="tabProjectList"
           width="200"/>
 
@@ -77,7 +79,7 @@
           prop="film_category"
           label="内容类型"
           show-overflow-tooltip
-          column-key="type"
+          column-key="filmCategoryList"
           :filters="typeList"
           width="200"/>
 
@@ -86,7 +88,7 @@
           prop="aspect_ratio"
           label="宽高比"
           show-overflow-tooltip
-          column-key="ratio"
+          column-key="aspectRatioList"
           :filters="ratioList"
           width="224"/>
 
@@ -95,7 +97,7 @@
           prop="film_type"
           label="2D/3D"
           show-overflow-tooltip
-          column-key="technology"
+          column-key="filmTypeList"
           :filters="technologyList"
           width="100"/>
 
@@ -104,8 +106,8 @@
           prop="resolution"
           label="分辨率"
           show-overflow-tooltip
-          column-key="resolution"
-          :filters="resolutionList"
+          column-key="resolutionList"
+          :filters="resolutionRList"
           width="100"/>
 
         <!--创建人-->
@@ -113,7 +115,6 @@
           prop="createName"
           label="创建人"
           show-overflow-tooltip
-          :filters="userList"
           width="120"/>
 
       </el-table>
@@ -173,40 +174,40 @@
         title: '选择DCP文件',
         selectionList: [],     // 多选结果
         tableData: [
-          // {
-          //   // validPeriod,   1有效 0过期
-          // }
+          // { validPeriod,   1有效 0过期 }
         ],
         typeList: [
-          {text: '广告片ADV', value: '广告片ADV'},
-          {text: '正片FTR', value: '正片FTR'},
-          {text: '政策相关POL', value: '政策相关POL'},
-          {text: '推广片PRO', value: '推广片PRO'},
-          {text: '广告PSA', value: '广告PSA'},
-          {text: '短片SHR', value: '短片SHR'},
-          {text: '预告片TLR', value: '预告片TLR'},
-          {text: '样片TSR', value: '样片TSR'},
-          {text: '测试片TST', value: '测试片TST'},
-          {text: '过渡片XSN', value: '过渡片XSN'}
-        ],
+          {text: '广告片ADV', value: 0},
+          {text: '正片FTR', value: 1},
+          {text: '政策相关POL', value: 2},
+          {text: '推广片PRO', value: 3},
+          {text: '广告PSA', value: 4},
+          {text: '短片SHR', value: 5},
+          {text: '预告片TLR', value: 6},
+          {text: '样片TSR', value: 7},
+          {text: '测试片TST', value: 8},
+          {text: '过渡片XSN', value: 9}
+        ],       // 筛选条件 - 内容类型 list
         ratioList: [
-          {text: '全画幅C', value: '全画幅C'},
-          {text: '遮幅F', value: '遮幅F'},
-          {text: '宽银幕S', value: '宽银幕S'}
-        ],
+          {text: '遮幅F', value: 0},
+          {text: '宽银幕S', value: 1},
+          {text: '全画幅C', value: 2}
+        ],      // 筛选条件 - 宽高比 list
         technologyList: [
-          {text: '2D', value: '2D'},
-          {text: '3D', value: '3D'}
+          {text: '2D', value: 1},
+          {text: '3D', value: 2}
+        ], // 筛选条件 - 2d/3d list
+        resolutionRList: [
+          {text: '2K', value: 1},
+          {text: '4K', value: 2}
         ],
-        resolutionList: [
-          {text: '2K', value: '2K'},
-          {text: '4K', value: '4K'}
-        ],
-        encryptList: [
-          {text: '加密', value: '加密'},
-          {text: '未加密', value: '未加密'}
-        ],
-        userList: [],
+        filmCategoryList: [],    // 内容类型
+        projectUuidList: [],     // 所属项目
+        aspectRatioList: [],     // 宽高比
+        filmTypeList: [],        // 2d/3d 1:2d, 2:3d
+        resolutionList: [],      // 分辨率 1:2k, 2:4k
+        sortBy: 'taskId',        // 排序字段
+        sortType: 0,             // 0降序,1升序
         total: 0,
         pageIndex: 0,
         keyword: '',
@@ -215,22 +216,38 @@
     },
     methods: {
       // 页码跳转
-      handleCurrentChange() {
+      handleCurrentChange(pageIndex) {
+        this.pageIndex = pageIndex
+        this.getList()
+      },
+      // 排序
+      changeSort({prop, order}) {
+        if (!order) {
+          this.sortBy = 'taskId'
+          this.sortType = 0
+        } else {
+          this.sortBy = prop
+          this.sortType = order == 'ascending' ? 1 : 0
+        }
+        this.getList()
       },
       // 获取表格数据
       async getList() {
-        let {zoneUuid} = this,
+        let {filmCategoryList, resolutionList, filmTypeList, aspectRatioList, projectUuidList, zoneUuid, keyword, setting, pageIndex, sortType, sortBy} = this,
           {data} = await getDCPTableList({
-            pageIndex: this.pageIndex,
-            pageSize: this.setting.pageSize,
-            keyword: this.keyword,
-            projectUuidList: [],
-            aspectRatioList: [],     // 宽高比
-            filmTypeList: [],        // 2d/3d 1:2d, 2:3d
-            resolutionList: [],      // 分辨率 1:2k, 2:4k
-            isEncryptList: [],       // 是否加密 0不加密,1加密
-            sortBy: 'taskId',        // 排序字段
-            sortType: 0,             // 0降序,1升序
+            pageIndex,
+            keyword,
+            'pageSize': setting.pageSize,
+            'statusList': [500],
+            filmCategoryList,
+            projectUuidList,
+            aspectRatioList,
+            filmTypeList,
+            resolutionList,
+            'isEncryptList': [1],    // 是否加密 0不加密,1加密
+            'expireTime': new Date().getTime(),             // 筛选未过期DCP
+            sortBy,
+            sortType,
             zoneUuid
           })
         this.total = data.total
@@ -239,8 +256,8 @@
           'film_category': movieTypeList.find(curr => curr.value == item.filmCategory)['label'],
           'useTime': consum(item.useTime),
           'aspect_ratio': proportionList.find(curr => curr.value == item.aspectRatio)['label'],
-          'film_type': this.technologyList[item.filmType - 1]['text'],
-          'resolution': this.resolutionList[item.resolution]['text'],
+          'film_type': this.technologyList[item.filmType - 1]['text'],   // 2D/3D
+          'resolution': this.resolutionRList.find(curr => curr.value == item.resolution)['text'],    // 分辨率
           'is_encrypt': item.is_encrypt ? '加密' : '未加密',
           'createTime': createDateFun(new Date(item.createTime)),
           'validPeriod': new Date().getTime() >= item.expireTime ? 0 : 1,

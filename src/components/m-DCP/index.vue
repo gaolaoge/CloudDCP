@@ -123,7 +123,7 @@
         this.showWin = true
         this.$refs.win.getData(data['taskUuid'])
         this.$refs.win.getPackTheResult(data['taskUuid'])
-        this.effective = (new Date().getTime() >= data['expireTime']) ? true : false
+        new Date().getTime() >= data['expireTime'] ? this.effective = true : this.effective = false
       },
       // 操作
       operating(action) {

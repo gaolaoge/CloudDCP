@@ -286,10 +286,10 @@
       .infoItem {
         width: 50%;
         display: flex;
-        margin-bottom: 12px;
+        margin-bottom: 20px;
 
         label {
-          width: 50%;
+          width: 140px;
           font-size: 14px;
           color: rgba(22, 29, 37, 0.6);
           margin-right: 12px;
@@ -300,6 +300,7 @@
           width: 50%;
           font-size: 14px;
           color: rgba(22, 29, 37, 1);
+          text-shadow: 0 0 rgba(22, 29, 37, 1);
         }
       }
     }

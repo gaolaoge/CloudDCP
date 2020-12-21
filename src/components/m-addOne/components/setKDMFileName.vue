@@ -30,6 +30,7 @@
         <div class="item mini">
           <label class="farm-label">{{ label.date }}：</label>
           <el-date-picker
+            :clearable="false"
             v-model="form.date"
             type="date"
             placeholder="选择日期"/>
@@ -90,16 +91,19 @@
       'typeUuid': String
     },
     watch: {
-      Uuid(val) {
-        if (val) this.form.uuid = val
+      typeUuid: {
+        handler: function (id) {
+          if (id) this.form.uuid = id
+        },
+        immediate: true
       }
     },
     computed: {
       name() {
-        let index = this.typeList.length ? this.typeList.find(item => item['filenameTemplateUuid'] == this.typeUuid)['index'] : null
-        if (index == 0) return 'KDM_' + this.fileName + `_<银幕名称>`
-        else if (index == 1) return 'KDM_' + this.fileName + `_<影院名称>_<银幕名称>`
-        else if (index == 2) return 'KDM_' + this.fileName + `_<影院名称>_<银幕名称>_` + createDateFun(this.form.date, true)
+        let {typeList, fileName, typeUuid, form} = this
+        let index = typeList.length && form.uuid ? typeList.find(item => item['filenameTemplateUuid'] == form.uuid)['index'] : null
+        if (index == 0) return 'KDM_' + fileName + `_<银幕名称>_<银幕名称>`
+        else if (index == 1) return 'KDM_' + fileName + `_<影院名称>_` + createDateFun(form.date, true)
       }
     }
   }
@@ -139,6 +143,10 @@
 
   .fns {
     font-size: 14px;
+  }
+
+  /deep/ .el-date-editor.el-input, .el-date-editor.el-input__inner {
+    width: 100%;
   }
 
 </style>

@@ -715,9 +715,6 @@
               let index = team.findIndex(curr => curr.key == data.key)
               team[index]['localPath'] = data.localPath
             }
-          } else if (data.code == 202) {
-            messageFun('success', '创建成功')
-            this.closeDialogFun()
           }
         },
         immediate: true
@@ -976,6 +973,12 @@
             }
           })
         })
+        this.closeDialogFun()
+        if (isEncrypt) this.$store.commit('shutCNKDMW', {
+          'taskUuid': data.data.packageTaskUuid,
+          filmName
+        })
+        else messageFun('success', '创建成功')
       },
       // 3.选择文件
       selectFile(data, disabled) {

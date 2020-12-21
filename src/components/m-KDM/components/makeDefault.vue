@@ -129,9 +129,9 @@
   import {mapState} from 'vuex'
   import {
     KDMmainStatusList,
-    KDMFrameStatusList
+    KDMFrameStatusList,
+    messageFun
   } from '@/assets/common'
-  import {messageFun} from "../../../assets/common";
 
   export default {
     name: 'make-default',

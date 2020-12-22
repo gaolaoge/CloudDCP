@@ -45,7 +45,7 @@
     <Win ref="win"
          :class="['win', {showMe: showWin}]"
          :effective="effective"
-         @shutMe="showWin = false"/>
+         @shutMe="shutDetailsW"/>
   </div>
 </template>
 
@@ -118,6 +118,11 @@
       }
     },
     methods: {
+      // 关闭详情窗口
+      shutDetailsW() {
+        this.showWin = false
+        this.$refs.dcptable.shutDetailsWCB()
+      },
       // 打开详情窗口
       showDetails(data) {
         this.showWin = true

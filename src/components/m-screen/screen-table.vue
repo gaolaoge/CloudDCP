@@ -24,7 +24,7 @@
                class="input"
                v-model="searchInput"
                @keyup.enter="$refs.screenTableReal.getList(searchInput)"
-               placeholder="输入任务ID、任务名称、银幕名称">
+               placeholder="输入银幕ID、银幕名称">
         <!--搜索按钮-->
         <img src="@/icons/global-search-icon.png"
              class="searchIcon"

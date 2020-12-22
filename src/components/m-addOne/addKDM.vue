@@ -237,8 +237,9 @@
         },
         timeZone: [],
         typeList: [],
-        typeIndex: 0,      // 文件名格式索引
-        LSIS: false        // 处于【选择播放银幕】-【从电脑选中】-【输入院线/影院信息】  需要收缩窗口高度
+        typeIndex: 0,       // 文件名格式索引
+        LSIS: false,        // 处于【选择播放银幕】-【从电脑选中】-【输入院线/影院信息】  需要收缩窗口高度
+        lock: true          // 新建事件锁
       }
     },
     props: {
@@ -283,6 +284,9 @@
       },
       // 3.创建KDM
       async createKDMF() {
+        if(!this.lock) return false
+        this.lock = false
+        setTimeout(() => this.lock = true, 1000)
         if (!this.setParameters.form.kdmTaskName.trim()) return false
         let {cinemaName, theatreName, screenUuidList, screenList, certificateSource} = this.selectScreen,
           {projectUuid, kdmTaskName, theatreTimeZone, kdmFilenameTemplateUuid, kdmCreateDate} = this.setParameters.form,

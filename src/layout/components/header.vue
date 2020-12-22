@@ -356,7 +356,8 @@
           this.getBulletinF()   // 获取公告
           // putNewZoneID({'zoneUuid': val})   // 传达切换分区事件
           this.workBenchVal = val
-        }
+        },
+        immediate: true
       },
       'user.account': {
         handler: function (val) {

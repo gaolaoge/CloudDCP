@@ -815,23 +815,6 @@
         img.hover {
           display: none;
         }
-
-        /*&:hover {*/
-        /*  background-color: rgba(27, 83, 244, 0.8);*/
-
-        /*  .total,*/
-        /*  .tree-node-span {*/
-        /*    color: rgba(255, 255, 255, 1);*/
-        /*  }*/
-
-        /*  .default {*/
-        /*    display: none;*/
-        /*  }*/
-
-        /*  .hover {*/
-        /*    display: inline-block;*/
-        /*  }*/
-        /*}*/
       }
 
       &.internal,
@@ -839,22 +822,22 @@
         /deep/ .is-leaf {
           display: none;
         }
+      }
 
-        /deep/ .el-tree-node__content:hover {
-          background-color: rgba(27, 83, 244, 0.8);
+      /deep/ .el-tree-node:focus > .el-tree-node__content {
+        background-color: rgba(27, 83, 244, 0.8);
 
-          .total,
-          .tree-node-span {
-            color: rgba(255, 255, 255, 1);
-          }
+        .total,
+        .tree-node-span {
+          color: rgba(255, 255, 255, 1);
+        }
 
-          .default {
-            display: none;
-          }
+        .default {
+          display: none;
+        }
 
-          .hover {
-            display: inline-block;
-          }
+        .hover {
+          display: inline-block;
         }
       }
 

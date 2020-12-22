@@ -147,7 +147,8 @@
   import {
     messageFun,
     clearUserCookie,
-    getUserInfoF
+    getUserInfoF,
+    transformParameterS
   } from '@/assets/common'
 
   export default {
@@ -166,8 +167,8 @@
           gotten: false      // 已获取验证码
         },
         accountFrom: {
-          account: 'gaoge1834',
-          password: '22334455.',
+          account: '',
+          password: '',
           passwordEye: false,
           isAutoLogin: false
         },
@@ -197,6 +198,13 @@
       ...mapState(['regExp'])
     },
     methods: {
+      // 初始化赋值 历史登录信息
+      historyInfo() {
+        let info = JSON.parse(sessionStorage.getItem('info'))
+        if(!info) return false
+        if(info.account) this.accountFrom.account = info.account
+        if(info.phone) this.phoneForm.phone = info.phone
+      },
       // 删除错误输入
       DeleteInputFun(from, input, verif) {
         this[from][input] = ''
@@ -268,15 +276,16 @@
           s = this.accountVerif,
           i = this.warnInfo
         if (!t) s.password = null
-        else if (!this.regExp.pwLength.test(t)) {
-          // 验证密码长度
-          i.password = this.$t('login_page.message.ps_verif_two')
-          ing ? s.password = null : s.password = false
-        } else if (!this.regExp.pwFormat.test(t)) {
-          // 验证密码复杂度
-          i.password = this.$t('login_page.message.ps_verif_one')
-          ing ? s.password = null : s.password = false
-        } else s.password = true    // 密码正确
+        // else if (!this.regExp.pwLength.test(t)) {
+        //   // 验证密码长度
+        //   i.password = this.$t('login_page.message.ps_verif_two')
+        //   ing ? s.password = null : s.password = false
+        // } else if (!this.regExp.pwFormat.test(t)) {
+        //   // 验证密码复杂度
+        //   i.password = this.$t('login_page.message.ps_verif_one')
+        //   ing ? s.password = null : s.password = false
+        // } else
+          s.password = true    // 密码正确
       },
       // 获取验证码
       async getPhoneCode() {
@@ -359,6 +368,9 @@
           // 未勾选
         } else clearUserCookie(phone, account, sessionStorage.getItem('token'))
       }
+    },
+    mounted() {
+      this.historyInfo()
     }
   }
 </script>

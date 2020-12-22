@@ -45,7 +45,7 @@
         name: '',
         warnInfo: null,
         checked: '1',
-        checkText: '设为当前项',
+        checkText: '设为当前项目',
         placeholder: '请输入项目名称',
         verif: false
       }

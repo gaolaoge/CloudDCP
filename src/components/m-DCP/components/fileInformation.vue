@@ -244,7 +244,8 @@
           'filmVersion': versionList.find(item => item.val == data.filmVersion)['label'],            // 类型版本
           'soundLanguage': mp3LanguageList.find(item => item.val == data.soundLanguage)['label'],    // 声音语言
           'packageType': DCPTypeList.find(item => item.val == data.packageType)['label'],            // DCP类型
-          'createTime': createDateFun(data.createTime)                       // 创建时间
+          'createTime': createDateFun(data.createTime),                       // 创建时间
+          'patternName': '极速模式'
         })
       }
     },

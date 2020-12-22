@@ -327,7 +327,7 @@
               'type': realTitleText[index],
               'percent': Number((item.percent * 100).toFixed(2)),
               'status': item.processStatus,
-              'time': item.processStatus > 1 ? consum(item.useTime) : null,
+              'time': item.processStatus > 1 ? consum(item.useTime, true) : null,
               'info': statusText[item.processStatus],
               'average': '平均耗时：' + consum(item.averageUseTime)
             }

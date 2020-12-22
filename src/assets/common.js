@@ -64,11 +64,12 @@ const createDateFun = function (date, mini, inADay, miniInDay) {
 const consum = function (time, real) {
   let result = ''
   if (time >= 1) {
-    let day = parseInt(time / (24 * 60 * 60 * 1000)),
+    let day = (time / (24 * 60 * 60 * 1000)) > 1 ? parseInt(time / (24 * 60 * 60 * 1000)) : 0,
       hour = parseInt((time % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000)),
       minute = parseInt(((time % (24 * 60 * 60 * 1000)) % (60 * 60 * 1000)) / (60 * 1000)),
       second = parseInt((((time % (24 * 60 * 60 * 1000)) % (60 * 60 * 1000)) % (60 * 1000)) / 1000),
       realSecond = ((((time % (24 * 60 * 60 * 1000)) % (60 * 60 * 1000)) % (60 * 1000)) / 1000).toFixed(2)
+    // console.log(day)
     if (day !== 0) result += day + '天'
     if (hour !== 0 || result !== '') result += hour + '小时'
     if (minute !== 0 || result !== '') result += minute + '分'

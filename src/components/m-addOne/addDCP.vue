@@ -648,6 +648,7 @@
         setFileNameDialog: {
           visible: false
         },
+        lock: true,    // 新建事件锁
         movieTypeList: [],
         proportionList: [],
         resolutionList: [],
@@ -897,6 +898,9 @@
       },
       // 3.保存
       async confirmFun() {
+        if(!this.lock) return false
+        this.lock = false
+        setTimeout(() => this.lock = true, 1000)
         let {isEncrypt, patternUuid, captionType, packageDate, productor, presenter, packageType, region, soundtrack, captionLanguage, soundLanguage, sourceColor, taskName, projectUuid, filmName, filmCategory, filmVersion, aspectRatio, resolution, filmType} = this.setUnpackBase.form,
           {renderTList, renderTListActive, checked} = this.selectUnpackBase,
           {imgFileList, mp3FileList, subtitleFileList} = this.selectFileBase,

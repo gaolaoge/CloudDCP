@@ -1196,7 +1196,7 @@
                   .hardware,
                   .software {
                     display: block;
-                    font-size: 14px;
+                    font-size: 13px;
                     color: rgba(22, 29, 37, 0.6);
                     line-height: 20px;
                     margin-bottom: 3px;
@@ -1204,7 +1204,7 @@
 
                   .software,
                   .hardware {
-                    font-weight: 600;
+                    /*font-weight: 600;*/
                   }
 
                   .item-selected {
@@ -1227,6 +1227,7 @@
 
                     .headerText {
                       color: rgba(255, 255, 255, 0.8);
+                      font-weight: 600;
                     }
                   }
 

@@ -150,6 +150,7 @@
     name: 'KDMTable',
     data() {
       return {
+        rowIndex: null,
         selectionList: [],     // 多选结果
         tableData: [
           // { validPeriod,   1有效 0过期 }
@@ -182,6 +183,10 @@
       }
     },
     methods: {
+      // 关闭详情窗口回调
+      shutDetailsWCB() {
+        this.rowIndex = null
+      },
       // 页码跳转
       handleCurrentChange(index) {
         this.pageIndex = index
@@ -201,11 +206,12 @@
             zoneUuid
           })
         this.total = data.total
-        this.tableData = data.data.map(item => Object.assign(item, {
+        this.tableData = data.data.map((item, index_) => Object.assign(item, {
           'taskStatusText': KDMmainStatusList.find(statusI => statusI.code == item.taskStatus)['status'],
           'movieStartTime': createDateFun(new Date(item.movieStartTime)),
           'movieEndTime': createDateFun(new Date(item.movieEndTime)),
-          'validPeriod': new Date().getTime() >= item.expireTime ? 0 : 1
+          'validPeriod': new Date().getTime() >= item.expireTime ? 0 : 1,
+          index_
         }))
       },
       // 操作 - 开始
@@ -295,21 +301,26 @@
       },
       // 展开详情
       showDetails(row) {
+        this.rowIndex = row.index_
         this.$emit('tableRowClick', row)
       },
       // table 行样式
-      tableRowStyle({row}) {
+      tableRowStyle({row, rowIndex}) {
+        let select = ''
+        if(this.rowIndex == rowIndex) select = ' farmTableSelected'
         switch (row.taskStatusText) {
           case '暂停':
           case '暂停（欠费）':
           case '上传暂停':
-            return 'warning-row style-row'
+            return 'warning-row style-row' + select
           case '上传失败':
           case '失败':
-            return 'error-row style-row'
+            return 'error-row style-row' + select
           case '已完成':
           case '待打包完成':
-            return 'wait-row style-row'
+            return 'wait-row style-row' + select
+          default:
+            return select
         }
       },
       // 多选

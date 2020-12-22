@@ -201,6 +201,7 @@
         tableData: [
           // { validPeriod,   1有效 0过期 }
         ],
+        rowIndex: null,        // 行选中索引 - 样式
         statusRList: [
           {text: '等待上传', value: 610},
           {text: '上传中', value: 620},
@@ -264,9 +265,14 @@
       }
     },
     methods: {
-      //
+      // 打开详情窗口
       j(row) {
+        this.rowIndex = row.index_
         this.$emit('tableRowClick', row)
+      },
+      // 关闭详情窗口回调
+      shutDetailsWCB() {
+        this.rowIndex = null
       },
       // 页码跳转
       handleCurrentChange(index) {
@@ -292,7 +298,7 @@
             zoneUuid
           })
         this.total = data.total
-        this.tableData = data.data.map(item => Object.assign(item, {
+        this.tableData = data.data.map((item, index_) => Object.assign(item, {
           'taskStatusText': DCPmainStatusList.find(curr => curr.code == item.taskStatus)['status'],
           'film_category': movieTypeList.find(curr => curr.value == item.filmCategory)['label'],
           'useTime': consum(item.useTime),
@@ -301,7 +307,8 @@
           'resolution': this.resolutionRList.find(curr => curr.value == item.resolution)['text'],
           'is_encrypt': item.isEncrypt == 1 ? '加密' : '未加密',
           'createTime': createDateFun(new Date(item.createTime)),
-          'validPeriod': new Date().getTime() >= item.expireTime ? 0 : 1
+          'validPeriod': new Date().getTime() >= item.expireTime ? 0 : 1,
+          index_
         }))
       },
       // 操作 - 开始
@@ -385,18 +392,22 @@
         this.getList()
       },
       // table 行样式
-      tableRowStyle({row}) {
+      tableRowStyle({row, rowIndex}) {
+        let select = ''
+        if(this.rowIndex == rowIndex) select = ' farmTableSelected'
         switch (row.taskStatus) {
           case 301:
           case 302:
           case 630:
-            return 'warning-row style-row'
+            return 'warning-row style-row' + select
           case 400:
           case 640:
-            return 'error-row style-row'
+            return 'error-row style-row' + select
           case 500:
           case 650:
-            return 'wait-row style-row'
+            return 'wait-row style-row' + select
+          default:
+            return select
         }
       },
       // 多选

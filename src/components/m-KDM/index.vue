@@ -41,7 +41,9 @@
              @tableSelectionF="result => selectionList = result"/>
     </div>
     <!--详情窗口-->
-    <Win ref="win" :class="['win', {showMe: showWin}]" @shutMe="showWin = false"/>
+    <Win ref="win"
+         :class="['win', {showMe: showWin}]"
+         @shutMe="shutDetailsW"/>
   </div>
 </template>
 
@@ -106,6 +108,11 @@
       }
     },
     methods: {
+      // 关闭详情窗口
+      shutDetailsW() {
+        this.showWin = false
+        this.$refs.kdmtable.shutDetailsWCB()
+      },
       // 打开详情窗口
       showDetails(data) {
         this.showWin = true

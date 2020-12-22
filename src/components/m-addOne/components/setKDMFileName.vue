@@ -102,8 +102,8 @@
       name() {
         let {typeList, fileName, typeUuid, form} = this
         let index = typeList.length && form.uuid ? typeList.find(item => item['filenameTemplateUuid'] == form.uuid)['index'] : null
-        if (index == 0) return 'KDM_' + fileName + `_<银幕名称>_<银幕名称>`
-        else if (index == 1) return 'KDM_' + fileName + `_<影院名称>_` + createDateFun(form.date, true)
+        if (index == 0) return 'KDM_' + fileName + `_<银幕名称>`
+        else if (index == 1) return 'KDM_' + fileName + `_<银幕名称>_` + createDateFun(form.date, true)
       }
     }
   }

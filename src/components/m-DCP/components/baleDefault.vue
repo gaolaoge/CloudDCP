@@ -214,7 +214,8 @@
   } from '@/assets/common'
   import {
     getDCPPackTheResultFForTab,
-    downloadDCPFile
+    downloadDCPFile,
+    DCPTabOperating
   } from '@/api/dcp-api'
 
   export default {
@@ -355,9 +356,33 @@
       operating(action) {
         switch (action) {
           case '下载':
-            this.downloadFun()
+            if(this.downloadBtn) this.downloadFun()
+            break
+          case '开始':
+            if(this.startBtn) this.startFun()
+            break
+          case '暂停':
+            if(this.pauseBtn) this.pauseFun()
             break
         }
+      },
+      // 操作 - 开始
+      async startFun() {
+        // 所选记录都为"暂停"“暂停（欠费）且"未过期"才可以点击
+        let {data} = await DCPTabOperating({
+            'taskUuidList': [this.packageTaskUuid],
+            'operateType': 1
+          })
+        if (data.code == 200) messageFun('success', '操作成功')
+      },
+      // 操作 - 暂停
+      async pauseFun() {
+        // 所选记录都为"进行中"且"未过期"才可以点击
+        let {data} = await DCPTabOperating({
+            'taskUuidList': [this.packageTaskUuid],
+            'operateType': 2
+          })
+        if (data.code == 200) messageFun('success', '操作成功')
       },
       // 操作 - 下载
       async downloadFun() {
@@ -400,7 +425,7 @@
         if (data.code == 200) this.tableData = data.data.map(item => {
           let t = null
           if (item.frameTaskStatus == 101) t = ' '
-          if (item.frameTaskStatus == 102) t = '-'
+          if (item.frameTaskStatus == 102 || item.frameTaskStatus == 900) t = '-'
           return Object.assign(item, {
             'frameTaskStatus': DCFrameStatusList.find(curr => curr.code == item.frameTaskStatus)['status'],
             'compressEndTime': t || createDateFun(item.compressEndTime),

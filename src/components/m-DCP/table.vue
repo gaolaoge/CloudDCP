@@ -167,7 +167,7 @@
         layout="prev, pager, next, jumper"
         :total="total">
       </el-pagination>
-      <div class="refresh-btn" @click="getList(null, true)">
+      <div class="refresh-btn" @click="refreshF">
         <span>{{ $t('public.refresh') }}</span>
       </div>
     </div>
@@ -265,6 +265,11 @@
       }
     },
     methods: {
+      // 刷新
+      refreshF() {
+        this.getList(null, true)
+        this.$emit('shutW')
+      },
       // 打开详情窗口
       j(row) {
         this.rowIndex = row.index_

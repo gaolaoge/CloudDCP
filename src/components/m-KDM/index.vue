@@ -38,6 +38,7 @@
       <Table ref="kdmtable"
              :keyword="searchInput"
              @tableRowClick="showDetails"
+             @shutW="shutDW"
              @tableSelectionF="result => selectionList = result"/>
     </div>
     <!--详情窗口-->
@@ -108,7 +109,11 @@
       }
     },
     methods: {
-      // 关闭详情窗口
+      //
+      shutDW() {
+        this.$refs.win.shutWin()
+      },
+      // 关闭详情窗口回调
       shutDetailsW() {
         this.showWin = false
         this.$refs.kdmtable.shutDetailsWCB()

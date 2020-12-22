@@ -123,7 +123,7 @@
         layout="prev, pager, next, jumper"
         :total="total">
       </el-pagination>
-      <div class="refresh-btn" @click="getList(null, true)">
+      <div class="refresh-btn" @click="refreshF">
         <span>{{ $t('public.refresh') }}</span>
       </div>
     </div>
@@ -183,6 +183,11 @@
       }
     },
     methods: {
+      // 关闭详情
+      refreshF() {
+        this.getList(null, true)
+        this.$emit('shutW')
+      },
       // 关闭详情窗口回调
       shutDetailsWCB() {
         this.rowIndex = null

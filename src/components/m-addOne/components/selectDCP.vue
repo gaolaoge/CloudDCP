@@ -138,7 +138,7 @@
       </div>
       <!--按钮-->
       <div class="farm-btnGroup">
-        <div :class="[{'disable-self': null}, 'btnGroup-btn', 'confirm']"
+        <div :class="[{'cannotTrigger': !isSelected}, 'btnGroup-btn', 'confirm']"
              @click="selected">
           <span>{{ $t('public.save') }}</span>
         </div>
@@ -279,15 +279,16 @@
             return 'wait-row style-row'
         }
       },
-      //
-      filterChangeF() {
-
+      // 筛选
+      filterChangeF(obj) {
+        Object.assign(this, obj)
+        this.getList()
       },
       rowClick(row) {
         this.radio = row.index
       },
       selected() {
-        this.$emit('didSelected', this.tableData[this.radio])
+        if (this.isSelected) this.$emit('didSelected', this.tableData[this.radio])
       }
     },
     mounted() {
@@ -308,6 +309,9 @@
             value: project.projectUuid
           }
         })
+      },
+      isSelected() {
+        return !!this.tableData[this.radio]
       }
     },
     watch: {

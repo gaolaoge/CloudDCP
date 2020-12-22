@@ -672,16 +672,17 @@
           {renderTList, renderTListActive} = this.selectUnpackBase,
           name = [
             filmName,
-            movieTypeList.length ? movieTypeList.find(curr => curr.value == filmCategory)['tag'] + '-' + filmVersion : null,
+            movieTypeList.length ? movieTypeList.find(curr => curr.value == filmCategory)['tag'] + (versionList.find(curr => curr.val == filmVersion)['val'] > 0 ? '-' + versionList.find(curr => curr.val == filmVersion)['val'] : '') : null,
             proportionList.length ? proportionList.find(curr => curr.value == aspectRatio)['tag'] : null,
-            mp3LanguageList.length ? mp3LanguageList.find(curr => curr.val == soundLanguage)['label'].split(' ')[1] + '-' + (textLanguageList ? textLanguageList.find(curr => curr.val == captionLanguage)['val'] : null) + '-' + (APList ? APList.find(curr => curr.val == captionType)['tag'] : null) : null,
+            (mp3LanguageList.length ? mp3LanguageList.find(curr => curr.val == soundLanguage)['label'].split(' ')[1] : null) + '-' + (textLanguageList ? textLanguageList.find(curr => curr.val == captionLanguage)['label'].split(' ')[1] : null) + (APList ? (APList.find(curr => curr.val == captionType)['tag'] ? '-' + APList.find(curr => curr.val == captionType)['tag'] : '' ) : '' ),
             areaList.length ? areaList.find(curr => curr.val == region)['label'].split(' ')[1] : null,
             channelTypeList.length ? channelTypeList.find(curr => curr.value == soundtrack)['tag'] : null,
             resolutionList.length ? resolutionList.find(curr => curr.value == resolution)['tag'] : null,
             presenter || 'NULL',
             packageDate.toLocaleDateString().split('/').join(''),
             productor || 'NULL',
-            normList.length && renderTList.length && renderTListActive != -1 ? (normList.find(curr => curr.val == renderTList[renderTListActive]['codingRule'])['label'] + '-' + (modeList.length ? modeList.find(curr => curr.value == filmType)['label'] : '')) : null,
+            normList.length && renderTList.length && renderTListActive != -1 ? (normList.find(curr => curr.val == renderTList[renderTListActive]['codingRule'])['label'] + (modeList.find(curr => curr.value == filmType)['label'] == '2D' ? '' : ('-' + modeList.find(curr => curr.value == filmType)['label']))) : null,
+            // codingRule + (modeList.find(curr => curr.value == filmType)['label'] == '2D' ? '' : ('-' + modeList.find(curr => curr.value == filmType)['label'])),
             DCPTypeList.length ? DCPTypeList.find(curr => curr.val == packageType)['tag'] : ''
           ]
         return name.join('_')

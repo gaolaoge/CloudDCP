@@ -110,7 +110,7 @@
         <span class="span">{{ createNewKDMDialog.message }}</span>
         <div class="farm-btnGroup">
           <!--返回-->
-          <div class="btnGroup-btn previous">
+          <div class="btnGroup-btn previous" @click="createNewKDMDialog.show = false">
             <span>{{ $t('public.back') }}</span>
           </div>
           <!--新建KDM-->
